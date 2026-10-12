@@ -18,7 +18,9 @@ Sitio web oficial de **LeiaNET (LeiaNETWORK)**, un hub para gamers y devs: utili
 - Fondo animado con nebulosas, estrellas, planetas y un modo de **bajo rendimiento adaptativo** que se activa solo si detecta que el dispositivo lo necesita (menos animaciones, sin `backdrop-filter`, etc.).
 - **Easter egg**: un minijuego escondido, **LeiaRUN** 🐕 (ver más abajo).
 
-## 🐕 Easter egg — LeiaRUN
+## 🐕 Easter egg — LeiaRUN (deshabilitado)
+
+> Ahora el click en el logo abre **THE NETWORK · LeiaNET Edition** (Minecraft voxel, carpeta `leiamc/`). LeiaRUN sigue en el código pero desactivado; para reactivarlo definí `window.LEIARUN_ENABLED = true` antes de cargar `dog-runner.js`.
 
 Haciendo click en el logo del header se abre un minijuego tipo *endless runner* (al estilo del dinosaurio de Chrome), protagonizado por un Border Collie que esquiva obstáculos espaciales.
 

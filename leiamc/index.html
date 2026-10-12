@@ -94,8 +94,13 @@
   #death .sub { color: #ffd0d0; margin-bottom: 6px; font-size: 15px; }
   button, #exit { font: 600 15px var(--display); letter-spacing: 1px; color: var(--text); background: var(--elev); border: 2px solid var(--border); border-radius: 8px; padding: 9px 24px; cursor: pointer; margin-top: 14px; transition: border-color .15s, box-shadow .15s; }
   button:hover, #exit:hover { border-color: var(--ok); box-shadow: 0 0 14px rgba(79,209,98,.3); }
-  #exit { display: none; }
-  body.embed #exit { display: inline-block; }
+  /* barra superior (sólo embebido): aparece al pausar con Esc para volver a la página */
+  #topbar { display: none; position: fixed; top: 0; left: 0; right: 0; z-index: 60; align-items: center; justify-content: space-between; gap: 12px;
+    padding: 8px 16px; background: rgba(15,15,17,.92); border-bottom: 1px solid var(--border); backdrop-filter: blur(6px); font: 600 12px var(--display); letter-spacing: 1px; color: var(--text); }
+  #topbar .tb-brand { display: flex; align-items: center; gap: 10px; min-width: 0; }
+  #topbar img { height: 22px; width: auto; }
+  #topbar .tb-meta { opacity: .6; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  #topbar button { margin: 0; padding: 7px 16px; font-size: 13px; white-space: nowrap; }
   /* ---- Inventario, mesa de crafteo y horno ---- */
   #invui { --s: 48px; background: radial-gradient(ellipse at 50% 40%, rgba(24,40,30,.62), rgba(6,7,8,.86) 75%); backdrop-filter: blur(3px); z-index: 4; user-select: none; }
   .invwrap { display: flex; gap: 16px; align-items: flex-start; animation: pop .18s ease-out; }
@@ -227,6 +232,11 @@
 <div id="resumehint">Hacé clic para volver al juego <kbd>Esc</kbd> pausa</div>
 <div id="hotbar"></div>
 
+<div id="topbar">
+  <div class="tb-brand"><img src="assets/logo_leianetwork.webp" alt="LeiaNETWORK" onerror="this.remove()"><span class="tb-meta">THE NETWORK · © 2026 LeiaNET</span></div>
+  <button id="exit" type="button">&larr; Volver a la página</button>
+</div>
+
 <div id="overlay" class="screen">
   <div class="pause-card">
     <img class="brandlogo" src="assets/logo_leianetwork.webp" alt="LeiaNETWORK" onerror="this.remove()">
@@ -239,7 +249,6 @@
       <button id="btn-hud" type="button">Datos (F3)</button>
       <button id="btn-perf" type="button">Rendimiento: Auto</button>
       <button id="btn-wipe" type="button">Mundo nuevo</button>
-      <button id="exit" type="button">Volver a la página</button>
     </div>
     <div class="chips" id="pause-chips"></div>
     <div class="keys" id="keys">

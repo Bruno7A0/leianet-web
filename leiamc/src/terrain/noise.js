@@ -2,6 +2,7 @@ import { mulberry32 } from '../utils/random.js';
 
 // Ruido Perlin 2D con tabla de permutaciones derivada de la seed (determinista).
 const GRADS = [[1, 1], [-1, 1], [1, -1], [-1, -1], [1, 0], [-1, 0], [0, 1], [0, -1]];
+const GX2 = new Float64Array(GRADS.map((g) => g[0])), GY2 = new Float64Array(GRADS.map((g) => g[1]));
 const fade = (t) => t * t * t * (t * (t * 6 - 15) + 10);
 const lerp = (a, b, t) => a + (b - a) * t;
 
@@ -19,8 +20,7 @@ export class Perlin2D {
   }
 
   _grad(h, x, y) {
-    const g = GRADS[h & 7];
-    return g[0] * x + g[1] * y;
+    return GX2[h & 7] * x + GY2[h & 7] * y;
   }
 
   // Devuelve aprox. [-1, 1]
@@ -54,6 +54,9 @@ export class Perlin2D {
 
 // Ruido Perlin 3D (para cuevas). Misma idea que el 2D; devuelve aprox. [-1, 1].
 const G3 = [[1, 1, 0], [-1, 1, 0], [1, -1, 0], [-1, -1, 0], [1, 0, 1], [-1, 0, 1], [1, 0, -1], [-1, 0, -1], [0, 1, 1], [0, -1, 1], [0, 1, -1], [0, -1, -1]];
+// gradientes planos y tabla "valor de permutación -> índice de gradiente" (evita el % 12 y los arreglos anidados)
+const G3X = new Float64Array(G3.map((g) => g[0])), G3Y = new Float64Array(G3.map((g) => g[1])), G3Z = new Float64Array(G3.map((g) => g[2]));
+const G3I = new Uint8Array(256).map((_, i) => i % 12);
 
 export class Perlin3D {
   constructor(seed) {
@@ -61,8 +64,8 @@ export class Perlin3D {
   }
 
   _g(h, x, y, z) {
-    const g = G3[h % 12];
-    return g[0] * x + g[1] * y + g[2] * z;
+    const i = G3I[h & 255];
+    return G3X[i] * x + G3Y[i] * y + G3Z[i] * z;
   }
 
   noise(x, y, z) {

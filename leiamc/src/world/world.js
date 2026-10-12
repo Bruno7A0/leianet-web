@@ -5,6 +5,7 @@ export class World {
   constructor() {
     this.chunks = new Map();
     this.dirty = new Set(); // chunks que necesitan (re)generar su malla
+    this.urgent = new Set(); // subconjunto de `dirty` por ediciones del jugador: se malla primero (sin lag al picar/poner)
     this.edits = 0;         // cuenta de bloques cambiados (el guardado lo usa para saber si hay algo nuevo)
   }
 
@@ -26,6 +27,7 @@ export class World {
   removeChunk(chunk) {
     this.chunks.delete(World.key(chunk.cx, chunk.cz));
     this.dirty.delete(chunk);
+    this.urgent.delete(chunk);
   }
 
   // Bloque en coordenadas de mundo. Fuera de altura o en chunk no cargado => aire.
@@ -55,7 +57,7 @@ export class World {
     c.set(lx, y, lz, id);
     this.edits++;
     if (id === 0 && y === c.maxY) c.recomputeMaxY();
-    this.dirty.add(c);
+    this.dirty.add(c); this.urgent.add(c);
     // Si toca el borde, el chunk vecino también debe actualizarse.
     if (lx === 0) this._mark(cx - 1, cz);
     if (lx === S - 1) this._mark(cx + 1, cz);
@@ -66,6 +68,6 @@ export class World {
 
   _mark(cx, cz) {
     const n = this.getChunk(cx, cz);
-    if (n) this.dirty.add(n);
+    if (n) { this.dirty.add(n); this.urgent.add(n); }
   }
 }

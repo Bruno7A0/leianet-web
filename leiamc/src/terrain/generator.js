@@ -139,8 +139,12 @@ export class TerrainGenerator {
           case BIOME.MOUNTAIN: top = h >= SNOWCAP_H ? B.SNOW : B.STONE; fill = B.STONE; break;
           default: top = B.GRASS; fill = B.DIRT;
         }
+        // Cuevas: no atraviesan el fondo de lagos/océanos ni la playa (el agua quedaría colgando).
+        let carveTop = shore ? h - 4 : h > SEA_LEVEL + 3 ? h : h - 3;
+        if (this._in(this.noCaves, wx, wz)) carveTop = Math.min(carveTop, h - 7);
         for (let y = 0; y <= h; y++) {
           let id;
+          if (y >= 3 && y <= carveTop && this.isCave(wx, y, wz)) continue; // aire: no hace falta calcular qué bloque sería
           if (y === 0) id = B.BEDROCK;
           else if (y === 1 && hash3(seed, wx, 99, wz) < 0.5) id = B.BEDROCK;
           else if (y === h) id = top;
@@ -157,10 +161,6 @@ export class TerrainGenerator {
           }
           chunk.set(x, y, z, id);
         }
-        // Cuevas: no atraviesan el fondo de lagos/océanos ni la playa (el agua quedaría colgando).
-        let carveTop = shore ? h - 4 : h > SEA_LEVEL + 3 ? h : h - 3;
-        if (this._in(this.noCaves, wx, wz)) carveTop = Math.min(carveTop, h - 7);
-        for (let y = 3; y <= carveTop; y++) if (this.isCave(wx, y, wz)) chunk.set(x, y, z, B.AIR);
         for (let y = h + 1; y <= SEA_LEVEL; y++) chunk.set(x, y, z, B.WATER);
         // Cactus (sólo desierto, columnas sueltas).
         if (bi === BIOME.DESERT && h > SEA_LEVEL + 1 && !this._in(this.noTrees, wx, wz) && hash3(seed ^ 0xcac, wx, 7, wz) < 0.006) {

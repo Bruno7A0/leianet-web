@@ -275,6 +275,12 @@ function makeChunk(cx, cz) {
 
 function meshDirty(budgetMs) {
   const t0 = performance.now();
+  // primero lo que editó el jugador (se ve al instante), después el terreno nuevo
+  for (const chunk of world.urgent) {
+    world.urgent.delete(chunk); world.dirty.delete(chunk);
+    renderer.uploadChunk(chunk, buildChunkMesh(world, chunk));
+    if (performance.now() - t0 > budgetMs) return;
+  }
   for (const chunk of world.dirty) {
     world.dirty.delete(chunk);
     renderer.uploadChunk(chunk, buildChunkMesh(world, chunk));
@@ -523,6 +529,13 @@ $('btn-wipe').addEventListener('click', (e) => {
 $('btn-sound').addEventListener('click', (e) => { e.stopPropagation(); sound.toggleMute(); updatePause(); });
 $('btn-hud').addEventListener('click', (e) => { e.stopPropagation(); showHud = !showHud; hud.style.display = showHud ? 'block' : 'none'; });
 canvas.addEventListener('click', () => { if (state === 'playing' && !input.locked && !menuOpen && !ghostClick() && !isPortrait()) input.lock(); });
+// barra superior: sólo cuando el juego está embebido y en pausa (el overlay de pausa visible)
+if (embed) {
+  const topbar = $('topbar');
+  const syncTop = () => { topbar.style.display = overlay.style.display === 'flex' && state === 'playing' ? 'flex' : 'none'; };
+  new MutationObserver(syncTop).observe(overlay, { attributes: true, attributeFilter: ['style'] });
+  syncTop();
+}
 $('exit').addEventListener('click', (e) => {
   e.stopPropagation();
   if (window.parent !== window) window.parent.postMessage({ type: 'voxelia:exit' }, '*');
@@ -839,7 +852,9 @@ function frame(now) {
     { // ¿hay roca sobre tu cabeza? el cielo y la niebla se oscurecen bajo tierra
       const ex = Math.floor(eye[0]), ez = Math.floor(eye[2]), ey = Math.floor(eye[1]);
       let hy = CHUNK_HEIGHT - 1;
-      while (hy > ey && !IS_OPAQUE[world.getBlock(ex, hy, ez)]) hy--;
+      const col = world.getChunk(ex >> 4, ez >> 4); // una sola búsqueda de chunk para toda la columna
+      if (col) { const cb = col.blocks, o = (ex & 15) | ((ez & 15) << 4); while (hy > ey && !IS_OPAQUE[cb[o | (hy << 8)]]) hy--; }
+      else hy = ey;
       const tgt = hy > ey ? Math.min(1, (hy - ey + 1) / 7) : 0;
       caveK += (tgt - caveK) * Math.min(1, dt * 2.5);
       if (caveK > 0.01) sky = sky.map((v) => v * (1 - 0.92 * caveK));

@@ -42,35 +42,6 @@
   }
   var opened = false, wrap = null, prevOverflow = '', initialized = false;
 
-  function hiss() {
-    try {
-      var AC = window.AudioContext || window.webkitAudioContext;
-      if (!AC) return;
-      var ctx = new AC(), len = ctx.sampleRate * 1.2, buf = ctx.createBuffer(1, len, ctx.sampleRate), d = buf.getChannelData(0);
-      for (var i = 0; i < len; i++) d[i] = Math.random() * 2 - 1;
-      var src = ctx.createBufferSource(); src.buffer = buf;
-      var f = ctx.createBiquadFilter(); f.type = 'highpass'; f.frequency.value = 5500;
-      f.frequency.exponentialRampToValueAtTime(2500, ctx.currentTime + 1.1);
-      var g = ctx.createGain(); g.gain.setValueAtTime(0.35, ctx.currentTime); g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 1.1);
-      src.connect(f); f.connect(g); g.connect(ctx.destination); src.start();
-      setTimeout(function () { ctx.close(); }, 1500);
-    } catch (e) {}
-  }
-
-  // Cara de collie en píxeles (propia, 8x8) para la pantalla de entrada.
-  function introFace() {
-    var rows = ['KK....KK', 'KKWWWWKK', 'KWWWWWWK', 'KWKWWKWK', 'KWWWWWWK', 'WWWKKWWW', '.WWPPWW.', '..WWWW..'];
-    var col = { K: '#16161a', W: '#ececf0', P: '#e0708c' };
-    var c = document.createElement('canvas'); c.width = c.height = 8;
-    var x = c.getContext('2d');
-    for (var y = 0; y < 8; y++) for (var i = 0; i < 8; i++) {
-      if (rows[y][i] === '.') continue;
-      x.fillStyle = col[rows[y][i]]; x.fillRect(i, y, 1, 1);
-    }
-    c.style.cssText = 'width:min(60vmin,420px);height:min(60vmin,420px);image-rendering:pixelated;transition:transform 1.1s cubic-bezier(.5,0,1,.6)';
-    return c;
-  }
-
   function close() {
     if (!wrap) return;
     // el juego guarda el mundo y el jugador (mismo origen); si no se puede, se guarda solo cada 20 s
@@ -88,7 +59,6 @@
     var fr = wrap.querySelector('iframe');
     if (!fr || e.source !== fr.contentWindow) return;
     if (e.data && e.data.type === 'voxelia:exit') close();
-    if (e.data && e.data.type === 'voxelia:ready') { var s = wrap.querySelector('.vx-intro'); if (s) s.style.opacity = '0'; setTimeout(function () { if (s) s.remove(); }, 500); }
   }
 
   function open() {
@@ -100,15 +70,6 @@
     wrap = document.createElement('div');
     wrap.setAttribute('role', 'dialog');
     wrap.style.cssText = 'position:fixed;inset:0;z-index:2147483647;background:#000;';
-
-    var intro = document.createElement('div');
-    intro.className = 'vx-intro';
-    intro.style.cssText = 'position:absolute;inset:0;z-index:2;background:#000;display:flex;align-items:center;justify-content:center;transition:opacity .5s;';
-    var face = introFace(); intro.appendChild(face);
-    wrap.appendChild(intro);
-    hiss();
-    requestAnimationFrame(function () { face.style.transform = 'scale(1.35)'; });
-    setTimeout(function () { intro.style.background = '#fff'; face.style.opacity = '0'; }, 1050);
 
     var url = new URL(cfg.src, location.href);
     url.searchParams.set('embed', '1');
@@ -127,13 +88,7 @@
     frame.allow = 'fullscreen; autoplay';
     frame.setAttribute('allowfullscreen', '');
     frame.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;border:0;background:#000;';
-    wrap.insertBefore(frame, intro);
-
-    var x = document.createElement('button');
-    x.type = 'button'; x.textContent = '\u2715'; x.setAttribute('aria-label', 'Cerrar');
-    x.style.cssText = 'position:absolute;top:10px;right:10px;z-index:3;width:36px;height:36px;font:20px/1 system-ui,sans-serif;color:#fff;background:rgba(0,0,0,.55);border:2px solid #888;cursor:pointer;';
-    x.addEventListener('click', close);
-    wrap.appendChild(x);
+    wrap.appendChild(frame);
 
     document.body.appendChild(wrap);
     window.addEventListener('message', onMessage);

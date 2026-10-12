@@ -290,15 +290,26 @@ void main() { o = u_color; }`;
 
   // Calidad en caliente: { msaa: muestras (0 = apagado), dpr: tope de resolución }.
   setQuality({ msaa, dpr }) {
+    this._sizeDirty = true;
     if (dpr) this.dprCap = dpr;
     if (msaa !== undefined) this.samples = Math.min(msaa, this.maxSamples);
     this.resize();
   }
 
   resize() {
-    const dpr = Math.min(window.devicePixelRatio || 1, this.dprCap);
-    const w = Math.floor(this.canvas.clientWidth * dpr);
-    const h = Math.floor(this.canvas.clientHeight * dpr);
+    // clientWidth/Height fuerzan un cálculo de layout: se leen sólo cuando cambia el tamaño, no en cada cuadro
+    if (!this._ro && typeof ResizeObserver !== 'undefined') {
+      this._ro = new ResizeObserver(() => { this._sizeDirty = true; });
+      this._ro.observe(this.canvas);
+      window.addEventListener('resize', () => { this._sizeDirty = true; });
+    }
+    if (this._cw === undefined || this._sizeDirty || !this._ro) {
+      this._cw = this.canvas.clientWidth; this._ch = this.canvas.clientHeight; this._sizeDirty = false;
+      this._dprSeen = window.devicePixelRatio || 1;
+    }
+    const dpr = Math.min(this._dprSeen, this.dprCap);
+    const w = Math.floor(this._cw * dpr);
+    const h = Math.floor(this._ch * dpr);
     if (this.canvas.width !== w || this.canvas.height !== h) {
       this.canvas.width = w;
       this.canvas.height = h;
@@ -362,9 +373,9 @@ void main() { o = u_color; }`;
       if (!p) p = chunk.gpu[name] = this._makePass(gl);
       gl.bindVertexArray(p.vao);
       gl.bindBuffer(gl.ARRAY_BUFFER, p.vbo);
-      gl.bufferData(gl.ARRAY_BUFFER, m.vertices, gl.DYNAMIC_DRAW);
+      gl.bufferData(gl.ARRAY_BUFFER, m.vertices, gl.STATIC_DRAW);
       gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, p.ibo);
-      gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, m.indices, gl.DYNAMIC_DRAW);
+      gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, m.indices, gl.STATIC_DRAW);
       gl.bindVertexArray(null);
       p.count = m.indices.length;
     }
@@ -411,8 +422,8 @@ void main() { o = u_color; }`;
     gl.uniform1f(this.u.u_a2c, a2c);
 
     const [cx, cy, cz] = cam.pos;
-    const visible = [];
-    let total = 0;
+    const visible = this._visible || (this._visible = []);
+    let nv = 0, total = 0;
     for (const chunk of world.chunks.values()) {
       if (!chunk.gpu) continue;
       total++;
@@ -424,8 +435,14 @@ void main() { o = u_color; }`;
       if (!aabbInFrustum(this.planes, minx, miny, minz, minx + S, miny + H, minz + S)) continue;
       const d = (minx + 8) ** 2 + (minz + 8) ** 2;
       // Lo subterráneo se dibuja si estás bajo la superficie del chunk o cerca (para ver bien las bocas de cueva y tus pozos).
-      visible.push({ chunk, ox: minx, oy: miny, oz: minz, d, deep: cy < (chunk.splitY || 0) + 3 || d < DEEP_NEAR * DEEP_NEAR });
+      let e = visible[nv++];
+      if (!e) e = visible[nv - 1] = {};
+      e.chunk = chunk; e.ox = minx; e.oy = miny; e.oz = minz; e.d = d;
+      e.deep = cy < (chunk.splitY || 0) + 3 || d < DEEP_NEAR * DEEP_NEAR;
     }
+    visible.length = nv;
+    // de cerca a lejos: el z-buffer descarta pronto lo tapado (menos trabajo de fragmentos); el agua va en orden inverso
+    visible.sort((a, b) => a.d - b.d);
 
     let tris = 0;
     gl.enable(gl.DEPTH_TEST);
@@ -461,8 +478,8 @@ void main() { o = u_color; }`;
     gl.enable(gl.BLEND);
     gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
     gl.depthMask(false);
-    visible.sort((a, b) => b.d - a.d);
-    for (const v of visible) {
+    for (let i = visible.length - 1; i >= 0; i--) {
+      const v = visible[i];
       const p = v.chunk.gpu.blend;
       if (!p) continue;
       gl.uniform3f(this.u.u_offset, v.ox, v.oy, v.oz);
@@ -500,7 +517,7 @@ void main() { o = u_color; }`;
       gl.bindFramebuffer(gl.FRAMEBUFFER, null);
     }
 
-    this.stats.chunksDrawn = visible.length;
+    this.stats.chunksDrawn = nv;
     this.stats.chunksTotal = total;
     this.stats.triangles = tris;
   }

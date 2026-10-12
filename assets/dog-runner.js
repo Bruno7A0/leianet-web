@@ -1018,7 +1018,9 @@
   function attachTrigger(){
     var logo = document.querySelector('.brand');
     if (!logo){ setTimeout(attachTrigger, 300); return; }
-    logo.addEventListener('click', function(e){ openGame(); });
+    // LeiaRUN deshabilitado como trigger del logo (ahora el logo abre el easter egg de Minecraft).
+    // Para reactivarlo: window.LEIARUN_ENABLED = true antes de cargar este script.
+    logo.addEventListener('click', function(e){ if (window.LEIARUN_ENABLED) openGame(); });
   }
 
   if (document.readyState === 'loading'){

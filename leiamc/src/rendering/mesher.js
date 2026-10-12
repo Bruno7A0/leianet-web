@@ -76,7 +76,46 @@ export function shouldDraw(a, b) {
 }
 
 const LR = 4, LW = S + 2 * LR; // borde de la luz de cielo
-const LV = new Uint8Array(LW * LW * H), HMAP = new Int16Array(LW * LW), LQ = [];
+// Todo se indexa con una "caché" de bloques con borde (LR en x/z y 1 capa extra arriba y abajo), así el mallado no
+// consulta el mundo (Map + chunks) por cada vecino: sólo lee un Uint8Array contiguo.
+const HP = H + 2, LSZ = LW * LW * HP, LAYER = LW * LW;
+const LV = new Uint8Array(LSZ), CB = new Uint8Array(LSZ), HMAP = new Int16Array(LW * LW), LQ = [];
+const cidx = (x, y, z) => (y + 1) * LAYER + (z + LR) * LW + (x + LR);
+// desplazamientos (en índices de la caché) de cada vecino de cara y de los 3 ocluyentes de cada esquina
+const FACE_D = FACES.map((f) => f.n[0] + f.n[2] * LW + f.n[1] * LAYER);
+const AO_D = AO_OFFSETS.map((cs) => cs.map(([o1, o2, oc]) => [
+  o1[0] + o1[2] * LW + o1[1] * LAYER, o2[0] + o2[2] * LW + o2[1] * LAYER, oc[0] + oc[2] * LW + oc[1] * LAYER]));
+// UV de cada tile precalculados (u0,u1,v0,v1)
+const NT = ATLAS_GRID * ATLAS_GRID, TUV = new Float32Array(NT * 4);
+for (let t = 0; t < NT; t++) {
+  const tx = t % ATLAS_GRID, ty = (t / ATLAS_GRID) | 0;
+  TUV[t * 4] = (tx + TEX_EPS) / ATLAS_GRID; TUV[t * 4 + 1] = (tx + 1 - TEX_EPS) / ATLAS_GRID;
+  TUV[t * 4 + 2] = (ty + TEX_EPS) / ATLAS_GRID; TUV[t * 4 + 3] = (ty + 1 - TEX_EPS) / ATLAS_GRID;
+}
+const FC = FACES.map((f, i) => f.c.map((c, k) => [c[0] + GROW[i][k][0], c[1] + GROW[i][k][1], c[2] + GROW[i][k][2]]));
+const FUV = FACES.map((f) => f.uv.map((u) => [u[0], u[1]]));
+
+function fillCache(world, chunk, top) {
+  CB.fill(0);
+  const ox = chunk.cx * S, oz = chunk.cz * S;
+  // capa -1 (fondo del mundo): piedra, no se dibuja
+  CB.fill(B.STONE, 0, LAYER);
+  for (let dz = -1; dz <= 1; dz++) for (let dx = -1; dx <= 1; dx++) {
+    const c = dx === 0 && dz === 0 ? chunk : world.getChunk(chunk.cx + dx, chunk.cz + dz);
+    if (!c) continue;
+    const cx0 = ox + dx * S, cz0 = oz + dz * S;
+    const xs = Math.max(ox - LR, cx0), xe = Math.min(ox + S + LR, cx0 + S);
+    const zs = Math.max(oz - LR, cz0), ze = Math.min(oz + S + LR, cz0 + S);
+    if (xs >= xe || zs >= ze) continue;
+    const blocks = c.blocks, len = xe - xs;
+    for (let y = 0; y <= top; y++) {
+      for (let z = zs; z < ze; z++) {
+        const src = ((z - cz0) << 4) | (y << 8) | (xs - cx0);
+        CB.set(blocks.subarray(src, src + len), (y + 1) * LAYER + (z - oz + LR) * LW + (xs - ox + LR));
+      }
+    }
+  }
+}
 
 // Antorcha: dos planos cruzados (visibles por ambos lados).
 const TORCH_PLANES = [[[0.1, 0.1], [0.9, 0.9]], [[0.1, 0.9], [0.9, 0.1]]];
@@ -133,30 +172,27 @@ export function buildChunkMesh(world, chunk) {
   const blocks = chunk.blocks;
   const ox = chunk.cx * S, oz = chunk.cz * S;
 
-  const sample = (x, y, z) => {
-    if (y < 0) return B.STONE; // el fondo del mundo no se dibuja
-    if (y >= H) return 0;
-    if (x >= 0 && x < S && z >= 0 && z < S) return blocks[x | (z << 4) | (y << 8)];
-    return world.getBlock(ox + x, y, oz + z);
-  };
-
   // Luz de cielo: columnas abiertas = 15; bajo techo, la luz entra de costado y baja 3 por bloque (alcance ~4).
   let hmax = chunk.maxY;
   for (let dz = -1; dz <= 1; dz++) for (let dx = -1; dx <= 1; dx++) { const n = world.getChunk(chunk.cx + dx, chunk.cz + dz); if (n && n.maxY > hmax) hmax = n.maxY; }
+  const topFill = Math.min(hmax + 1, H - 1);
+  fillCache(world, chunk, topFill);
+  const sample = (x, y, z) => CB[cidx(x, y, z)];
   for (let z = -LR; z < S + LR; z++) for (let x = -LR; x < S + LR; x++) {
-    let y = Math.min(hmax + 1, H - 1);
-    while (y >= 0 && !IS_OPAQUE[sample(x, y, z)]) y--;
+    let k = cidx(x, topFill, z), y = topFill;
+    while (y >= 0 && !IS_OPAQUE[CB[k]]) { y--; k -= LAYER; }
     HMAP[(z + LR) * LW + x + LR] = y; // y del bloque opaco más alto de la columna
   }
   LV.fill(0); LQ.length = 0;
-  const li = (x, y, z) => (y * LW + (z + LR)) * LW + (x + LR);
+  const li = cidx;
   const NB = [[1, 0], [-1, 0], [0, 1], [0, -1]];
   for (let z = -LR + 1; z < S + LR - 1; z++) for (let x = -LR + 1; x < S + LR - 1; x++) {
     const h = HMAP[(z + LR) * LW + x + LR];
     for (const [dx, dz] of NB) {
       const hn = HMAP[(z + dz + LR) * LW + x + dx + LR];
       for (let y = Math.max(0, hn + 1); y <= h; y++) {
-        if (!IS_OPAQUE[sample(x, y, z)] && LV[li(x, y, z)] < 12) { LV[li(x, y, z)] = 12; LQ.push(x, y, z); }
+        const k = li(x, y, z);
+        if (!IS_OPAQUE[CB[k]] && LV[k] < 12) { LV[k] = 12; LQ.push(x, y, z); }
       }
     }
   }
@@ -166,8 +202,8 @@ export function buildChunkMesh(world, chunk) {
     for (let d = 0; d < 6; d++) {
       const nx = x + (d === 0) - (d === 1), ny = y + (d === 2) - (d === 3), nz = z + (d === 4) - (d === 5);
       if (ny < 0 || ny >= H || nx < -LR || nx >= S + LR || nz < -LR || nz >= S + LR) continue;
-      if (ny > HMAP[(nz + LR) * LW + nx + LR] || IS_OPAQUE[sample(nx, ny, nz)]) continue;
       const k = li(nx, ny, nz);
+      if (ny > HMAP[(nz + LR) * LW + nx + LR] || IS_OPAQUE[CB[k]]) continue;
       if (LV[k] >= l) continue;
       LV[k] = l; LQ.push(nx, ny, nz);
     }
@@ -201,48 +237,50 @@ export function buildChunkMesh(world, chunk) {
         if (WALL_TORCH[id]) { leanTorchQuads(opaqueBuilder, x, y, z, WALL_TORCH[id]); continue; }
         const blend = IS_BLEND[id] === 1;
         const builder = blend ? blendBuilder : y < splitY ? deepBuilder : opaqueBuilder;
+        const emissive = IS_EMISSIVE[id];
+        const ci = cidx(x, y, z);
 
         for (let f = 0; f < 6; f++) {
-          const F = FACES[f];
-          const nb = sample(x + F.n[0], y + F.n[1], z + F.n[2]);
+          const nb = CB[ci + FACE_D[f]];
           if (!shouldDraw(id, nb)) continue;
 
-          const tile = TILE_OF[id * 3 + (f === 0 ? 0 : f === 1 ? 1 : 2)];
-          const tx = tile % ATLAS_GRID, ty = (tile / ATLAS_GRID) | 0;
-          const u0 = (tx + TEX_EPS) / ATLAS_GRID, u1 = (tx + 1 - TEX_EPS) / ATLAS_GRID;
-          const v0 = (ty + TEX_EPS) / ATLAS_GRID, v1 = (ty + 1 - TEX_EPS) / ATLAS_GRID;
+          const F = FACES[f];
+          const tuv = TILE_OF[id * 3 + (f === 0 ? 0 : f === 1 ? 1 : 2)] * 4;
+          const u0 = TUV[tuv], u1 = TUV[tuv + 1], v0 = TUV[tuv + 2], v1 = TUV[tuv + 3];
 
           builder.ensure();
-          const sky = IS_EMISSIVE[id] ? 0 : 2 * skyLevel(x + F.n[0], y + F.n[1], z + F.n[2]);
-          const ao = [3, 3, 3, 3];
+          const sky = emissive ? 0 : 2 * skyLevel(x + F.n[0], y + F.n[1], z + F.n[2]);
+          let ao0 = 3, ao1 = 3, ao2 = 3, ao3 = 3;
           if (!blend) {
-            for (let k = 0; k < 4; k++) {
-              const [o1, o2, oc] = AO_OFFSETS[f][k];
-              const s1 = IS_OPAQUE[sample(x + o1[0], y + o1[1], z + o1[2])];
-              const s2 = IS_OPAQUE[sample(x + o2[0], y + o2[1], z + o2[2])];
-              const c = IS_OPAQUE[sample(x + oc[0], y + oc[1], z + oc[2])];
-              ao[k] = s1 && s2 ? 0 : 3 - (s1 + s2 + c);
-            }
+            const A = AO_D[f];
+            let s1 = IS_OPAQUE[CB[ci + A[0][0]]], s2 = IS_OPAQUE[CB[ci + A[0][1]]], c = IS_OPAQUE[CB[ci + A[0][2]]];
+            ao0 = s1 && s2 ? 0 : 3 - (s1 + s2 + c);
+            s1 = IS_OPAQUE[CB[ci + A[1][0]]]; s2 = IS_OPAQUE[CB[ci + A[1][1]]]; c = IS_OPAQUE[CB[ci + A[1][2]]];
+            ao1 = s1 && s2 ? 0 : 3 - (s1 + s2 + c);
+            s1 = IS_OPAQUE[CB[ci + A[2][0]]]; s2 = IS_OPAQUE[CB[ci + A[2][1]]]; c = IS_OPAQUE[CB[ci + A[2][2]]];
+            ao2 = s1 && s2 ? 0 : 3 - (s1 + s2 + c);
+            s1 = IS_OPAQUE[CB[ci + A[3][0]]]; s2 = IS_OPAQUE[CB[ci + A[3][1]]]; c = IS_OPAQUE[CB[ci + A[3][2]]];
+            ao3 = s1 && s2 ? 0 : 3 - (s1 + s2 + c);
           }
 
           const base = builder.vc;
           let p = builder.vc * FLOATS_PER_VERTEX;
-          const v = builder.v;
+          const v = builder.v, C = FC[f], UV = FUV[f], fs = F.shade;
           for (let k = 0; k < 4; k++) {
-            const c = F.c[k], uv = F.uv[k];
-            const g = GROW[f][k];
-            v[p++] = x + c[0] + g[0];
-            v[p++] = y + c[1] + g[1];
-            v[p++] = z + c[2] + g[2];
+            const c = C[k], uv = UV[k];
+            v[p++] = x + c[0];
+            v[p++] = y + c[1];
+            v[p++] = z + c[2];
             v[p++] = uv[0] ? u1 : u0;
             v[p++] = uv[1] ? v1 : v0;
-            v[p++] = (IS_EMISSIVE[id] ? 100 + 0.9 : sky + F.shade * AO_LEVELS[ao[k]]);
+            const a = k === 0 ? ao0 : k === 1 ? ao1 : k === 2 ? ao2 : ao3;
+            v[p++] = (emissive ? 100 + 0.9 : sky + fs * AO_LEVELS[a]);
           }
           builder.vc += 4;
 
           const idx = builder.i;
           let q = builder.ic;
-          if (ao[0] + ao[2] > ao[1] + ao[3]) {
+          if (ao0 + ao2 > ao1 + ao3) {
             idx[q++] = base; idx[q++] = base + 1; idx[q++] = base + 2;
             idx[q++] = base; idx[q++] = base + 2; idx[q++] = base + 3;
           } else {
