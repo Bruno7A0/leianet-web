@@ -154,7 +154,9 @@
     if(ctl)ctl.querySelector('.aero-toggle').title=on?'Salir del modo Aero':'Modo Aero';
   }
   function setOn(v,gesture){
-    on=v;set(KEY,v?'1':'0');apply();decorateAll();
+    on=v;set(KEY,v?'1':'0');
+    if(v){try{window.dispatchEvent(new CustomEvent('leianet-theme',{detail:'aero'}))}catch(e){}} /* apaga Retrowave si estaba activo */
+    apply();decorateAll();
     if(v){
       if(gesture&&!(window.matchMedia&&matchMedia('(prefers-reduced-motion:reduce)').matches)){var sw=document.createElement('div');sw.className='aero-sweep';document.body.appendChild(sw);setTimeout(function(){sw.remove()},1400)}
       showToast('✨ Modo Aero activado');if(gesture)startMusic()}else showToast('Modo Aero desactivado · escribí "aero" para volver');
@@ -211,6 +213,8 @@
   },true);
   document.addEventListener('keydown',function(){if(on&&!muted&&!timer)startMusic()},true);
 
+  /* Retrowave y Aero son excluyentes */
+  window.addEventListener('leianet-theme',function(e){if(e.detail!=='aero'&&on){on=false;set(KEY,'0');apply();decorateAll()}});
   /* si cambia en otra pestaña/página abierta, acompañar */
   window.addEventListener('storage',function(e){
     if(e.key===KEY&&(e.newValue==='1')!==on){on=e.newValue==='1';apply()}

@@ -30,6 +30,16 @@ Haciendo click en el logo del header se abre un minijuego tipo *endless runner* 
 - **Soporte mobile**: si abrís el juego desde el celular en vertical, te pide girar el teléfono a horizontal antes de empezar (y pausa la partida si lo volvés a girar a mitad de juego).
 - Mientras el juego está abierto se fuerza el modo de bajo rendimiento del sitio (nebulosas, brillo del cursor, etc. se apagan) para que no rame, y se restaura el modo que tenía el usuario al cerrar.
 
+## 🌆 Modo Retrowave / Synthwave
+
+Escribí **`retrowave`** en cualquier página (fuera de un input) para activarlo; volvé a escribirlo para desactivarlo.
+
+- Escena propia: sol con franjas, montañas wireframe, estrellas y grilla en perspectiva animada, con la paleta `#200D3A #292651 #035EE8 #2DE2E6 #9700CC #F6019D #D40078 #F887FF #ECA089 #ECC6A2`.
+- Se mantiene entre páginas (localStorage + `window.name` + `?retro=1` en los links internos) y la música (*Neon Highway*) sigue desde donde iba.
+- Botones flotantes para silenciar la música y salir del modo. Es excluyente con el modo Aero.
+- Logo neón propio (`logo_leianetwork_retro.webp`) en header y footer, igual que Aero usa el de vidrio; carretera, reflejo del sol, estrellas fugaces y parallax de scroll; reproductor con ecualizador.
+- Archivos: `assets/retrowave-mode.js`, `assets/retrowave-mode.css`, `assets/retrowave-music.mp3`, fuente `assets/fonts/orbitron-*`.
+
 ## 📊 Encuestas (sección Novedades)
 
 Las encuestas se muestran arriba de las novedades y se crean desde `admin.html` (mismo token que las novedades).
