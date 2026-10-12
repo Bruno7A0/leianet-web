@@ -292,7 +292,7 @@ void main() { o = u_color; }`;
   setQuality({ msaa, dpr }) {
     this._sizeDirty = true;
     if (dpr) this.dprCap = dpr;
-    if (msaa !== undefined) this.samples = Math.min(msaa, this.maxSamples);
+    if (msaa !== undefined) this.samples = this.msaaBroken ? 0 : Math.min(msaa, this.maxSamples);
     this.resize();
   }
 
@@ -323,20 +323,33 @@ void main() { o = u_color; }`;
     const gl = this.gl, w = this.canvas.width, h = this.canvas.height;
     const t = this.msaa;
     if (t && t.w === w && t.h === h && t.s === this.samples) return;
-    if (t) { gl.deleteFramebuffer(t.fbo); gl.deleteRenderbuffer(t.color); gl.deleteRenderbuffer(t.depth); this.msaa = null; }
+    if (t) { gl.deleteFramebuffer(t.fbo); gl.deleteRenderbuffer(t.color); gl.deleteRenderbuffer(t.depth); gl.deleteFramebuffer(t.rfbo); gl.deleteRenderbuffer(t.rcolor); this.msaa = null; }
     if (this.samples < 2 || w < 1 || h < 1) return;
+    // Color en RGBA8 (no RGB8): en Windows (ANGLE/Direct3D) un renderbuffer multimuestreo RGB8 no se puede copiar
+    // directo al canvas y la pantalla queda negra. Se resuelve primero a un buffer RGBA8 normal y de ahí a pantalla.
     const color = gl.createRenderbuffer(), depth = gl.createRenderbuffer(), fbo = gl.createFramebuffer();
+    const rcolor = gl.createRenderbuffer(), rfbo = gl.createFramebuffer();
+    gl.getError();
     gl.bindRenderbuffer(gl.RENDERBUFFER, color);
-    gl.renderbufferStorageMultisample(gl.RENDERBUFFER, this.samples, gl.RGB8, w, h); // mismo formato que el canvas (alpha:false), si no el blit falla
+    gl.renderbufferStorageMultisample(gl.RENDERBUFFER, this.samples, gl.RGBA8, w, h);
     gl.bindRenderbuffer(gl.RENDERBUFFER, depth);
     gl.renderbufferStorageMultisample(gl.RENDERBUFFER, this.samples, gl.DEPTH_COMPONENT24, w, h);
     gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
     gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.RENDERBUFFER, color);
     gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, depth);
-    const ok = gl.checkFramebufferStatus(gl.FRAMEBUFFER) === gl.FRAMEBUFFER_COMPLETE;
+    let ok = gl.checkFramebufferStatus(gl.FRAMEBUFFER) === gl.FRAMEBUFFER_COMPLETE;
+    gl.bindRenderbuffer(gl.RENDERBUFFER, rcolor);
+    gl.renderbufferStorage(gl.RENDERBUFFER, gl.RGBA8, w, h);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, rfbo);
+    gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.RENDERBUFFER, rcolor);
+    ok = ok && gl.checkFramebufferStatus(gl.FRAMEBUFFER) === gl.FRAMEBUFFER_COMPLETE && gl.getError() === gl.NO_ERROR;
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-    if (!ok) { gl.deleteFramebuffer(fbo); gl.deleteRenderbuffer(color); gl.deleteRenderbuffer(depth); this.samples = 0; return; }
-    this.msaa = { fbo, color, depth, w, h, s: this.samples };
+    if (!ok) {
+      gl.deleteFramebuffer(fbo); gl.deleteRenderbuffer(color); gl.deleteRenderbuffer(depth);
+      gl.deleteFramebuffer(rfbo); gl.deleteRenderbuffer(rcolor);
+      this.samples = 0; this.msaaBroken = true; return;
+    }
+    this.msaa = { fbo, color, depth, rfbo, rcolor, w, h, s: this.samples };
   }
 
   _makePass(gl) {
@@ -509,12 +522,28 @@ void main() { o = u_color; }`;
     }
     gl.bindVertexArray(null);
 
-    if (this.msaa) { // resolver el multimuestreo hacia la pantalla
+    if (this.msaa) { // resolver el multimuestreo: MSAA -> buffer RGBA8 -> pantalla
       const { w, h } = this.msaa;
+      gl.getError();
       gl.bindFramebuffer(gl.READ_FRAMEBUFFER, this.msaa.fbo);
+      gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, this.msaa.rfbo);
+      gl.blitFramebuffer(0, 0, w, h, 0, 0, w, h, gl.COLOR_BUFFER_BIT, gl.NEAREST);
+      gl.bindFramebuffer(gl.READ_FRAMEBUFFER, this.msaa.rfbo);
       gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, null);
       gl.blitFramebuffer(0, 0, w, h, 0, 0, w, h, gl.COLOR_BUFFER_BIT, gl.NEAREST);
+      let bad = gl.getError() !== gl.NO_ERROR;
+      // Red de seguridad: en los primeros cuadros, si el canvas quedó negro con un cielo que no lo es, el MSAA no funciona acá
+      if (!bad && (this._chk = (this._chk || 0) + 1) <= 5 && env.sky[0] + env.sky[1] + env.sky[2] > 0.15) {
+        const px = new Uint8Array(4);
+        gl.bindFramebuffer(gl.READ_FRAMEBUFFER, null);
+        gl.readPixels(2, 2, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, px);
+        bad = px[0] + px[1] + px[2] === 0;
+      }
       gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+      if (bad) { // sin MSAA (como en "Bajo"); se redibuja en el siguiente cuadro
+        this.msaaBroken = true; this.samples = 0; this._ensureTarget();
+        console.warn('[LeiaNET] MSAA no disponible en esta GPU/driver: se desactiva.');
+      }
     }
 
     this.stats.chunksDrawn = nv;
