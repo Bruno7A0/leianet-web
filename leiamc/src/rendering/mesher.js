@@ -1,7 +1,7 @@
 // Generación de mallas por chunk: sólo se emiten las caras visibles (face culling),
 // con oclusión ambiental por vértice (AO). Los buffers de trabajo se reutilizan.
 import { CHUNK_SIZE as S, CHUNK_HEIGHT as H } from '../world/constants.js';
-import { B, IS_OPAQUE, IS_BLEND, IS_EMISSIVE, CULL_SAME, TILE_OF, LIGHT_R, WALL_TORCH } from '../blocks/blocks.js';
+import { B, IS_OPAQUE, IS_BLEND, IS_EMISSIVE, CULL_SAME, TILE_OF, LIGHT_R, WALL_TORCH, PLANT_TILE } from '../blocks/blocks.js';
 import { ATLAS_GRID } from '../blocks/atlas.js';
 
 export const FLOATS_PER_VERTEX = 6; // x, y, z, u, v, shade
@@ -138,6 +138,27 @@ function torchQuads(builder, x, y, z) {
   }
 }
 
+// Cultivo: cuatro planos en forma de # (0.25 y 0.75 en cada eje), visibles por ambos lados.
+const PLANT_LINES = [[0.25, 0, 0.25, 1, 'z'], [0.75, 0, 0.75, 1, 'z'], [0, 0.25, 1, 0.25, 'x'], [0, 0.75, 1, 0.75, 'x']];
+function plantQuads(builder, x, y, z, tile, shade) {
+  const tx = tile % ATLAS_GRID, ty = (tile / ATLAS_GRID) | 0;
+  const u0 = tx / ATLAS_GRID, u1 = (tx + 1) / ATLAS_GRID, v0 = ty / ATLAS_GRID, v1 = (ty + 1) / ATLAS_GRID;
+  for (const [ax, az, bx, bz] of PLANT_LINES) {
+    for (let side = 0; side < 2; side++) {
+      const [p, q] = side ? [[bx, bz], [ax, az]] : [[ax, az], [bx, bz]];
+      const pts = [[p[0], 0, p[1], u0, v1], [q[0], 0, q[1], u1, v1], [q[0], 1, q[1], u1, v0], [p[0], 1, p[1], u0, v0]];
+      builder.ensure();
+      const base = builder.vc;
+      let o = builder.vc * FLOATS_PER_VERTEX;
+      for (const c of pts) { builder.v[o++] = x + c[0]; builder.v[o++] = y + c[1]; builder.v[o++] = z + c[2]; builder.v[o++] = c[3]; builder.v[o++] = c[4]; builder.v[o++] = shade; }
+      builder.vc += 4;
+      const i = builder.i; let w = builder.ic;
+      i[w++] = base; i[w++] = base + 1; i[w++] = base + 2; i[w++] = base; i[w++] = base + 2; i[w++] = base + 3;
+      builder.ic = w;
+    }
+  }
+}
+
 // Antorcha de pared: gira 45° apoyando la base contra el bloque que la sostiene (d = [dx, dz] hacia esa pared).
 // Sigue siendo un par de planos cruzados, pero alrededor del eje inclinado.
 function leanTorchQuads(builder, x, y, z, d) {
@@ -165,6 +186,7 @@ function leanTorchQuads(builder, x, y, z, d) {
 }
 
 export function buildChunkMesh(world, chunk) {
+  chunk.crops = []; // [x, y, z, id] de cultivos (los hace crecer world/crops.js)
   chunk.lights = []; // [x, y, z, radio] de bloques que iluminan (antorcha, piedra luminosa, horno encendido…)
   opaqueBuilder.reset();
   blendBuilder.reset();
@@ -177,7 +199,6 @@ export function buildChunkMesh(world, chunk) {
   for (let dz = -1; dz <= 1; dz++) for (let dx = -1; dx <= 1; dx++) { const n = world.getChunk(chunk.cx + dx, chunk.cz + dz); if (n && n.maxY > hmax) hmax = n.maxY; }
   const topFill = Math.min(hmax + 1, H - 1);
   fillCache(world, chunk, topFill);
-  const sample = (x, y, z) => CB[cidx(x, y, z)];
   for (let z = -LR; z < S + LR; z++) for (let x = -LR; x < S + LR; x++) {
     let k = cidx(x, topFill, z), y = topFill;
     while (y >= 0 && !IS_OPAQUE[CB[k]]) { y--; k -= LAYER; }
@@ -185,10 +206,11 @@ export function buildChunkMesh(world, chunk) {
   }
   LV.fill(0); LQ.length = 0;
   const li = cidx;
-  const NB = [[1, 0], [-1, 0], [0, 1], [0, -1]];
+  const NBX = [1, -1, 0, 0], NBZ = [0, 0, 1, -1];
   for (let z = -LR + 1; z < S + LR - 1; z++) for (let x = -LR + 1; x < S + LR - 1; x++) {
     const h = HMAP[(z + LR) * LW + x + LR];
-    for (const [dx, dz] of NB) {
+    for (let q4 = 0; q4 < 4; q4++) {
+      const dx = NBX[q4], dz = NBZ[q4];
       const hn = HMAP[(z + dz + LR) * LW + x + dx + LR];
       for (let y = Math.max(0, hn + 1); y <= h; y++) {
         const k = li(x, y, z);
@@ -234,6 +256,11 @@ export function buildChunkMesh(world, chunk) {
         if (id === 0) continue;
         if (LIGHT_R[id] && chunk.lights.length < 48) chunk.lights.push([ox + x + 0.5, y + 0.5, oz + z + 0.5, LIGHT_R[id]]);
         if (id === B.TORCH) { torchQuads(opaqueBuilder, x, y, z); continue; }
+        if (PLANT_TILE[id]) { // cultivo
+          plantQuads(opaqueBuilder, x, y, z, PLANT_TILE[id], 2 * skyLevel(x, y, z) + 0.92);
+          if (chunk.crops.length < 4096) chunk.crops.push([ox + x, y, oz + z, id]);
+          continue;
+        }
         if (WALL_TORCH[id]) { leanTorchQuads(opaqueBuilder, x, y, z, WALL_TORCH[id]); continue; }
         const blend = IS_BLEND[id] === 1;
         const builder = blend ? blendBuilder : y < splitY ? deepBuilder : opaqueBuilder;

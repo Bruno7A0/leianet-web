@@ -12,9 +12,13 @@ export class Batch {
 
   // Caja con centro (cx,cy,cz) y semi-medidas (hx,hy,hz), girada `yaw` alrededor de Y respecto a `origin`.
   // tiles: id único o {front, other}; `front` es la cara +Z local. uvSub = [u,v,tam] recorta la textura (0..1).
+  // Giros opcionales (para animar miembros): `rx` gira la caja alrededor del eje X con pivote en (py, pz) locales;
+  // `tilt` gira todo el cuerpo alrededor del eje X con pivote en (ty, 0) (por ejemplo, un zombi que cae).
   box(cx, cy, cz, hx, hy, hz, o = {}) {
     const yaw = o.yaw || 0, ox = o.ox || 0, oz = o.oz || 0, shade = o.shade ?? 1, uvSub = o.uvSub;
     const cs = Math.cos(yaw), sn = Math.sin(yaw);
+    const rx = o.rx || 0, rc = Math.cos(rx), rs = Math.sin(rx), py = o.py || 0, pz = o.pz || 0;
+    const tl = o.tilt || 0, tc = Math.cos(tl), ts = Math.sin(tl), ty = o.ty || 0;
     for (let f = 0; f < 6; f++) {
       if (this.n >= this.max) return;
       const F = FACES[f];
@@ -26,7 +30,9 @@ export class Batch {
       let p = this.n * 4 * FLOATS_PER_VERTEX;
       for (let k = 0; k < 4; k++) {
         const c = F.c[k], uv = F.uv[k];
-        const lx = cx + (c[0] * 2 - 1) * hx, ly = cy + (c[1] * 2 - 1) * hy, lz = cz + (c[2] * 2 - 1) * hz;
+        let lx = cx + (c[0] * 2 - 1) * hx, ly = cy + (c[1] * 2 - 1) * hy, lz = cz + (c[2] * 2 - 1) * hz;
+        if (rx) { const dy = ly - py, dz = lz - pz; ly = py + dy * rc - dz * rs; lz = pz + dy * rs + dz * rc; }
+        if (tl) { const dy = ly - ty; ly = ty + dy * tc - lz * ts; lz = dy * ts + lz * tc; }
         this.v[p++] = ox + lx * cs + lz * sn;
         this.v[p++] = ly;
         this.v[p++] = oz - lx * sn + lz * cs;

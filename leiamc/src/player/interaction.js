@@ -1,5 +1,6 @@
 // Romper y colocar bloques. Lógica separada del DOM para poder testearla.
 import { B, BLOCKS, wallTorchFor } from '../blocks/blocks.js';
+import { I, toolOf } from '../items/items.js';
 import { CHUNK_HEIGHT } from '../world/constants.js';
 
 // Rompe el bloque apuntado y lo manda al inventario. Devuelve true si se rompió.
@@ -29,6 +30,26 @@ export function placeBlock(world, inventory, player, hit) {
     if (hit.nx !== 0 || hit.nz !== 0) placed = wallTorchFor(hit.nx, hit.nz); // contra una pared: se inclina y se apoya
   }
   if (!world.setBlock(x, y, z, placed)) return false;
+  inventory.removeFromSlot(inventory.selected, 1);
+  return true;
+}
+
+// Azada: convierte pasto/tierra (con aire encima) en tierra arada. Devuelve true si lo hizo.
+export function useHoe(world, inventory, hit) {
+  const st = inventory.selectedStack;
+  if (!hit || hit.ny !== 1 || !st || !toolOf(st.id) || toolOf(st.id).type !== 'hoe') return false;
+  if (hit.id !== B.GRASS && hit.id !== B.DIRT) return false;
+  if (world.getBlock(hit.x, hit.y + 1, hit.z) !== B.AIR) return false;
+  return world.setBlock(hit.x, hit.y, hit.z, B.FARMLAND);
+}
+
+// Siembra semillas o una zanahoria sobre tierra arada. Devuelve true si plantó.
+export function plant(world, inventory, hit) {
+  const st = inventory.selectedStack;
+  if (!hit || hit.ny !== 1 || hit.id !== B.FARMLAND || !st) return false;
+  const crop = st.id === I.SEEDS ? B.WHEAT0 : st.id === I.CARROT ? B.CARROT0 : 0;
+  if (!crop || world.getBlock(hit.x, hit.y + 1, hit.z) !== B.AIR) return false;
+  if (!world.setBlock(hit.x, hit.y + 1, hit.z, crop)) return false;
   inventory.removeFromSlot(inventory.selected, 1);
   return true;
 }

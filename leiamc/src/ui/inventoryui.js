@@ -1,7 +1,7 @@
 // Inventario completo + fabricación (2x2 en el inventario, 3x3 en la mesa). Arrastre estilo Minecraft:
 // clic izq. toma/coloca todo · clic der. toma la mitad / coloca uno · Shift+clic mueve entre hotbar e inventario.
 import { CREATIVE_LIST } from '../blocks/blocks.js';
-import { ALL_ITEMS, stackMax, maxDur, nameOf } from '../items/items.js';
+import { ALL_ITEMS, stackMax, maxDur, nameOf, armorOf } from '../items/items.js';
 import { findRecipe } from '../inventory/recipes.js';
 import { SMELT, FUEL, COOK_TIME } from '../world/furnace.js';
 const FKEY = { fin: 'inp', ffuel: 'fuel', fout: 'out' };
@@ -24,6 +24,9 @@ export class InventoryUI {
             <div class="slotcol"><div class="fout-w"></div><div class="lab">Resultado</div></div>
           </div>
           <div class="craftbox invcraft"><div class="cgrid"></div><div class="arrow"></div><div class="slotcol"><div class="islot out"></div><div class="lab">Resultado</div></div></div>
+          <div class="invchestbox" style="display:none"><div class="secl">Cofre</div><div class="invchest"></div></div>
+          <div class="secl">Armadura <span class="armpts"></span></div>
+          <div class="invarmor"></div>
           <div class="secl">Inventario</div>
           <div class="invmain"></div>
           <div class="secl">Barra rápida</div>
@@ -58,6 +61,11 @@ export class InventoryUI {
     this.invEls = [];
     for (let i = 9; i < 36; i++) this.invEls[i] = this.mk(this.q('.invmain'), 'inv', i);
     for (let i = 0; i < 9; i++) this.invEls[i] = this.mk(this.q('.invhot'), 'inv', i);
+    this.chest = null;
+    this.chestEls = [];
+    for (let i = 0; i < 27; i++) this.chestEls[i] = this.mk(this.q('.invchest'), 'chest', i);
+    this.armEls = [];
+    for (let i = 0; i < 4; i++) { this.armEls[i] = this.mk(this.q('.invarmor'), 'armor', i); this.armEls[i].title = ['Casco', 'Peto', 'Pantalones', 'Botas'][i]; }
     this.outEl.addEventListener('mousedown', (e) => { e.preventDefault(); this.click('out', 0, this.btn(e), e.shiftKey); });
     this.outEl.addEventListener('mouseenter', () => this._tip(this.result ? { id: this.result.id, count: this.result.count } : null, this.outEl));
     this.outEl.addEventListener('mouseleave', () => this._tip(null));
@@ -120,12 +128,14 @@ export class InventoryUI {
 
   open(mode, furnace = null) {
     this.furnace = mode === 'furnace' ? furnace : null;
+    this.chest = mode === 'chest' ? furnace : null;
     this.q('.invfurn').style.display = this.furnace ? 'flex' : 'none';
-    this.q('.invcraft').style.display = this.furnace ? 'none' : 'flex';
+    this.q('.invcraft').style.display = this.furnace || this.chest ? 'none' : 'flex';
+    this.q('.invchestbox').style.display = this.chest ? 'block' : 'none';
     this.size = mode === 'table' ? 3 : 2;
     this.grid = new Array(this.size * this.size).fill(null);
-    this.q('.main .invtitle').textContent = mode === 'table' ? 'Mesa de crafteo' : mode === 'furnace' ? 'Horno' : 'Inventario';
-    this.q('.main .invsub').textContent = mode === 'table' ? 'grilla 3×3' : mode === 'furnace' ? 'fundí minerales' : 'fabricación 2×2';
+    this.q('.main .invtitle').textContent = mode === 'table' ? 'Mesa de crafteo' : mode === 'furnace' ? 'Horno' : mode === 'chest' ? 'Cofre' : 'Inventario';
+    this.q('.main .invsub').textContent = mode === 'table' ? 'grilla 3×3' : mode === 'furnace' ? 'fundí minerales' : mode === 'chest' ? '27 casillas' : 'fabricación 2×2';
     this.hover = null; this._tip(null);
     const search = this.q('.psearch'); search.value = ''; search.dispatchEvent(new Event('input'));
     const g = this.q('.cgrid');
@@ -146,12 +156,12 @@ export class InventoryUI {
   close() {
     this.grid.forEach((s) => this._giveBack(s));
     this._giveBack(this.cursor);
-    this.grid = []; this.cursor = null; this.furnace = null;
+    this.grid = []; this.cursor = null; this.furnace = null; this.chest = null;
     this.hotbar.refresh();
   }
 
-  _get(kind, i) { return kind === 'inv' ? this.inv.slots[i] : FKEY[kind] ? this.furnace[FKEY[kind]] : this.grid[i]; }
-  _set(kind, i, v) { if (kind === 'inv') this.inv.slots[i] = v; else if (FKEY[kind]) this.furnace[FKEY[kind]] = v; else this.grid[i] = v; }
+  _get(kind, i) { return kind === 'inv' ? this.inv.slots[i] : kind === 'chest' ? this.chest.slots[i] : kind === 'armor' ? this.inv.armor[i] : FKEY[kind] ? this.furnace[FKEY[kind]] : this.grid[i]; }
+  _set(kind, i, v) { if (kind === 'inv') this.inv.slots[i] = v; else if (kind === 'chest') this.chest.slots[i] = v; else if (kind === 'armor') this.inv.armor[i] = v; else if (FKEY[kind]) this.furnace[FKEY[kind]] = v; else this.grid[i] = v; }
 
   click(kind, i, button, shift) {
     if (kind === 'out') return this._takeResult();
@@ -165,6 +175,7 @@ export class InventoryUI {
       }
       return this.render();
     }
+    if (cur && kind === 'armor' && armorOf(cur.id)?.slot !== i) return; // cada casilla acepta sólo su pieza
     if (cur && kind === 'fin' && !SMELT.has(cur.id)) return;
     if (cur && kind === 'ffuel' && !FUEL.has(cur.id)) return;
     if (button === 0) {
@@ -202,7 +213,15 @@ export class InventoryUI {
         if (t.id === s.id) { const n = Math.min(stackMax(s.id) - t.count, s.count); t.count += n; s.count -= n; if (s.count <= 0) this.inv.slots[i] = null; return; }
       }
     }
-    const range = kind !== 'inv' ? [9, 36] : i < 9 ? [9, 36] : [0, 9];
+    if (kind === 'inv' && armorOf(s.id) && this.inv.equipFrom(i)) return; // Shift+clic en una armadura: se la pone
+    if (this.chest && kind === 'inv') { // Shift+clic con el cofre abierto: al cofre
+      const cs = this.chest.slots;
+      if (!maxDur(s.id)) for (let k = 0; k < 27 && s.count > 0; k++) { const t = cs[k]; if (t && t.id === s.id && t.count < stackMax(s.id)) { const n = Math.min(stackMax(s.id) - t.count, s.count); t.count += n; s.count -= n; } }
+      for (let k = 0; k < 27 && s.count > 0; k++) if (!cs[k]) { cs[k] = { ...s }; s.count = 0; }
+      if (s.count <= 0) this.inv.slots[i] = null;
+      return;
+    }
+    const range = kind === 'chest' || kind === 'armor' ? [0, 36] : kind !== 'inv' ? [9, 36] : i < 9 ? [9, 36] : [0, 9];
     if (!maxDur(s.id)) {
       for (let k = range[0]; k < range[1] && s.count > 0; k++) {
         const t = this.inv.slots[k];
@@ -251,6 +270,9 @@ export class InventoryUI {
     this.gridEls.forEach((el, i) => this._paint(el, this.grid[i]));
     this.result = findRecipe(this.grid.map((s) => (s ? s.id : 0)), this.size);
     this._paint(this.outEl, this.result ? { id: this.result.id, count: this.result.count, dur: maxDur(this.result.id) } : null);
+    for (let i = 0; i < 4; i++) this._paint(this.armEls[i], this.inv.armor[i]);
+    this.q('.armpts').textContent = this.inv.armorPoints() ? `· defensa ${this.inv.armorPoints()}` : '';
+    if (this.chest) for (let i = 0; i < 27; i++) this._paint(this.chestEls[i], this.chest.slots[i]);
     for (let i = 0; i < 9; i++) this.invEls[i].classList.toggle('sel', i === this.inv.selected);
     this.outEl.classList.toggle('has', !!this.result);
     this.q('.arrow').classList.toggle('ready', !!this.result);

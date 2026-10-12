@@ -14,6 +14,9 @@ export const B = {
   // Antorcha apoyada en una pared (inclinada 45°): el sufijo indica de qué lado está el bloque que la sostiene.
   TORCH_PX: 36, TORCH_NX: 37, TORCH_PZ: 38, TORCH_NZ: 39,
   BED: 40,
+  // Cultivos
+  FARMLAND: 41, WHEAT0: 42, WHEAT1: 43, WHEAT2: 44, WHEAT3: 45, CARROT0: 46, CARROT1: 47, CARROT2: 48, CARROT3: 49,
+  CHEST: 50,
 };
 
 export const TOOL = { NONE: 'none', PICKAXE: 'pickaxe', AXE: 'axe', SHOVEL: 'shovel' };
@@ -59,6 +62,12 @@ const defs = [
   { id: B.FURNACE_ON, name: 'Horno (encendido)', tiles: [T.COBBLE, T.COBBLE, T.FURNACE_ON_SIDE], transparent: false, solid: true, hardness: 3, tool: TOOL.PICKAXE, light: 8 },
   ...[B.TORCH_PX, B.TORCH_NX, B.TORCH_PZ, B.TORCH_NZ].map((id) => ({ id, name: 'Antorcha', tiles: [T.TORCH, T.TORCH, T.TORCH], transparent: true, solid: false, hardness: 0, tool: TOOL.NONE, cullSame: false, light: 12 })),
   { id: B.BED, name: 'Cama', tiles: [T.BED_TOP, T.PLANKS, T.BED_SIDE], transparent: false, solid: true, hardness: 0.4, tool: TOOL.NONE },
+  { id: B.FARMLAND, name: 'Tierra arada', tiles: [T.FARMLAND, T.DIRT, T.DIRT], transparent: false, solid: true, hardness: 0.6, tool: TOOL.SHOVEL },
+  { id: B.CHEST, name: 'Cofre', tiles: [T.CHEST_TOP, T.CHEST_TOP, T.CHEST_SIDE], transparent: false, solid: true, hardness: 1.5, tool: TOOL.AXE },
+  ...[0, 1, 2, 3].flatMap((st) => [
+    { id: B.WHEAT0 + st, name: 'Trigo', tiles: [T.WHEAT0 + st, T.WHEAT0 + st, T.WHEAT0 + st], transparent: true, solid: false, hardness: 0, tool: TOOL.NONE, cullSame: false, plant: true },
+    { id: B.CARROT0 + st, name: 'Zanahorias', tiles: [T.CARROT0 + st, T.CARROT0 + st, T.CARROT0 + st], transparent: true, solid: false, hardness: 0, tool: TOOL.NONE, cullSame: false, plant: true },
+  ]),
   { id: B.OBSIDIAN, name: 'Obsidiana', tiles: [T.OBSIDIAN, T.OBSIDIAN, T.OBSIDIAN], transparent: false, solid: true, hardness: 8, tool: TOOL.PICKAXE },
 ];
 
@@ -66,7 +75,7 @@ const defs = [
 export const CREATIVE_LIST = [
   B.GRASS, B.DIRT, B.STONE, B.COBBLE, B.SAND, B.SNOW, B.CACTUS, B.GRAVEL, B.LOG, B.LEAVES, B.PLANKS, B.BRICKS, B.GLASS,
   B.COAL, B.IRON, B.GOLD, B.DIAMOND, B.OBSIDIAN, B.BOOKSHELF, B.CRAFTING, B.GLOWSTONE, B.TORCH, B.FURNACE, B.BED, B.TNT,
-  B.LEIA, B.COLLIE, B.WOOL_WHITE, B.WOOL_BLACK, B.WOOL_PINK, B.WOOL_GREEN, B.WOOL_BROWN,
+  B.FARMLAND, B.CHEST, B.LEIA, B.COLLIE, B.WOOL_WHITE, B.WOOL_BLACK, B.WOOL_PINK, B.WOOL_GREEN, B.WOOL_BROWN,
 ];
 
 // Nivel mínimo de herramienta (0 madera/oro, 1 piedra, 2 hierro, 3 diamante) para que el bloque suelte algo.
@@ -85,6 +94,7 @@ export const IS_OPAQUE = new Uint8Array(256);
 export const IS_EMISSIVE = new Uint8Array(256);
 export const IS_BLEND = new Uint8Array(256);
 export const LIGHT_R = new Float32Array(256); // radio de luz (0 = no ilumina)
+export const PLANT_TILE = new Uint8Array(256); // tile de los bloques-planta (cultivos); 0 = no es planta
 export const CULL_SAME = new Uint8Array(256);
 export const TILE_OF = new Uint8Array(256 * 3); // [id*3 + (0 arriba, 1 abajo, 2 lados)]
 
@@ -96,7 +106,13 @@ for (const d of defs) {
   IS_EMISSIVE[d.id] = d.emissive ? 1 : 0;
   CULL_SAME[d.id] = d.cullSame ? 1 : 0;
   LIGHT_R[d.id] = d.light || (d.id === B.GLOWSTONE || d.id === B.LEIA ? 9 : 0);
+  if (d.plant) PLANT_TILE[d.id] = d.tiles[0];
   TILE_OF[d.id * 3] = d.tiles[0];
   TILE_OF[d.id * 3 + 1] = d.tiles[1];
   TILE_OF[d.id * 3 + 2] = d.tiles[2];
 }
+
+// Cultivos: etapa (0..3) y tipo de cada bloque-planta.
+export const isCrop = (id) => id >= B.WHEAT0 && id <= B.CARROT3;
+export const cropStage = (id) => (id - B.WHEAT0) % 4;
+export const cropKind = (id) => (id >= B.CARROT0 ? 'carrot' : 'wheat');

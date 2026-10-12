@@ -17,21 +17,24 @@ import { raycast } from './world/raycast.js';
 import { explode, blastDamage } from './world/explosion.js';
 import { Inventory } from './inventory/inventory.js';
 import { Hotbar } from './ui/hotbar.js';
-import { breakBlock, placeBlock } from './player/interaction.js';
+import { breakBlock, placeBlock, useHoe, plant } from './player/interaction.js';
 import { skyState, timeLabel, DAY_LENGTH } from './fx/daycycle.js';
 import { Particles } from './fx/particles.js';
-import { Mobs } from './world/mobs.js';
+import { Mobs, MOB_DROPS } from './world/mobs.js';
+import { Weather } from './fx/weather.js';
 import { Sound } from './fx/audio.js';
 import { loadLeiaAssets, collieMural, leia } from './leianet/assets.js';
 import { InventoryUI } from './ui/inventoryui.js';
-import { toolOf, nameOf, foodOf } from './items/items.js';
-import { mineInfo, dropFor, wear } from './player/tools.js';
+import { toolOf, nameOf, foodOf, armorOf } from './items/items.js';
+import { mineInfo, dropFor, wear, cropExtras } from './player/tools.js';
 import { TouchControls, wantsTouch } from './player/touch.js';
 import { SaveStore, diffWorld, applyRuns, mergePending, packInventory, unpackInventory } from './save/save.js';
 import { TIERS, pickTier, FpsGovernor } from './perf.js';
 import { itemDef, I } from './items/items.js';
 import { Hand } from './fx/hand.js';
 import { Furnaces } from './world/furnace.js';
+import { Crops } from './world/crops.js';
+import { Chests } from './world/chests.js';
 
 const $ = (id) => document.getElementById(id);
 const canvas = $('game');
@@ -96,7 +99,12 @@ const sound = new Sound();
 sound.setMusic(params.get('music') === '0' ? null : leia.musicURL);
 const particles = new Particles();
 const mobs = new Mobs();
+const weather = new Weather();
+{ const w = params.get('weather'); if (w === 'rain' || w === 'storm') weather.force(true, w === 'storm'); }
+let coldBiome = false;
 const furnaces = new Furnaces();
+const chests = new Chests();
+const crops = new Crops();
 const handBatch = new Batch(640);
 const entBatch = new Batch(8000);
 const crackBatch = new Batch(64);
@@ -146,6 +154,23 @@ function refreshHearts() {
 }
 refreshHearts();
 
+// ---- Armadura (barra de escudos sobre los corazones) ----
+const armorEl = document.createElement('div');
+armorEl.id = 'armorbar';
+for (let i = 0; i < 10; i++) armorEl.appendChild(document.createElement('span'));
+document.body.appendChild(armorEl);
+{ const st = document.createElement('style');
+  st.textContent = `#armorbar { position: fixed; left: calc(50% - 236px); bottom: 92px; display: flex; gap: 2px; pointer-events: none; }
+  #armorbar span { width: 18px; height: 18px; font-size: 17px; line-height: 18px; text-align: center; text-shadow: 0 1px 0 #000; }
+  #armorbar span::before { content: "\u25C6"; } #armorbar .full { color: #cfd6e4; } #armorbar .half { color: #7d8594; } #armorbar .empty { color: #3a3a40; }
+  body.touch #armorbar { left: calc(50% - 165px); bottom: calc(68px + env(safe-area-inset-bottom, 0px)); } body.touch #armorbar span { width: 16px; font-size: 15px; }`;
+  document.head.appendChild(st); }
+function refreshArmor() {
+  const pts = inventory.armorPoints();
+  [...armorEl.children].forEach((el, i) => { const v = pts - i * 2; el.className = v >= 2 ? 'full' : v === 1 ? 'half' : 'empty'; });
+  armorEl.style.display = creative || !pts ? 'none' : 'flex';
+}
+
 // ---- Hambre ----
 const MAX_FOOD = 20;
 let food = MAX_FOOD, foodT = 0, starveT = 0, bed = null;
@@ -160,8 +185,14 @@ function refreshFood() {
 }
 refreshFood();
 
-function hurt(dmg) {
+function hurt(dmg, ignoreArmor = false) {
   if (creative || state !== 'playing' || dmg <= 0) return;
+  const pts = ignoreArmor ? 0 : inventory.armorPoints();
+  if (pts) { // la armadura absorbe 4 % por punto de defensa (máx. 80 %) y se desgasta con cada golpe
+    dmg = Math.max(1, Math.round(dmg * (1 - Math.min(0.8, pts * 0.04))));
+    if (inventory.wearArmor(1)) { toast('Se rompió una pieza de armadura'); sound.pop(); }
+    refreshArmor();
+  }
   hp = Math.max(0, hp - dmg);
   hurtFlash = 0.45; regenT = 0;
   sound.hurt();
@@ -381,7 +412,7 @@ function saveNow() {
   const meta = {
     seed: seedText, creative, t: timeOfDay, hp: dead ? MAX_HP : hp, food: dead ? MAX_FOOD : food, bed,
     pos: (dead ? spawn : player.pos).map(r2), yaw: r2(player.yaw), pitch: r2(player.pitch),
-    inv: packInventory(inventory), furn: furnaces.toJSON(),
+    inv: packInventory(inventory), furn: furnaces.toJSON(), chests: chests.toJSON(),
   };
   const ok = store.save(meta, diff);
   lastSaveAt = performance.now();
@@ -399,6 +430,8 @@ function restoreSaved(meta) {
   if (!showcase && typeof meta.creative === 'boolean') creative = meta.creative;
   unpackInventory(inventory, meta.inv, isValidItem);
   furnaces.load(meta.furn, isValidItem);
+  chests.load(meta.chests, isValidItem);
+  refreshArmor();
   if (num(meta.t)) timeOfDay = ((meta.t % 1) + 1) % 1;
   if (!creative && num(meta.food)) { food = Math.max(0, Math.min(MAX_FOOD, Math.round(meta.food))); refreshFood(); }
   if (Array.isArray(meta.bed) && meta.bed.length === 3 && meta.bed.every(num)) bed = meta.bed;
@@ -547,7 +580,7 @@ function ignite(x, y, z, fuse = 3) {
   const k = `${x},${y},${z}`;
   if (primed.has(k) || world.getBlock(x, y, z) !== B.TNT) return;
   primed.set(k, { x, y, z, t: 0, fuse });
-  sound.hiss();
+  sound.hiss([x + 0.5, y + 0.5, z + 0.5]);
 }
 function updateTNT(dt) {
   for (const [k, p] of primed) {
@@ -564,8 +597,9 @@ function updateTNT(dt) {
 // ---- Explosión (TNT) ----
 function blast(cx, cy, cz, radius) {
   const res = explode(world, cx, cy, cz, radius, (cx * 31 + cz * 17) | 0);
-  sound.explode();
+  sound.explode([cx, cy, cz], radius / 4);
   particles.puff(cx, cy, cz, 28, radius);
+  particles.sparks(cx, cy, cz, 24, 9);
   res.removed.forEach((b, i) => { if (i % 3 === 0) particles.burst(b.x, b.y, b.z, b.id, 3, 6); });
   shake = Math.max(shake, Math.min(1, 6 / (1 + Math.hypot(player.pos[0] - cx, player.pos[2] - cz))));
   // jugador
@@ -606,7 +640,7 @@ function setMenu(open, mode = 'inv', extra = null) {
   else {
     // Cerrar el inventario (E, Esc o clic afuera) vuelve directo al juego: NO abre el menú de pausa.
     // Si el navegador no deja recapturar el ratón (pasa al cerrar con Esc), queda un cartel "clic para continuar".
-    sound.close(); ui.close(); saveNow(); overlay.style.display = 'none'; input.lock();
+    sound.close(); ui.close(); refreshArmor(); saveNow(); overlay.style.display = 'none'; input.lock();
   }
   updateHint();
 }
@@ -632,7 +666,7 @@ window.addEventListener('keydown', (e) => {
   else if (e.code === 'KeyM' && !e.repeat) { const m = sound.toggleMute(); toast(m ? 'Sonido: apagado' : 'Sonido: encendido'); }
   else if (e.code === 'F3') { e.preventDefault(); showHud = !showHud; hud.style.display = showHud ? 'block' : 'none'; }
   else if (e.code === 'KeyG' && !e.repeat && input.locked) {
-    creative = !creative;
+    creative = !creative; refreshArmor();
     if (!creative) player.flying = false;
     refreshHearts(); refreshFood();
     toast(creative ? 'Modo creativo (doble espacio: volar)' : 'Modo supervivencia');
@@ -651,6 +685,7 @@ if (params.get('debug') === '1') window.__vx = { setMenu, ui, furnaces, player, 
 let last = performance.now();
 let fpsAcc = 0, fpsFrames = 0, fps = 0;
 let timeOfDay = 0.06;
+let fovCur = CONFIG.fov, landDip = 0, hurtOp = '';
 let caveK = 0;          // 0 = al aire libre … 1 = bajo tierra (suave)
 let mine = null;        // { x, y, z, progress }
 let stepDist = 0, wasInWater = false;
@@ -667,22 +702,35 @@ function footId() {
 }
 // Luces dinámicas: las 12 fuentes más cercanas (antorchas, piedra luminosa, horno encendido, antorcha en mano).
 const LIGHTS = new Float32Array(48);
+let lightCache = [], lightTick = 0;
+const LD = new Float32Array(64), LI = new Int32Array(64);
 function gatherLights(eye) {
-  const pcx = Math.floor(eye[0] / CHUNK_SIZE), pcz = Math.floor(eye[2] / CHUNK_SIZE), cand = [];
-  for (let dz = -2; dz <= 2; dz++) for (let dx = -2; dx <= 2; dx++) {
-    const c = world.getChunk(pcx + dx, pcz + dz);
-    if (!c || !c.lights) continue;
-    for (const l of c.lights) {
-      const rx = l[0] - eye[0], ry = l[1] - eye[1], rz = l[2] - eye[2], d2 = rx * rx + ry * ry + rz * rz, r = l[3] + 12;
-      if (d2 < r * r) cand.push([d2, rx, ry, rz, l[3]]);
+  if (lightTick++ % 20 === 0) { // la lista de fuentes cercanas cambia poco: se rehace cada 20 cuadros
+    const pcx = Math.floor(eye[0] / CHUNK_SIZE), pcz = Math.floor(eye[2] / CHUNK_SIZE);
+    lightCache = [];
+    for (let dz = -2; dz <= 2; dz++) for (let dx = -2; dx <= 2; dx++) {
+      const c = world.getChunk(pcx + dx, pcz + dz);
+      if (c && c.lights) for (const l of c.lights) lightCache.push(l);
     }
   }
-  const held = inventory.selectedStack;
-  if (held && held.id === B.TORCH) cand.push([0, 0, -0.3, 0, 10]);
-  cand.sort((a, b) => a[0] - b[0]);
-  const n = Math.min(12, cand.length);
-  for (let i = 0; i < n; i++) { LIGHTS[i * 4] = cand[i][1]; LIGHTS[i * 4 + 1] = cand[i][2]; LIGHTS[i * 4 + 2] = cand[i][3]; LIGHTS[i * 4 + 3] = cand[i][4]; }
-  return n;
+  // las 12 más cercanas, sin crear objetos por cuadro
+  let n = 0;
+  for (let i = 0; i < lightCache.length; i++) {
+    const l = lightCache[i], rx = l[0] - eye[0], ry = l[1] - eye[1], rz = l[2] - eye[2], d2 = rx * rx + ry * ry + rz * rz, r = l[3] + 12;
+    if (d2 >= r * r) continue;
+    let k;
+    if (n < 12) k = n++; else if (d2 >= LD[11]) continue; else k = 11;
+    while (k > 0 && LD[k - 1] > d2) { LD[k] = LD[k - 1]; LI[k] = LI[k - 1]; k--; }
+    LD[k] = d2; LI[k] = i;
+  }
+  const held = inventory.selectedStack, hasHeld = held && held.id === B.TORCH;
+  let m = 0;
+  if (hasHeld) { LIGHTS[0] = 0; LIGHTS[1] = -0.3; LIGHTS[2] = 0; LIGHTS[3] = 10; m = 1; }
+  for (let i = 0; i < n && m < 12; i++, m++) {
+    const l = lightCache[LI[i]];
+    LIGHTS[m * 4] = l[0] - eye[0]; LIGHTS[m * 4 + 1] = l[1] - eye[1]; LIGHTS[m * 4 + 2] = l[2] - eye[2]; LIGHTS[m * 4 + 3] = l[3];
+  }
+  return m;
 }
 function frame(now) {
   updateHint();
@@ -709,10 +757,13 @@ function frame(now) {
       const [mx, my] = input.consumeMouse();
       player.look(mx, my, CONFIG.mouseSensitivity);
       player.update(dt, input, world);
+      sound.listen(player.pos[0], player.pos[1] + 1.6, player.pos[2], player.yaw);
+      if (unloadTick % 60 === 0) coldBiome = generator.biomeAt(Math.floor(player.pos[0]), Math.floor(player.pos[2])) === 3; // Nieve
+      weather.update(dt, coldBiome, sound);
 
       // Daño por caída y sonidos de movimiento
-      if (player.fallImpact > 1) sound.block(footId(), 'land'); // el golpe al caer suena según dónde caés
-      if (player.fallImpact > 3) hurt(Math.floor(player.fallImpact - 3));
+      if (player.fallImpact > 1) { sound.block(footId(), 'land'); landDip = Math.min(0.3, player.fallImpact * 0.05); } // el golpe al caer suena según dónde caés
+      if (player.fallImpact > 3) hurt(Math.floor(player.fallImpact - 3), true);
       player.fallImpact = 0;
       if (player.inWater && !wasInWater) sound.splash();
       wasInWater = player.inWater;
@@ -736,7 +787,7 @@ function frame(now) {
         const moving = Math.hypot(player.vel[0], player.vel[2]) > 0.5;
         foodT += dt * (player.sprinting ? 2.5 : moving ? 1 : 0.35);
         if (foodT >= 30 && food > 0) { foodT = 0; food--; refreshFood(); }
-        if (food === 0) { starveT += dt; if (starveT >= 4) { starveT = 0; if (hp > 1) hurt(1); } } else starveT = 0;
+        if (food === 0) { starveT += dt; if (starveT >= 4) { starveT = 0; if (hp > 1) hurt(1, true); } } else starveT = 0;
         if (food < 6) input.sprintLatch = false;
       }
 
@@ -763,7 +814,7 @@ function frame(now) {
       if (mobTarget && act.click[0] && attackCd <= 0) {
         const tl = toolOf(inventory.selectedStack ? inventory.selectedStack.id : 0);
         mobs.damage(mobTarget.mob, tl ? tl.dmg : 1, player.pos[0], player.pos[2]);
-        attackCd = 0.4; sound.pop(); hand.punch();
+        attackCd = 0.4; sound.pop(); sound.mobHurt(mobTarget.mob.pos, mobTarget.mob.type); particles.sparks(mobTarget.mob.pos[0], mobTarget.mob.pos[1] + 1.2, mobTarget.mob.pos[2], 6, 4, mobTarget.mob.type === 'zombie' ? TILES.WOOL_GREEN : TILES.WOOL_PINK); hand.punch();
         if (!creative && tl) wearHeld(1);
       }
       const holdL = input.mouse.has(0) || act.click[0];
@@ -784,6 +835,8 @@ function frame(now) {
             const drop = creative ? 0 : dropFor(id, info2.canHarvest);
             if (breakBlock(world, inventory, hit, { drop })) {
               if (id === B.FURNACE || id === B.FURNACE_ON) furnaces.dropAll(hit.x, hit.y, hit.z, inventory);
+              if (id === B.CHEST) chests.dropAll(hit.x, hit.y, hit.z, inventory);
+              if (!creative && info2.canHarvest) for (const [eid, n] of cropExtras(id)) if (n > 0) inventory.add(eid, n);
               if (!creative && def.hardness > 0) wearHeld(1);
               particles.burst(hit.x, hit.y, hit.z, id, 16, 3.5);
               sound.block(id, 'break');
@@ -798,10 +851,17 @@ function frame(now) {
       if (!input.mouse.has(0)) mine = null;
 
       const heldFood = !creative && inventory.selectedStack ? foodOf(inventory.selectedStack.id) : 0;
-      if (heldFood && food < MAX_FOOD && act.click[2]) {
+      const hId = inventory.selectedStack ? inventory.selectedStack.id : 0;
+      if (hit && act.click[2] && (hId === I.SEEDS || hId === I.CARROT) && plant(world, inventory, hit)) { // sembrar
+        sound.block(B.DIRT, 'place'); hand.punch(); hotbar.refresh();
+      } else if (hit && act.click[2] && hId && toolOf(hId)?.type === 'hoe' && useHoe(world, inventory, hit)) { // arar
+        sound.block(B.DIRT, 'hit'); sound.block(B.GRASS, 'break'); hand.punch(); if (!creative) wearHeld(1); hotbar.refresh();
+      } else if (act.click[2] && hId && armorOf(hId) && !(hit && hit.id === B.CHEST) && inventory.equipFrom(inventory.selected)) { // ponerse armadura
+        sound.craft(); hand.punch(); hotbar.refresh(); refreshArmor(); toast(`Te pusiste: ${nameOf(hId)}`);
+      } else if (heldFood && food < MAX_FOOD && act.click[2]) {
         food = Math.min(MAX_FOOD, food + heldFood); foodT = 0; refreshFood();
         inventory.removeFromSlot(inventory.selected, 1);
-        sound.pickup(0.3); hand.punch(); hotbar.refresh();
+        sound.eat(); hand.punch(); hotbar.refresh();
       } else if (hit && act.click[2] && hit.id === B.BED && !player.crouching) {
         bed = [hit.x, hit.y, hit.z];
         if (skyState(timeOfDay).night) {
@@ -812,6 +872,8 @@ function frame(now) {
         } else toast('Solo podés dormir de noche · punto de reaparición guardado');
       } else if (hit && act.click[2] && hit.id === B.CRAFTING && !player.crouching) {
         setMenu(true, 'table');
+      } else if (hit && act.click[2] && hit.id === B.CHEST && !player.crouching) {
+        setMenu(true, 'chest', chests.get(hit.x, hit.y, hit.z, true));
       } else if (hit && act.click[2] && (hit.id === B.FURNACE || hit.id === B.FURNACE_ON) && !player.crouching) {
         setMenu(true, 'furnace', furnaces.get(hit.x, hit.y, hit.z, true));
       } else if (hit && holdR && actionCooldown <= 0) {
@@ -826,9 +888,10 @@ function frame(now) {
       hand.update(dt, Math.hypot(player.vel[0], player.vel[2]), !!(hit && holdL && mine), inventory.selectedStack ? inventory.selectedStack.id : 0);
       updateTNT(dt);
       furnaces.update(dt, world);
+      crops.update(dt, world, Math.floor(player.pos[0] / CHUNK_SIZE), Math.floor(player.pos[2] / CHUNK_SIZE), weather.level);
       particles.update(dt, world);
       mobs.update(dt, world, player, skyState(timeOfDay).night && !creative, hurt, particles,
-        () => { const n = 1 + (Math.random() < 0.4 ? 1 : 0); if (inventory.add(I.RAW_MEAT, n) < n) sound.pickup(0.2); hotbar.refresh(); });
+        (m) => { for (const [id, lo, hi] of MOB_DROPS[m.type] || []) { const n = lo + Math.floor(Math.random() * (hi - lo + 1)); if (inventory.add(id, n) < n) sound.pickup(0.2); } hotbar.refresh(); }, sound);
     } else {
       input.consumeMouse();
       input.consumeActions();
@@ -845,7 +908,7 @@ function frame(now) {
     }
 
     // ---- Dibujo ----
-    meshDirty(6);
+    meshDirty(fps && fps < 40 ? 3 : 6); // con pocos FPS se malla menos por cuadro
     const st = skyState(timeOfDay);
     let sky = st.sky, light = st.light, fogStart = maxDist * 0.6, fogEnd = maxDist;
     const eyeBlock = world.getBlock(Math.floor(eye[0]), Math.floor(eye[1]), Math.floor(eye[2]));
@@ -859,32 +922,46 @@ function frame(now) {
       caveK += (tgt - caveK) * Math.min(1, dt * 2.5);
       if (caveK > 0.01) sky = sky.map((v) => v * (1 - 0.92 * caveK));
     }
+    { // clima: cielo gris, menos luz y niebla más cerca; los relámpagos iluminan todo un instante
+      const wl = weather.level;
+      if (wl > 0.002) {
+        const gr = (sky[0] + sky[1] + sky[2]) / 3;
+        sky = sky.map((v) => (v + (gr * 0.8 - v) * 0.65 * wl) * (1 - 0.3 * wl));
+        light *= 1 - 0.32 * wl; fogStart *= 1 - 0.35 * wl; fogEnd *= 1 - 0.3 * wl;
+      }
+      if (weather.flash > 0.02) { const f = weather.flash * weather.flash; sky = sky.map((v) => Math.min(1, v + f * 0.55)); light = Math.min(1, light + f * 0.7); }
+    }
+    sound.setEnv(caveK, eyeBlock === B.WATER);
+    if (sim) sound.ambience(dt, { night: st.night });
     if (eyeBlock === B.WATER) {
       sky = UNDERWATER.map((v) => v * (0.35 + 0.65 * st.light));
       fogStart = 0; fogEnd = 22;
     }
     entBatch.reset(); crackBatch.reset();
     particles.draw(entBatch); mobs.draw(entBatch);
+    if (state === 'playing' && !(world.getBlock(Math.floor(eye[0]), Math.floor(eye[1]), Math.floor(eye[2])) === B.WATER)) weather.draw(entBatch, world, eye, player.yaw, TIERS[tierIdx].particles);
     handBatch.reset();
     if (state === 'playing' && !menuOpen && input.locked) { const hs = inventory.selectedStack; hand.draw(handBatch, eye, player.yaw, player.pitch, hs ? hs.id : 0); }
     const nL = gatherLights(eye);
     if (mine && mine.progress > 0.02) crackBatch.blockShell(mine.x, mine.y, mine.z, TILES.CRACK0 + Math.min(9, Math.floor(mine.progress * 10)));
 
+    landDip *= Math.max(0, 1 - dt * 9);
     shake = Math.max(0, shake - dt * 1.6);
     const sx = shake ? (Math.random() - 0.5) * shake * 0.06 : 0;
     const sy = shake ? (Math.random() - 0.5) * shake * 0.06 : 0;
     renderer.render(
       world,
-      { pos: eye, yaw: player.yaw + sx, pitch: player.pitch + sy },
+      { pos: [eye[0], eye[1] - landDip, eye[2]], yaw: player.yaw + sx, pitch: player.pitch + sy },
       {
-        sky, fogStart, fogEnd, light, fov: CONFIG.fov + (player.sprinting ? 6 : 0), maxDist: maxDist + CHUNK_SIZE,
+        sky, fogStart, fogEnd, light, fov: (fovCur += ((CONFIG.fov + (player.sprinting ? 6 : 0)) - fovCur) * Math.min(1, dt * 8)), maxDist: maxDist + CHUNK_SIZE,
+        dome: eyeBlock === B.WATER ? 0 : 1, clouds: tierIdx < 2, cover: weather.level, glow: Math.max(0, 1 - Math.abs(st.height) / 0.22) * 0.65 * (1 - caveK),
         highlight: sim ? hit : null, sunDir: st.sunDir, sunAngle: st.sunAngle, stars: eyeBlock === B.WATER ? 0 : st.stars,
         entities: entBatch, overlay: crackBatch, hand: handBatch, lights: LIGHTS, nLights: nL,
       }
     );
 
     hurtFlash = Math.max(0, hurtFlash - dt);
-    $('hurt').style.opacity = hurtFlash > 0 ? String(Math.min(0.55, hurtFlash)) : '0';
+    { const ho = hurtFlash > 0 ? String(Math.min(0.55, hurtFlash).toFixed(2)) : '0'; if (ho !== hurtOp) { hurtOp = ho; $('hurt').style.opacity = ho; } }
 
     fpsAcc += dt; fpsFrames++;
     if (fpsAcc >= 0.5) {
@@ -907,4 +984,4 @@ function frame(now) {
 }
 requestAnimationFrame(frame);
 
-window.__voxelia = { world, player, renderer, inventory, CONFIG, CHUNK_HEIGHT, blast, setTime: (t) => { timeOfDay = t; } };
+window.__voxelia = { weather, world, player, renderer, inventory, CONFIG, CHUNK_HEIGHT, blast, setTime: (t) => { timeOfDay = t; } };

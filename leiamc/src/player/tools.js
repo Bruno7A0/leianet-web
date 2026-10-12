@@ -1,5 +1,5 @@
 // Reglas de herramientas: tiempo de minado, qué suelta un bloque, daño y desgaste. Lógica pura.
-import { B, TOOL, isTorch } from '../blocks/blocks.js';
+import { B, TOOL, isTorch, isCrop, cropStage, cropKind } from '../blocks/blocks.js';
 import { I, toolOf } from '../items/items.js';
 
 // stack: el ítem en mano (o null). Devuelve { time (s), canHarvest }.
@@ -17,6 +17,7 @@ export function mineInfo(def, stack) {
 export function dropFor(id, canHarvest, rnd = Math.random) {
   if (!canHarvest || id === B.TNT_FLASH) return 0;
   if (isTorch(id)) return B.TORCH; // las antorchas de pared sueltan la antorcha común
+  if (isCrop(id)) return cropKind(id) === 'carrot' ? I.CARROT : cropStage(id) === 3 ? I.WHEAT : I.SEEDS;
   switch (id) {
     case B.STONE: return B.COBBLE;
     case B.GRASS: return B.DIRT;
@@ -24,7 +25,8 @@ export function dropFor(id, canHarvest, rnd = Math.random) {
     case B.IRON: return I.IRON_INGOT;
     case B.GOLD: return I.GOLD_INGOT;
     case B.DIAMOND: return I.DIAMOND;
-    case B.LEAVES: return rnd() < 0.2 ? I.STICK : rnd() < 0.07 ? I.APPLE : 0;
+    case B.LEAVES: return rnd() < 0.2 ? I.STICK : rnd() < 0.07 ? I.APPLE : rnd() < 0.08 ? I.SEEDS : 0;
+    case B.FARMLAND: return B.DIRT;
     default: return id;
   }
 }
@@ -41,4 +43,10 @@ export function wear(slots, i, amount = 1) {
   s.dur -= amount;
   if (s.dur <= 0) { slots[i] = null; return true; }
   return false;
+}
+
+// Extras que suelta un cultivo maduro (además de dropFor): semillas del trigo, más zanahorias.
+export function cropExtras(id, rnd = Math.random) {
+  if (!isCrop(id) || cropStage(id) !== 3) return [];
+  return cropKind(id) === 'carrot' ? [[I.CARROT, Math.floor(rnd() * 3)]] : [[I.SEEDS, 1 + Math.floor(rnd() * 2)]];
 }

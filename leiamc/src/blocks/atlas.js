@@ -13,7 +13,8 @@ export const TILES = {
   COBBLE: 14, BEDROCK: 15, GRAVEL: 16, GOLD: 17, DIAMOND: 18,
   TNT_SIDE: 19, TNT_TOP: 20, TNT_BOTTOM: 21, TNT_FLASH: 22,
   CRAFT_TOP: 23, CRAFT_SIDE: 24, BOOKSHELF: 25, GLOWSTONE: 26, OBSIDIAN: 27,
-  SMOKE: 30,
+  WHEAT0: 100, CARROT0: 104, FARMLAND: 108, CHEST_TOP: 119, CHEST_SIDE: 120,
+  BONE: 28, RED: 29, SMOKE: 30, SPIDER: 31, YELLOW: 63,
   // LeiaNET: 42..51 (los 32..41 son las grietas)
   WOOL_WHITE: 42, WOOL_BLACK: 43, WOOL_PINK: 44, WOOL_GREEN: 45,
   LEIA_L: 46, COLLIE: 47, DOG_BLACK: 48, DOG_WHITE: 49, DOG_FACE: 50, WOOL_BROWN: 51,
@@ -35,6 +36,9 @@ const DIRT = [134, 96, 67];
 function stoneBase(x, y) {
   let v = vary([125, 125, 125], h(x, y, 11), 0.14);
   if (h(x, y, 12) < 0.06) v = vary([95, 95, 95], h(x, y, 13), 0.1);
+  const crack = Math.abs(((x * 5 + y * 3) % 13) - 6) < 0.6 && h(x >> 2, y >> 2, 14) < 0.35; // vetas oscuras
+  if (crack) v = [v[0] * 0.8, v[1] * 0.8, v[2] * 0.8, 255];
+  else if (h(x >> 1, y >> 1, 15) < 0.12) v = [v[0] * 1.1, v[1] * 1.1, v[2] * 1.1, 255];       // manchas claras
   return v;
 }
 function blobs(x, y, centers) {
@@ -48,12 +52,12 @@ const COAL_C = [[3, 4], [10, 3], [6, 10], [12, 12], [2, 13]];
 const IRON_C = [[4, 3], [11, 5], [7, 11], [13, 13], [2, 9]];
 
 const painters = {
-  [TILES.GRASS_TOP]: (x, y) => vary(GRASS, h(x, y, 1), 0.18),
+  [TILES.GRASS_TOP]: (x, y) => vary(h(x >> 1, y, 2) < 0.2 ? [78, 136, 42] : GRASS, h(x, y, 1), 0.2),
   [TILES.GRASS_SIDE]: (x, y) => {
     const edge = 3 + Math.floor(h(x, 0, 2) * 3);
     return y < edge ? vary(GRASS, h(x, y, 1), 0.18) : vary(DIRT, h(x, y, 3), 0.15);
   },
-  [TILES.DIRT]: (x, y) => vary(DIRT, h(x, y, 3), 0.15),
+  [TILES.DIRT]: (x, y) => vary(h(x >> 1, y >> 1, 4) < 0.12 ? [112, 80, 56] : DIRT, h(x, y, 3), 0.15),
   [TILES.STONE]: stoneBase,
   [TILES.SAND]: (x, y) => vary([219, 207, 142], h(x, y, 4), 0.07),
   [TILES.LOG_SIDE]: (x, y) => vary([100, 76, 46], h(x, 0, 5) * 0.6 + h(x, y, 6) * 0.4, 0.25),
@@ -64,7 +68,7 @@ const painters = {
   },
   [TILES.LEAVES]: (x, y) => {
     if (h(x, y, 7) < 0.12) return [0, 0, 0, 0];
-    return vary([58, 120, 40], h(x, y, 8), 0.25);
+    return vary(h(x >> 1, y >> 1, 9) < 0.35 ? [44, 100, 32] : [64, 132, 44], h(x, y, 8), 0.22);
   },
   [TILES.WATER]: (x, y) => {
     const c = vary([40, 100, 210], h(x, y, 9), 0.06);
@@ -172,7 +176,7 @@ export const TOOL_MATS = [
   { key: 'hierro', color: [226, 226, 232] }, { key: 'oro', color: [250, 214, 72] },
   { key: 'diamante', color: [92, 228, 216] },
 ];
-export const ITEM_TILE = { STICK: 64, IRON_INGOT: 65, GOLD_INGOT: 66, DIAMOND: 67, TOOL0: 68, APPLE: 88, RAW_MEAT: 89, COOKED_MEAT: 90 }; // TOOL0 + mat*4 + kind
+export const ITEM_TILE = { STICK: 64, IRON_INGOT: 65, GOLD_INGOT: 66, DIAMOND: 67, TOOL0: 68, APPLE: 88, RAW_MEAT: 89, COOKED_MEAT: 90, BONE: 91, STRING: 92, SEEDS: 109, WHEAT: 110, CARROT: 111, BREAD: 112, LEATHER: 113, HOE0: 114, ARMOR0: 121 }; // TOOL0 + mat*4 + kind
 
 function iconGrid(kind) {
   const g = new Array(256).fill(0);
@@ -208,6 +212,35 @@ function iconGrid(kind) {
   } else if (kind === 'meat') {
     for (let y = 0; y < 16; y++) for (let x = 0; x < 16; x++) if (Math.hypot((x - 7) / 1.25, y - 7.5) <= 4.6) set(x, y, 'M');
     line(9, 10, 13, 14, 'H'); set(13, 13, 'D'); set(14, 14, 'D');
+  } else if (kind === 'hoe') {
+    line(2, 13, 10, 5, 'H'); rows([[3, 8, 13], [4, 8, 9], [5, 8, 8]], 'M'); set(10, 4, 'M'); set(11, 4, 'M');
+  } else if (kind === 'helmet') {
+    rows([[3, 5, 10], [4, 4, 11], [5, 4, 11], [6, 4, 11], [7, 4, 5], [7, 10, 11], [8, 4, 5], [8, 10, 11]], 'M');
+  } else if (kind === 'chest') {
+    rows([[2, 2, 5], [2, 10, 13], [3, 2, 13], [4, 2, 13], [5, 4, 11], [6, 4, 11], [7, 4, 11], [8, 4, 11], [9, 4, 11], [10, 4, 11], [11, 4, 11], [12, 4, 11]], 'M');
+    rows([[3, 6, 9], [4, 6, 9]], 0);
+  } else if (kind === 'legs') {
+    rows([[3, 4, 11], [4, 4, 11], [5, 4, 11], [6, 4, 7], [6, 8, 11], [7, 4, 6], [7, 9, 11], [8, 4, 6], [8, 9, 11], [9, 4, 6], [9, 9, 11], [10, 4, 6], [10, 9, 11], [11, 4, 6], [11, 9, 11]], 'M');
+  } else if (kind === 'boots') {
+    rows([[5, 3, 6], [6, 3, 6], [7, 3, 6], [8, 3, 6], [9, 3, 8], [10, 2, 8], [5, 9, 12], [6, 9, 12], [7, 9, 12], [8, 9, 12], [9, 9, 13], [10, 9, 14]], 'M');
+  } else if (kind === 'wheat') {
+    for (const bx of [4, 8, 12]) { line(bx, 14, bx - 1, 5, 'H'); rows([[2, bx - 2, bx - 1], [3, bx - 2, bx - 1], [4, bx - 2, bx - 1]], 'M'); }
+  } else if (kind === 'seeds') {
+    for (const [x, y] of [[4, 5], [9, 4], [6, 9], [11, 8], [5, 12], [10, 12]]) { set(x, y, 'M'); set(x + 1, y, 'M'); set(x, y + 1, 'M'); }
+  } else if (kind === 'carrot') {
+    rows([[4, 10, 11], [5, 9, 12], [6, 8, 12], [7, 7, 11], [8, 6, 10], [9, 5, 9], [10, 4, 8], [11, 3, 7], [12, 3, 5], [13, 2, 4]], 'M');
+    rows([[1, 11, 11], [2, 10, 12], [3, 11, 13], [3, 9, 9]], 'L');
+  } else if (kind === 'bread') {
+    rows([[6, 4, 11], [7, 3, 12], [8, 3, 12], [9, 3, 12], [10, 4, 11]], 'M'); rows([[6, 5, 6], [6, 8, 9]], 'D');
+  } else if (kind === 'leather') {
+    rows([[3, 5, 10], [4, 3, 12], [5, 3, 12], [6, 3, 12], [7, 3, 12], [8, 3, 12], [9, 3, 12], [10, 4, 11], [11, 5, 10]], 'M'); rows([[6, 6, 9], [7, 6, 9]], 'D');
+  } else if (kind === 'bone') {
+    line(4, 11, 11, 4, 'M');
+    rows([[2, 10, 11], [3, 10, 12], [3, 12, 12]], 'M'); set(12, 3, 'M'); set(11, 2, 'M'); set(13, 4, 'M');
+    set(3, 12, 'M'); set(4, 13, 'M'); set(2, 11, 'M'); set(3, 13, 'M'); set(2, 12, 'M');
+  } else if (kind === 'string') {
+    for (let k = 0; k <= 12; k++) set(2 + k, 8 + Math.round(Math.sin(k * 0.9) * 3), 'M');
+    for (let k = 0; k <= 12; k++) set(2 + k, 10 + Math.round(Math.sin(k * 0.9 + 1) * 2), 'D');
   } else if (kind === 'gem') {
     rows([[3, 6, 9], [4, 5, 10], [5, 4, 11], [6, 3, 12], [7, 4, 11], [8, 5, 10], [9, 6, 9], [10, 7, 8]], 'M');
   }
@@ -220,7 +253,7 @@ function iconPainter(kind, color) {
   return (x, y) => {
     const c = at(x, y);
     if (!c) return [0, 0, 0, 0];
-    let base = c === 'H' ? HANDLE : c === 'G' ? GUARD : c === 'D' ? color.map((v) => v * 0.72) : color;
+    let base = c === 'H' ? HANDLE : c === 'G' ? GUARD : c === 'L' ? [70, 150, 50] : c === 'D' ? color.map((v) => v * 0.72) : color;
     let f = 1;
     if (!at(x - 1, y) || !at(x, y - 1)) f = 1.18;
     else if (!at(x + 1, y) || !at(x, y + 1)) f = 0.78;
@@ -236,6 +269,40 @@ painters[ITEM_TILE.RAW_MEAT] = iconPainter('meat', [226, 118, 130]);
 painters[ITEM_TILE.COOKED_MEAT] = iconPainter('meat', [150, 82, 44]);
 painters[TILES.BED_TOP] = (x, y) => (x < 5 ? vary([232, 232, 236], h(x, y, 82), 0.05) : x === 5 || y === 0 || y === 15 ? vary([120, 20, 28], h(x, y, 83), 0.06) : vary([196, 38, 48], h(x, y, 84), 0.07));
 painters[TILES.BED_SIDE] = (x, y) => (y < 8 ? vary([196, 38, 48], h(x, y, 85), 0.07) : vary([150, 110, 62], h(x, y, 86), 0.08));
+const ARMOR_MATS = [[160, 100, 60], [226, 226, 232], [250, 214, 72], [92, 228, 216]]; // cuero, hierro, oro, diamante
+painters[ITEM_TILE.SEEDS] = iconPainter('seeds', [150, 170, 60]);
+painters[ITEM_TILE.WHEAT] = iconPainter('wheat', [226, 190, 84]);
+painters[ITEM_TILE.CARROT] = iconPainter('carrot', [238, 128, 28]);
+painters[ITEM_TILE.BREAD] = iconPainter('bread', [196, 140, 70]);
+painters[ITEM_TILE.LEATHER] = iconPainter('leather', [150, 92, 54]);
+TOOL_MATS.forEach((m, mi) => { painters[ITEM_TILE.HOE0 + mi] = iconPainter('hoe', m.color); });
+ARMOR_MATS.forEach((c, mi) => ['helmet', 'chest', 'legs', 'boots'].forEach((k, pi) => { painters[ITEM_TILE.ARMOR0 + mi * 4 + pi] = iconPainter(k, c); }));
+for (let st = 0; st < 4; st++) { // cultivos: 4 etapas de crecimiento (plano cruzado, fondo transparente)
+  painters[TILES.WHEAT0 + st] = (x, y) => {
+    if (x % 3 === 0 || h(x, 0, 110) > 0.85) return [0, 0, 0, 0];
+    const ht = 3 + st * 3 + Math.floor(h(x, 1, 111) * 3);
+    if (y < 16 - ht) return [0, 0, 0, 0];
+    if (st === 3) return y < 16 - ht + 3 ? vary([210, 172, 62], h(x, y, 112), 0.12) : vary([186, 150, 60], h(x, y, 113), 0.1);
+    return vary([70 + st * 8, 150 - st * 6, 46], h(x, y, 114), 0.15);
+  };
+  painters[TILES.CARROT0 + st] = (x, y) => {
+    if (x % 2 === 1 && h(x, 0, 115) > 0.4) return [0, 0, 0, 0];
+    const ht = 2 + st * 2 + Math.floor(h(x, 1, 116) * 3);
+    if (st === 3 && y >= 13 && x >= 6 && x <= 9) return vary([238, 128, 28], h(x, y, 118), 0.1);
+    if (y < 16 - ht) return [0, 0, 0, 0];
+    return vary([60, 140 + st * 6, 44], h(x, y, 117), 0.15);
+  };
+}
+painters[TILES.FARMLAND] = (x, y) => vary(y % 4 === 1 ? [62, 40, 26] : [88, 58, 38], h(x, y, 119), 0.1);
+painters[TILES.CHEST_TOP] = (x, y) => (x === 0 || y === 0 || x === 15 || y === 15 ? vary([92, 58, 24], h(x, y, 120), 0.1) : vary([168, 118, 56], h(x, y, 121), 0.1));
+painters[TILES.CHEST_SIDE] = (x, y) => {
+  if (x === 0 || x === 15 || y === 0 || y === 15) return vary([92, 58, 24], h(x, y, 122), 0.1);
+  if (x >= 7 && x <= 8 && y >= 5 && y <= 8) return [210, 210, 214, 255];       // cerradura
+  if (y === 5 || y === 6) return vary([110, 72, 30], h(x, y, 123), 0.1);         // línea de la tapa
+  return vary([160, 110, 52], h(x, y, 124), 0.1);
+};
+painters[ITEM_TILE.BONE] = iconPainter('bone', [232, 232, 220]);
+painters[ITEM_TILE.STRING] = iconPainter('string', [238, 238, 238]);
 painters[ITEM_TILE.DIAMOND] = iconPainter('gem', TOOL_MATS[4].color);
 ['pickaxe', 'axe', 'shovel', 'sword'].forEach((kind, k) => {
   TOOL_MATS.forEach((m, mi) => { painters[ITEM_TILE.TOOL0 + mi * 4 + k] = iconPainter(kind, m.color); });
@@ -257,6 +324,10 @@ painters[TILES.LEIA_L] = (x, y) => { // cuadro verde con una "L" azul marino
   if (stem || foot) return x === 4 || y === 3 || y === 12 ? [20, 28, 90, 255] : [225, 228, 240, 255];
   return vary([92, 150, 78], h(x, y, 82), 0.06);
 };
+painters[TILES.BONE] = (x, y) => vary(h(x >> 1, y, 94) < 0.2 ? [168, 168, 160] : [214, 214, 204], h(x, y, 95), 0.07);
+painters[TILES.RED] = (x, y) => vary([196, 28, 30], h(x, y, 96), 0.1);
+painters[TILES.SPIDER] = (x, y) => vary(h(x >> 1, y >> 1, 97) < 0.3 ? [26, 22, 22] : [52, 44, 40], h(x, y, 98), 0.18);
+painters[TILES.YELLOW] = (x, y) => vary([240, 196, 50], h(x, y, 99), 0.08);
 painters[TILES.SKIN] = (x, y) => vary([198, 134, 96], h(x, y, 92), 0.06);
 painters[TILES.SLEEVE] = (x, y) => vary([0, 150, 160], h(x, y, 93), 0.07);
 painters[TILES.TORCH] = (x, y) => {

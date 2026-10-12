@@ -1,0 +1,275 @@
+/* ===== LeiaNET · modo Frutiger Aero 2007 (activar escribiendo "aero") ===== */
+html.aero{
+ --bg:#bfe8ff;--bg-elev:rgba(255,255,255,.55);--bg-elev-2:rgba(255,255,255,.7);
+ --border:rgba(255,255,255,.9);--border-soft:rgba(255,255,255,.7);
+ --text:#06375f;--text-dim:#1d5f93;--text-mute:#4a86b5;
+ --accent:#1e90e6;--accent-soft:rgba(30,144,230,.15);--ok:#2fa31a;
+ --header-bg:rgba(255,255,255,.45);--radius:16px;
+ --display:'Segoe UI','Frutiger','Inter','Trebuchet MS',Verdana,sans-serif;--body:'Segoe UI','Frutiger','Inter','Trebuchet MS',Verdana,sans-serif;--mono:'Segoe UI','Frutiger','Inter','Trebuchet MS',Verdana,sans-serif;
+ --glass-fill:linear-gradient(180deg,rgba(255,255,255,.66),rgba(205,240,255,.30) 46%,rgba(150,222,255,.22) 54%,rgba(195,242,255,.38));
+ --glass-fill-strong:linear-gradient(180deg,rgba(255,255,255,.9),rgba(190,235,255,.5) 50%,rgba(150,220,255,.35));
+ --glass-border:rgba(255,255,255,.95);--glass-border-hover:#fff;
+ --glass-blur:blur(18px) saturate(1.7) brightness(1.04);--glass-blur-sm:blur(8px) saturate(1.4);
+ --glass-shadow:0 0 0 1px rgba(0,85,160,.22),0 18px 44px -14px rgba(0,90,170,.5),inset 0 1px 0 #fff,inset 0 0 0 1px rgba(255,255,255,.4),inset 0 -16px 30px rgba(120,210,255,.22);
+ --glass-shadow-sm:0 6px 18px -6px rgba(0,90,170,.4),inset 0 1px 0 #fff;
+ color-scheme:light;
+}
+html.aero body{
+ color:var(--text)!important;font-family:var(--body)!important;
+ background:linear-gradient(180deg,#0f63cf 0%,#2b8cf0 16%,#58b9ff 36%,#9ddcff 56%,#cdf1ff 72%,#effdff 86%)!important;
+ background-attachment:fixed!important;
+}
+html.aero body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+ background:radial-gradient(ellipse 60% 40% at 22% 14%,rgba(255,255,255,.8),transparent 70%),
+ radial-gradient(ellipse 50% 30% at 82% 22%,rgba(255,255,255,.55),transparent 70%)}
+/* sacar el fondo espacial oscuro */
+html.aero .grid-overlay,html.aero .depth-veil,html.aero .nebula,html.aero .nebula-mono,
+html.aero .starfield,html.aero .cursor-glow,html.aero .noise{display:none!important}
+/* fuera todo lo espacial del estilo original: planetas, asteroides, satélite, meteoritos, estrellas fugaces, destellos, partículas ambientales y grano */
+html.aero .planet-parallax,html.aero .planet-parallax-2,html.aero .planet-wrap,html.aero .planet-wrap-2,
+html.aero .planet-glow,html.aero .planet-ring,html.aero .planet,html.aero .planet-2,
+html.aero .asteroid-parallax,html.aero .asteroid-wrap,html.aero .asteroid,
+html.aero .satellite-parallax,html.aero .satellite-wrap,html.aero .satellite,
+html.aero .meteor,html.aero .meteor-trail,html.aero .meteor-rock,html.aero .shooting-star,
+html.aero .stars-layer,html.aero .sparkle,html.aero #sparkles,html.aero .ambient,html.aero .grain{display:none!important;animation:none!important}
+/* el "planeta" del 404 pasa a ser una burbuja (es el 0 de "404", no se puede ocultar) */
+html.aero .planet404{width:.5em!important;height:.5em!important;border-radius:50%!important;margin:0 .05em!important;
+ background:radial-gradient(circle at 30% 28%,rgba(255,255,255,.95) 0 9%,rgba(255,255,255,.25) 24%,rgba(120,220,255,.14) 62%,rgba(255,255,255,.6) 100%)!important;
+ border:2px solid rgba(255,255,255,.85)!important;box-shadow:inset 0 -.08em .16em rgba(0,160,255,.3),0 .06em .2em rgba(0,110,200,.3)!important}
+/* escena: cielo, sol, haces de luz, nubes y colinas (estilo Windows 7 / Bliss de XP) */
+html.aero #aero-scene{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+html.aero .aero-sun{position:absolute;right:-18vmax;top:-30vmax;width:90vmax;height:90vmax;border-radius:50%;
+ background:radial-gradient(circle,rgba(255,255,235,.98) 0,rgba(255,252,215,.6) 7%,rgba(200,242,255,.32) 26%,rgba(160,225,255,0) 62%)}
+html.aero .aero-sun i{position:absolute;inset:0;border-radius:50%;
+ background:repeating-conic-gradient(from 0deg,rgba(255,255,255,.3) 0 2.5deg,rgba(255,255,255,0) 2.5deg 15deg);
+ -webkit-mask-image:radial-gradient(circle,#000 0,transparent 66%);mask-image:radial-gradient(circle,#000 0,transparent 66%);
+ animation:aeroSpin 300s linear infinite;will-change:transform}
+@keyframes aeroSpin{to{transform:rotate(360deg)}}
+html.aero .aero-beams{position:absolute;inset:0;width:100%;height:100%;mix-blend-mode:screen;will-change:opacity;animation:aeroBreath 10s ease-in-out infinite alternate}
+@keyframes aeroBreath{from{opacity:.7}to{opacity:1}}
+html.aero .aero-haze{position:absolute;left:0;right:0;bottom:0;height:46vh;
+ background:linear-gradient(180deg,rgba(255,255,255,0),rgba(235,252,255,.75) 78%,rgba(255,255,255,.9))}
+html.aero .aero-cloud{position:absolute;top:var(--t);width:var(--w);height:calc(var(--w)*.3);opacity:var(--o,.9);
+ background:
+  radial-gradient(ellipse 22% 48% at 20% 64%,#fff 0 38%,rgba(255,255,255,0) 74%),
+  radial-gradient(ellipse 22% 66% at 38% 46%,#fff 0 42%,rgba(255,255,255,0) 76%),
+  radial-gradient(ellipse 26% 78% at 58% 50%,#fff 0 40%,rgba(255,255,255,0) 74%),
+  radial-gradient(ellipse 22% 56% at 77% 62%,#fff 0 40%,rgba(255,255,255,0) 74%),
+  radial-gradient(ellipse 58% 34% at 50% 100%,rgba(140,195,245,.55),rgba(140,195,245,0) 72%),
+  radial-gradient(ellipse 60% 40% at 50% 82%,rgba(255,255,255,.9),rgba(255,255,255,0) 70%)}
+html.aero .aero-drift{animation:aeroCloud var(--d) linear infinite;animation-delay:var(--dl);will-change:transform}
+@keyframes aeroCloud{from{transform:translateX(-62vw)}to{transform:translateX(112vw)}}
+html.aero .aero-hills-svg{position:absolute;left:0;bottom:0;width:100%;height:36vh;filter:drop-shadow(0 -6px 16px rgba(255,255,255,.65))}
+html.aero main,html.aero header,html.aero footer,html.aero section{position:relative;z-index:1}
+/* header y nav */
+html.aero header{background:var(--glass-fill)!important;border-bottom:1px solid #fff!important;
+ backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);box-shadow:0 6px 22px rgba(0,90,170,.3),inset 0 1px 0 #fff!important}
+html.aero nav a,html.aero a{color:#0a63b0}
+html.aero nav a{font-weight:600;text-shadow:0 1px 0 rgba(255,255,255,.9);border-radius:999px}
+html.aero nav a:hover,html.aero nav a.active{background:linear-gradient(180deg,#fff,#bfe9ff 50%,#8fd6ff 52%,#d9f6ff);color:#054b8a!important;box-shadow:0 2px 6px rgba(0,90,170,.35),inset 0 1px 0 #fff}
+/* títulos */
+html.aero h1,html.aero h2,html.aero h3,html.aero h4,html.aero .sec-head h2{
+ color:#0a5ea8!important;text-shadow:0 1px 0 #fff,0 3px 8px rgba(0,120,200,.3)!important;font-family:var(--display)!important;letter-spacing:0!important}
+html.aero p,html.aero li,html.aero span,html.aero label,html.aero td,html.aero th{--_:0}
+html.aero .desc,html.aero .sec-sub,html.aero p{color:var(--text-dim)}
+/* tarjetas = vidrio líquido */
+html.aero .card,html.aero .social-card,html.aero .game,html.aero .perk-row,html.aero .faq-item,
+html.aero .status-row,html.aero .novedad-card,html.aero .info-bar,html.aero .card-wide,
+html.aero .panel,html.aero .box,html.aero .modal,html.aero [class*="-card"],html.aero [class*="card-"]{
+ background:var(--glass-fill)!important;border:1px solid #fff!important;border-radius:18px!important;
+ box-shadow:var(--glass-shadow)!important;backdrop-filter:var(--glass-blur)!important;-webkit-backdrop-filter:var(--glass-blur)!important;
+ color:var(--text);position:relative}
+html.aero .card:before,html.aero .social-card:before,html.aero .game:before,html.aero .card-wide:before{
+ content:"";position:absolute;left:0;right:0;top:0;height:45%;border-radius:18px 18px 50% 50%/18px 18px 22px 22px;
+ background:linear-gradient(180deg,rgba(255,255,255,.6),rgba(255,255,255,0));pointer-events:none;z-index:0}
+html.aero .card>*,html.aero .social-card>*,html.aero .game>*{position:relative;z-index:1}
+html.aero .card:hover,html.aero .social-card:hover,html.aero .game:hover{transform:translateY(-4px);box-shadow:0 20px 44px -10px rgba(0,110,200,.5),inset 0 1px 0 #fff!important}
+/* botones glossy */
+html.aero .btn,html.aero button,html.aero .link-btn,html.aero .copy-btn,html.aero .icon-btn,
+html.aero input[type=button],html.aero input[type=submit]{
+ color:#054b8a!important;font-weight:700;text-shadow:0 1px 0 rgba(255,255,255,.9);border:1px solid #fff!important;border-radius:999px!important;
+ background:linear-gradient(180deg,#fff 0%,#cdeeff 48%,#8fd6ff 52%,#d9f6ff 100%)!important;
+ box-shadow:0 3px 8px rgba(0,90,170,.4),inset 0 1px 0 #fff!important;transition:filter .15s,transform .1s}
+html.aero .btn:hover,html.aero button:hover,html.aero .link-btn:hover{filter:brightness(1.08) saturate(1.2)}
+html.aero .btn:active,html.aero button:active{transform:translateY(1px)}
+html.aero .btn.primary,html.aero .btn.solid,html.aero .link-btn{color:#fff!important;text-shadow:0 -1px 0 rgba(0,70,140,.6)!important;
+ background:linear-gradient(180deg,#7fd2ff 0%,#2aa1f0 48%,#0b78d0 52%,#38b4ff 100%)!important;border-color:#bfe9ff!important}
+html.aero .btn.coffee{background:linear-gradient(180deg,#ffe9a8,#ffc83d 48%,#f0a400 52%,#ffd460)!important;color:#5a3a00!important}
+html.aero .btn.discord{color:#fff!important;background:linear-gradient(180deg,#9aa4ff,#5865F2 48%,#3f4bd0 52%,#6f7bff)!important}
+/* inputs */
+html.aero input,html.aero select,html.aero textarea{background:rgba(255,255,255,.85)!important;color:#06375f!important;
+ border:1px solid #8fd0f5!important;border-radius:12px!important;box-shadow:inset 0 2px 6px rgba(0,100,180,.25)!important}
+html.aero ::placeholder{color:#6aa3cf}
+/* tags / pills */
+html.aero .tag,html.aero .mc-chip,html.aero .status-pill,html.aero .online-pill{
+ background:linear-gradient(180deg,#e9ffd9,#9be35a 50%,#5cc424 52%,#9be35a)!important;color:#124d00!important;border:1px solid #fff!important;
+ border-radius:999px!important;text-shadow:0 1px 0 rgba(255,255,255,.7)}
+html.aero code,html.aero pre,html.aero .ip-row{background:rgba(255,255,255,.7)!important;color:#064a8a!important;border-color:#fff!important}
+html.aero hr{border-color:rgba(255,255,255,.9)}
+html.aero footer{background:var(--glass-fill)!important;color:var(--text-dim)!important;border-top:1px solid #fff!important}
+html.aero table{color:var(--text)}
+html.aero ::selection{background:#6fe3ff;color:#033}
+html.aero ::-webkit-scrollbar{width:14px}html.aero ::-webkit-scrollbar-thumb{background:linear-gradient(90deg,#fff,#8fd6ff);border-radius:10px;border:2px solid rgba(255,255,255,.7)}
+html.aero ::-webkit-scrollbar-track{background:rgba(255,255,255,.35)}
+/* burbujas */
+.aero-bubble{position:fixed;border-radius:50%;pointer-events:none;z-index:2;
+ background:radial-gradient(circle at 30% 28%,rgba(255,255,255,.95) 0 8%,rgba(255,255,255,.25) 22%,rgba(120,220,255,.12) 60%,rgba(255,255,255,.55) 100%);
+ border:1px solid rgba(255,255,255,.75);box-shadow:inset 0 -6px 14px rgba(0,160,255,.25),0 4px 14px rgba(0,110,200,.2)}
+.aero-rise{animation:aeroRise linear infinite}
+@keyframes aeroRise{from{transform:translate(0,0)}to{transform:translate(var(--dx,20px),-135vh)}}
+/* botón y aviso */
+#aero-ctl{position:fixed;right:74px;bottom:16px;z-index:99999;display:flex;gap:8px;align-items:center}
+#aero-ctl button{width:44px;height:44px;padding:0;font-size:20px;line-height:1;cursor:pointer;border-radius:50%!important;
+ background:linear-gradient(180deg,#fff,#cdeeff 48%,#8fd6ff 52%,#d9f6ff)!important;border:1px solid #fff!important;box-shadow:0 4px 12px rgba(0,90,170,.45),inset 0 1px 0 #fff!important;color:#054b8a!important}
+html:not(.aero) #aero-ctl{display:none!important}
+#aero-toast{position:fixed;left:50%;top:18px;transform:translate(-50%,-90px);z-index:99999;padding:12px 26px;border-radius:999px;
+ font:700 15px 'Segoe UI',sans-serif;color:#054b8a;text-shadow:0 1px 0 #fff;border:1px solid #fff;
+ background:linear-gradient(180deg,#fff,#cdeeff 48%,#8fd6ff 52%,#d9f6ff);box-shadow:0 8px 24px rgba(0,90,170,.5),inset 0 1px 0 #fff;
+ transition:transform .5s cubic-bezier(.2,1.5,.4,1)}
+#aero-toast.show{transform:translate(-50%,0)}
+@media (prefers-reduced-motion:reduce){.aero-rise{animation:none}}
+
+/* logo de vidrio (imagen propia con brillo y sombra incluidos) */
+html.aero .brand img{transition:filter .2s,transform .2s}
+html.aero .brand:hover img{filter:brightness(1.08) saturate(1.15);transform:translateY(-1px)}
+html.aero .fbrand img{opacity:1}
+
+/* ===== servidores "No disponible": vidrio escarchado en vez de oscuro ===== */
+/* los bloques internos de la tarjeta ancha no deben ser vidrio propio (se veían como manchas grises) */
+html.aero .card-wide-info,html.aero .card-wide-actions{background:none!important;border:0!important;box-shadow:none!important;
+ backdrop-filter:none!important;-webkit-backdrop-filter:none!important;border-radius:0!important}
+html.aero .card-wide-info:before,html.aero .card-wide-actions:before{display:none!important}
+/* contenido de la tarjeta bloqueada: claro y difuminado, sin el filtro oscuro */
+html.aero .card.locked{border-color:#fff!important}
+/* contenido bloqueado: apagado pero legible (sin blur) */
+html.aero .card.locked>*:not(.lock-overlay):not(.chain-band){filter:saturate(.55)!important;opacity:.78}
+/* cartel y cintas: la regla general ".card>*{position:relative}" los sacaba de posición absoluta */
+html.aero .card.locked>.lock-overlay,html.aero .card.locked>.chain-band{position:absolute!important;filter:none!important;opacity:1}
+html.aero .card.locked>.chain-band{opacity:.92}
+html.aero .card.locked>.lock-overlay{inset:0;z-index:4}
+html.aero .card.locked>.chain-band{z-index:3}
+/* cinta: celeste y blanca con brillo, en vez de rojo/blanco de peligro */
+html.aero .chain-band{opacity:.95;border-top:1px solid #fff;border-bottom:1px solid #fff;
+ background:linear-gradient(180deg,rgba(255,255,255,.6),rgba(255,255,255,0) 55%),repeating-linear-gradient(45deg,#7fd2ff 0 14px,#fff 14px 28px)!important;
+ box-shadow:0 6px 16px -2px rgba(0,110,200,.45),inset 0 -4px 8px rgba(0,120,200,.22)!important}
+/* cartel: píldora de vidrio con candado azul glossy */
+html.aero .lock-badge{border-radius:22px!important;padding:16px 26px!important;border:1px solid #fff!important;
+ background:linear-gradient(180deg,rgba(255,255,255,.96),rgba(210,240,255,.85) 50%,rgba(150,216,255,.75))!important;
+ box-shadow:0 12px 32px -6px rgba(0,90,170,.55),inset 0 1px 0 #fff,inset 0 0 22px rgba(255,255,255,.65)!important;
+ backdrop-filter:blur(10px) saturate(1.5)!important;-webkit-backdrop-filter:blur(10px) saturate(1.5)!important}
+html.aero .lock-icon-wrap{border:1px solid #fff!important;color:#fff!important;
+ background:linear-gradient(180deg,#7fd2ff 0%,#2aa1f0 48%,#0b78d0 52%,#38b4ff 100%)!important;
+ box-shadow:0 3px 10px rgba(0,90,170,.5),inset 0 1px 0 rgba(255,255,255,.85);animation:aeroLockPulse 2.4s ease-in-out infinite!important}
+@keyframes aeroLockPulse{0%,100%{box-shadow:0 3px 10px rgba(0,90,170,.5),0 0 0 0 rgba(111,227,255,.7),inset 0 1px 0 rgba(255,255,255,.85)}
+ 50%{box-shadow:0 3px 10px rgba(0,90,170,.5),0 0 0 9px rgba(111,227,255,0),inset 0 1px 0 rgba(255,255,255,.85)}}
+html.aero .lock-title{color:#0a5ea8!important;text-shadow:0 1px 0 #fff,0 2px 6px rgba(0,120,200,.3)}
+html.aero .lock-sub{color:#3a86bd!important;text-shadow:0 1px 0 rgba(255,255,255,.9)}
+html.aero.perf-mid .lock-icon-wrap,html.aero.low-perf .lock-icon-wrap{animation:none!important}
+
+/* ===== cinta LEIANET: banda de vidrio con borde aero y texto azul legible ===== */
+html.aero .ticker{position:relative;overflow:hidden;z-index:1;
+ background:var(--glass-fill)!important;border-top:1px solid #fff!important;border-bottom:1px solid #fff!important;
+ box-shadow:0 8px 24px -6px rgba(0,90,170,.4),inset 0 1px 0 #fff,inset 0 -10px 18px rgba(120,210,255,.28)!important;
+ backdrop-filter:var(--glass-blur-sm);-webkit-backdrop-filter:var(--glass-blur-sm)}
+html.aero .ticker:before{content:"";position:absolute;left:0;right:0;top:0;height:48%;pointer-events:none;z-index:2;
+ background:linear-gradient(180deg,rgba(255,255,255,.55),rgba(255,255,255,0))}
+html.aero .ticker-track{position:relative;z-index:1}
+html.aero .ticker-item{color:transparent!important;-webkit-text-stroke:1.5px rgba(10,94,168,.6)!important}
+html.aero .ticker-item.solid{color:#0a5ea8!important;-webkit-text-stroke:0!important;text-shadow:0 1px 0 #fff,0 3px 10px rgba(0,120,200,.35)}
+html.aero .ticker-item img{opacity:1!important;filter:drop-shadow(0 2px 5px rgba(0,90,170,.5))!important}
+
+/* ===== bloqueados: cartel compacto arriba a la derecha + cintas finas y translúcidas (el texto se sigue leyendo) ===== */
+html.aero .card.locked>.lock-overlay{align-items:flex-start;justify-content:flex-end;padding:12px}
+html.aero .card.locked .lock-badge{display:grid!important;grid-template-columns:auto auto;align-items:center;
+ padding:6px 13px 6px 6px!important;border-radius:999px!important;gap:0 8px!important}
+html.aero .card.locked .lock-icon-wrap{grid-row:1/3;width:24px;height:24px}
+html.aero .card.locked .lock-icon-wrap svg{width:14px;height:14px}
+html.aero .card.locked .lock-title{font-size:10.5px;letter-spacing:.02em}
+html.aero .card.locked .lock-sub{display:none}
+html.aero .card.locked .lock-title{grid-row:1/3}
+html.aero .card.locked>.chain-band{height:15px!important;opacity:.6!important}
+html.aero .card.locked>.chain-band.top{top:9%!important}
+html.aero .card.locked>.chain-band.bottom{bottom:9%!important}
+
+/* ===== palabra destacada del h1 ("moda."): blanca con contorno azul y brillo, legible sobre el cielo ===== */
+html.aero h1 span{color:#fff!important;-webkit-text-fill-color:#fff!important;background:none!important;animation:none!important;
+ text-shadow:-1.5px -1.5px 0 #0a5ea8,1.5px -1.5px 0 #0a5ea8,-1.5px 1.5px 0 #0a5ea8,1.5px 1.5px 0 #0a5ea8,
+  0 -1.5px 0 #0a5ea8,0 1.5px 0 #0a5ea8,-1.5px 0 0 #0a5ea8,1.5px 0 0 #0a5ea8,0 4px 12px rgba(0,90,170,.55),0 0 18px rgba(120,225,255,.9)!important}
+
+
+/* =====================================================================
+   PULIDO PRO · v2
+   ===================================================================== */
+/* códigos y direcciones siguen en monoespaciada */
+html.aero code,html.aero pre,html.aero .ip-row code,html.aero kbd{font-family:'JetBrains Mono',ui-monospace,Consolas,monospace!important}
+html.aero .tag,html.aero .status-pill,html.aero .eyebrow,html.aero .status-head,html.aero .lock-title{letter-spacing:.06em}
+
+/* reflejo diagonal + línea de brillo estilo Win7 en el vidrio */
+html.aero .card:before,html.aero .social-card:before,html.aero .game:before,html.aero .card-wide:before{
+ top:0;bottom:0;height:auto;border-radius:inherit;
+ background:
+  linear-gradient(180deg,rgba(255,255,255,.58),rgba(255,255,255,.05)) top/100% 46% no-repeat,
+  linear-gradient(115deg,transparent 0 52%,rgba(255,255,255,.26) 52% 60%,transparent 60% 67%,rgba(255,255,255,.12) 67% 71%,transparent 71%)}
+html.aero .card:hover,html.aero .social-card:hover,html.aero .game:hover{
+ box-shadow:0 0 0 1px rgba(0,85,160,.3),0 24px 50px -10px rgba(0,120,210,.55),0 0 28px rgba(120,225,255,.55),inset 0 1px 0 #fff,inset 0 -16px 30px rgba(120,210,255,.28)!important}
+
+/* iconos = orbes de gel */
+html.aero.aero .icon-badge:not(:has(img)),html.aero.aero .perk-icon,html.aero.aero .info-icon,html.aero.aero .contact-icon,html.aero.aero .novedad-icono{
+ border-radius:50%!important;color:#fff!important;border:1px solid #fff!important;
+ background:linear-gradient(180deg,rgba(255,255,255,.85),rgba(255,255,255,.18) 50%,rgba(255,255,255,0) 52%),linear-gradient(180deg,#8fdcff,#2a9bef 55%,#1b78d8)!important;
+ box-shadow:0 4px 10px rgba(0,90,170,.45),inset 0 -4px 8px rgba(0,60,150,.35),inset 0 1px 0 #fff!important}
+html.aero.aero .icon-badge:not(:has(img)) svg,html.aero.aero .perk-icon svg,html.aero.aero .info-icon svg,html.aero.aero .contact-icon svg,html.aero.aero .novedad-icono svg{
+ color:#fff!important;stroke:#fff;filter:drop-shadow(0 1px 1px rgba(0,60,130,.7))}
+html.aero.aero .contact-icon.discord{background:linear-gradient(180deg,rgba(255,255,255,.8),rgba(255,255,255,.15) 50%,rgba(255,255,255,0) 52%),linear-gradient(180deg,#9aa4ff,#5865F2 55%,#3f4bd0)!important}
+/* iconos con imagen: baldosa de vidrio */
+html.aero.aero .status-icon,html.aero.aero .social-icon:has(img),html.aero.aero .icon-badge:has(img){
+ border-radius:14px!important;border:1px solid #fff!important;
+ background:linear-gradient(180deg,rgba(255,255,255,.95),rgba(205,240,255,.6) 50%,rgba(150,222,255,.5) 52%,rgba(220,248,255,.8))!important;
+ box-shadow:0 4px 10px rgba(0,90,170,.35),inset 0 1px 0 #fff,inset 0 -3px 6px rgba(80,180,240,.3)!important}
+
+/* pills de estado con significado: verde / ámbar / rojo (gel) */
+html.aero .status-pill.offline{background:linear-gradient(180deg,#fff0f0,#ff9a9a 50%,#ea4141 52%,#ff9a9a)!important;color:#5c0000!important}
+html.aero .status-pill.warn,html.aero .all-ok.warn{background:linear-gradient(180deg,#fff8dc,#ffd860 50%,#f2a900 52%,#ffd860)!important;color:#5a3a00!important;border:1px solid #fff!important;border-radius:999px!important;text-shadow:0 1px 0 rgba(255,255,255,.7)}
+html.aero .all-ok:not(.warn){background:linear-gradient(180deg,#e9ffd9,#9be35a 50%,#5cc424 52%,#9be35a)!important;color:#124d00!important;border:1px solid #fff!important;border-radius:999px!important}
+html.aero .pulse-dot{box-shadow:0 0 8px currentColor,inset 0 1px 0 rgba(255,255,255,.8)}
+
+/* barra de progreso de scroll = gel verde */
+html.aero .scroll-progress{height:6px;background:rgba(255,255,255,.35);box-shadow:0 1px 6px rgba(0,90,170,.3)}
+html.aero .scroll-progress .bar{background:linear-gradient(180deg,#e2ffbf,#86e445 48%,#3fb820 52%,#8fe65a)!important;box-shadow:0 0 12px rgba(120,230,80,.9),inset 0 1px 0 rgba(255,255,255,.8)!important;border-radius:0 6px 6px 0}
+
+/* foco accesible con brillo */
+html.aero :focus-visible{outline:2px solid #fff!important;outline-offset:2px;box-shadow:0 0 0 5px rgba(30,144,230,.55)!important}
+/* scrollbar más pro */
+html.aero ::-webkit-scrollbar-thumb{background:linear-gradient(90deg,#fff,#9ddcff 45%,#4db4f5 55%,#b9ecff);box-shadow:inset 0 0 0 1px rgba(0,100,180,.3)}
+
+/* ---------- ORBE del hero (esfera de cristal con el perrito) ---------- */
+html.aero .aero-orb{position:absolute;right:6%;top:18px;width:min(24vw,290px);aspect-ratio:1;border-radius:50%;
+ pointer-events:none;z-index:0;animation:aeroBob 7s ease-in-out infinite;
+ background:radial-gradient(circle at 50% 60%,rgba(255,255,255,.06) 0,rgba(120,228,255,.22) 52%,rgba(30,150,235,.5) 80%,rgba(255,255,255,.78) 100%);
+ border:2px solid rgba(255,255,255,.9);
+ box-shadow:inset 0 -34px 56px rgba(0,180,255,.4),inset 0 22px 44px rgba(255,255,255,.6),inset 0 0 0 6px rgba(255,255,255,.1),0 34px 60px -14px rgba(0,90,170,.55),0 0 70px rgba(140,235,255,.7);
+ backdrop-filter:blur(2px) saturate(1.5);-webkit-backdrop-filter:blur(2px) saturate(1.5)}
+html.aero .aero-orb img{position:absolute;left:50%;top:50%;width:52%;height:auto;transform:translate(-50%,-52%);filter:drop-shadow(0 10px 14px rgba(0,60,130,.55))}
+html.aero .aero-orb:before{content:"";position:absolute;left:13%;top:4%;width:74%;height:42%;border-radius:50%;
+ background:linear-gradient(180deg,rgba(255,255,255,.95),rgba(255,255,255,.12))}
+html.aero .aero-orb:after{content:"";position:absolute;left:18%;bottom:5%;width:64%;height:24%;border-radius:50%;
+ background:radial-gradient(ellipse,rgba(170,255,205,.9),rgba(120,240,220,.35) 50%,transparent 72%);filter:blur(3px)}
+@keyframes aeroBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
+@media (max-width:1000px){html.aero .aero-orb{display:none}}
+
+/* ---------- destellos y reflejos de lente ---------- */
+html.aero .aero-glint{position:absolute;width:26px;height:26px;margin:-13px 0 0 -13px;opacity:0;animation:aeroTwinkle var(--d,5s) ease-in-out infinite;animation-delay:var(--dl,0s)}
+html.aero .aero-glint:before,html.aero .aero-glint:after{content:"";position:absolute;left:50%;top:50%;border-radius:2px;
+ background:linear-gradient(90deg,transparent,#fff 50%,transparent);box-shadow:0 0 8px #fff}
+html.aero .aero-glint:before{width:100%;height:2px;margin:-1px 0 0 -50%}
+html.aero .aero-glint:after{width:2px;height:100%;margin:-50% 0 0 -1px;background:linear-gradient(180deg,transparent,#fff 50%,transparent)}
+@keyframes aeroTwinkle{0%,100%{opacity:0;transform:scale(.3) rotate(0)}50%{opacity:.95;transform:scale(1) rotate(45deg)}}
+html.aero .aero-flare{position:absolute;border-radius:50%;mix-blend-mode:screen;opacity:.55;
+ background:radial-gradient(circle,rgba(255,255,255,0) 52%,rgba(255,255,255,.38) 60%,rgba(150,235,255,.3) 68%,rgba(255,240,170,.18) 74%,transparent 76%)}
+
+/* ---------- destello al activar el modo ---------- */
+.aero-sweep{position:fixed;inset:0;z-index:99998;pointer-events:none;transform:translateX(-110%);
+ background:linear-gradient(105deg,transparent 30%,rgba(255,255,255,.0) 38%,rgba(255,255,255,.9) 49%,rgba(140,230,255,.55) 56%,transparent 68%);
+ animation:aeroSweep 1.25s cubic-bezier(.4,.1,.2,1) forwards}
+@keyframes aeroSweep{to{transform:translateX(110%)}}
+@media (prefers-reduced-motion:reduce){html.aero .aero-orb,html.aero .aero-glint,.aero-sweep{animation:none}.aero-sweep{display:none}}

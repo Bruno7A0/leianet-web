@@ -127,7 +127,8 @@ export function fromB64(str) {
 
 // ---- inventario ----
 export function packInventory(inv) {
-  return { sel: inv.selected, slots: inv.slots.map((s) => (s ? (s.dur !== undefined ? [s.id, s.count, s.dur] : [s.id, s.count]) : null)) };
+  const pk = (s) => (s ? (s.dur !== undefined ? [s.id, s.count, s.dur] : [s.id, s.count]) : null);
+  return { sel: inv.selected, arm: (inv.armor || []).map(pk), slots: inv.slots.map((s) => (s ? (s.dur !== undefined ? [s.id, s.count, s.dur] : [s.id, s.count]) : null)) };
 }
 // `isValidItem(id)` decide si el id existe; los conteos se acotan a 1..64.
 export function unpackInventory(inv, data, isValidItem) {
@@ -138,6 +139,12 @@ export function unpackInventory(inv, data, isValidItem) {
     if (s[2] !== undefined) st.dur = Math.max(1, s[2] | 0);
     inv.slots[i] = st;
   });
+  if (Array.isArray(data.arm) && inv.armor) {
+    data.arm.slice(0, 4).forEach((s, i) => {
+      if (!Array.isArray(s) || !isValidItem(s[0])) { inv.armor[i] = null; return; }
+      inv.armor[i] = { id: s[0] | 0, count: 1, dur: Math.max(1, s[2] | 0 || 1) };
+    });
+  }
   inv.select(Number.isInteger(data.sel) ? data.sel : 0);
   return true;
 }

@@ -1,7 +1,7 @@
 // Inventario: 36 slots (los primeros 9 son la hotbar), stacks de hasta 64.
 // Pensado para extenderse (crafting, herramientas): cada slot es { id, count } o null.
 import { B } from '../blocks/blocks.js';
-import { stackMax, maxDur, I } from '../items/items.js';
+import { stackMax, maxDur, I, armorOf } from '../items/items.js';
 
 export const STACK_MAX = 64;
 export const HOTBAR_SIZE = 9;
@@ -10,6 +10,24 @@ export class Inventory {
   constructor(size = 36) {
     this.slots = new Array(size).fill(null);
     this.selected = 0;
+    this.armor = [null, null, null, null]; // casco, peto, pantalones, botas
+  }
+
+  armorPoints() { let n = 0; for (const a of this.armor) if (a) n += armorOf(a.id)?.pts || 0; return n; }
+
+  // Equipa la pieza del slot `i` (intercambia con la que ya se lleve). Devuelve true si era una armadura.
+  equipFrom(i) {
+    const s = this.slots[i], a = s && armorOf(s.id);
+    if (!a) return false;
+    this.slots[i] = this.armor[a.slot]; this.armor[a.slot] = s;
+    return true;
+  }
+
+  // Desgasta cada pieza puesta (1 por golpe recibido); las rotas desaparecen. Devuelve cuántas se rompieron.
+  wearArmor(amount = 1) {
+    let broken = 0;
+    this.armor.forEach((a, k) => { if (a && (a.dur -= amount) <= 0) { this.armor[k] = null; broken++; } });
+    return broken;
   }
 
   get selectedStack() { return this.slots[this.selected]; }

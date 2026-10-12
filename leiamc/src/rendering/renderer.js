@@ -6,6 +6,7 @@ import {
 } from '../utils/math.js';
 import { FLOATS_PER_VERTEX } from './mesher.js';
 import { quadIndices } from './batch.js';
+import { lookDirection } from '../utils/math.js';
 
 const DEEP_NEAR = 30; // bloques: dentro de esta distancia horizontal también se dibuja lo subterráneo
 
@@ -36,6 +37,7 @@ in float v_dist;
 in vec3 v_rel;
 uniform vec4 u_lights[12];  // xyz relativo a la cámara, w = radio
 uniform int u_nl;
+uniform float u_time;
 uniform sampler2D u_atlas;
 uniform vec3 u_fogColor;
 uniform vec2 u_fog;
@@ -59,6 +61,7 @@ void main() {
   for (int i = 0; i < 12; i++) {
     if (i >= u_nl) break;
     float k = clamp(1.0 - length(v_rel - u_lights[i].xyz) / u_lights[i].w, 0.0, 1.0);
+    k *= 1.0 + 0.06 * sin(u_time * 9.0 + float(i) * 2.3) * sin(u_time * 5.1 + float(i)); // parpadeo de llama
     lc += k * k;
   }
   float night = mix(1.0 - clamp((u_light - 0.24) / 0.76, 0.0, 1.0) * 0.8, 1.0, cave);
@@ -92,7 +95,7 @@ export class Renderer {
     if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) throw new Error('Link: ' + gl.getProgramInfoLog(prog));
     this.prog = prog;
     this.u = {};
-    for (const n of ['u_viewProj', 'u_offset', 'u_atlas', 'u_fogColor', 'u_fog', 'u_light', 'u_pass', 'u_a2c', 'u_lights', 'u_nl']) {
+    for (const n of ['u_viewProj', 'u_offset', 'u_atlas', 'u_fogColor', 'u_fog', 'u_light', 'u_pass', 'u_a2c', 'u_lights', 'u_nl', 'u_time']) {
       this.u[n] = gl.getUniformLocation(prog, n);
     }
 
@@ -212,6 +215,59 @@ void main() { o = u_color; }`;
       uVP: gl.getUniformLocation(prog, 'u_viewProj'), uRot: gl.getUniformLocation(prog, 'u_rot'),
       uPoint: gl.getUniformLocation(prog, 'u_point'), uColor: gl.getUniformLocation(prog, 'u_color'),
     };
+    // Cúpula del cielo: degradé horizonte -> cenit, resplandor de atardecer y nubes de bloques (todo en un triángulo a pantalla completa).
+    const dvs = `#version 300 es
+out vec2 v_ndc;
+void main() { vec2 p = vec2(float((gl_VertexID << 1) & 2), float(gl_VertexID & 2)); v_ndc = p * 2.0 - 1.0; gl_Position = vec4(v_ndc, 1.0, 1.0); }`;
+    const dfs = `#version 300 es
+precision highp float;
+in vec2 v_ndc;
+uniform vec3 u_R, u_U, u_F, u_sky, u_sun;
+uniform vec2 u_tan, u_cam;
+uniform float u_glow, u_light, u_time, u_cloud, u_dome, u_eyeY, u_cover;
+out vec4 o;
+float hs(vec2 c) { return fract(sin(dot(c, vec2(12.9898, 78.233))) * 43758.5453); }
+void main() {
+  vec3 d = normalize(u_F + u_R * (v_ndc.x * u_tan.x) + u_U * (v_ndc.y * u_tan.y));
+  float h = d.y, up = clamp(h, 0.0, 1.0);
+  vec3 zen = clamp(u_sky * vec3(0.62, 0.78, 1.08), 0.0, 1.0);
+  vec3 col = mix(u_sky, zen, pow(up, 0.55));
+  col += vec3(1.0, 0.52, 0.24) * u_glow * pow(max(dot(d, u_sun), 0.0), 5.0) * (1.0 - up);
+  if (u_cloud > 0.5 && h > 0.015 && u_eyeY < 118.0) {
+    float t = (120.0 - u_eyeY) / h;
+    vec2 p = d.xz * t + u_cam + vec2(u_time * 1.6, u_time * 0.5);
+    vec2 c = floor(p / 14.0);
+    float n = hs(floor(c / 3.0)) * 0.55 + hs(c) * 0.45;
+    float a = step(0.56 - 0.3 * u_cover, n) * smoothstep(0.015, 0.16, h);
+    vec3 cc = mix(vec3(1.0), vec3(1.0, 0.82, 0.7), clamp(u_glow, 0.0, 1.0)) * (0.2 + 0.8 * u_light) * (1.0 - 0.4 * u_cover);
+    col = mix(col, cc, a * (0.88 + 0.1 * u_cover));
+  }
+  o = vec4(mix(u_sky, col, u_dome), 1.0);
+}`;
+    const dprog = gl.createProgram();
+    gl.attachShader(dprog, compile(gl, gl.VERTEX_SHADER, dvs));
+    gl.attachShader(dprog, compile(gl, gl.FRAGMENT_SHADER, dfs));
+    gl.linkProgram(dprog);
+    if (!gl.getProgramParameter(dprog, gl.LINK_STATUS)) throw new Error('Link: ' + gl.getProgramInfoLog(dprog));
+    this.dome = { prog: dprog, vao: gl.createVertexArray(), u: {} };
+    for (const n of ['u_R', 'u_U', 'u_F', 'u_sky', 'u_sun', 'u_tan', 'u_cam', 'u_glow', 'u_light', 'u_time', 'u_cloud', 'u_dome', 'u_eyeY', 'u_cover']) this.dome.u[n] = gl.getUniformLocation(dprog, n);
+    this._bodyBuf = new Float32Array(12);
+  }
+
+  _drawDome(gl, cam, env) {
+    const k = this.dome, u = k.u, F = lookDirection(cam.yaw, cam.pitch), R = [Math.cos(cam.yaw), 0, -Math.sin(cam.yaw)];
+    const U = [R[1] * F[2] - R[2] * F[1], R[2] * F[0] - R[0] * F[2], R[0] * F[1] - R[1] * F[0]];
+    const ty = Math.tan((env.fov * Math.PI) / 360), sd = env.sunDir || [0, 1, 0];
+    gl.disable(gl.DEPTH_TEST); gl.disable(gl.CULL_FACE); gl.disable(gl.BLEND);
+    gl.useProgram(k.prog);
+    gl.uniform3fv(u.u_R, R); gl.uniform3fv(u.u_U, U); gl.uniform3fv(u.u_F, F); gl.uniform3fv(u.u_sky, env.sky); gl.uniform3fv(u.u_sun, sd);
+    gl.uniform2f(u.u_tan, ty * (this.canvas.width / Math.max(1, this.canvas.height)), ty);
+    gl.uniform2f(u.u_cam, cam.pos[0], cam.pos[2]);
+    gl.uniform1f(u.u_glow, env.glow || 0); gl.uniform1f(u.u_light, env.light); gl.uniform1f(u.u_time, (performance.now() % 1e6) / 1000);
+    gl.uniform1f(u.u_cloud, env.clouds ? 1 : 0); gl.uniform1f(u.u_dome, env.dome ?? 1); gl.uniform1f(u.u_eyeY, cam.pos[1]); gl.uniform1f(u.u_cover, env.cover || 0);
+    gl.bindVertexArray(k.vao);
+    gl.drawArrays(gl.TRIANGLES, 0, 3);
+    gl.bindVertexArray(null);
   }
 
   _drawBody(gl, dir, size, color) {
@@ -224,10 +280,10 @@ void main() { o = u_color; }`;
     const R = 300, h = size;
     const P = [[-1, -1], [1, -1], [1, 1], [-1, 1]].map(([a, b]) => [
       n[0] * R + (u[0] * a + v[0] * b) * h, n[1] * R + (u[1] * a + v[1] * b) * h, n[2] * R + (u[2] * a + v[2] * b) * h]);
-    const data = new Float32Array([...P[0], ...P[1], ...P[2], ...P[3]]);
+    const data = this._bodyBuf; data.set(P[0], 0); data.set(P[1], 3); data.set(P[2], 6); data.set(P[3], 9);
     gl.bindVertexArray(this.sky.quad.vao);
     gl.bindBuffer(gl.ARRAY_BUFFER, this.sky.quad.vbo);
-    gl.bufferData(gl.ARRAY_BUFFER, data, gl.DYNAMIC_DRAW);
+    gl.bufferSubData(gl.ARRAY_BUFFER, 0, data);
     gl.uniform4f(this.sky.uColor, color[0], color[1], color[2], color[3]);
     gl.uniform1f(this.sky.uPoint, 0);
     gl.drawArrays(gl.TRIANGLE_FAN, 0, 4);
@@ -419,6 +475,7 @@ void main() { o = u_color; }`;
     mat4Multiply(this.proj, this.view, this.vp);
     extractFrustumPlanes(this.vp, this.planes);
 
+    this._drawDome(gl, cam, env);
     this._drawSky(gl, env);
 
     gl.useProgram(this.prog);
@@ -431,6 +488,7 @@ void main() { o = u_color; }`;
     gl.uniform1f(this.u.u_light, env.light);
     gl.uniform4fv(this.u.u_lights, env.lights || new Float32Array(48));
     gl.uniform1i(this.u.u_nl, env.nLights || 0);
+    gl.uniform1f(this.u.u_time, (performance.now() % 100000) / 1000);
     const a2c = this.msaa ? 1 : 0;
     gl.uniform1f(this.u.u_a2c, a2c);
 
@@ -445,7 +503,7 @@ void main() { o = u_color; }`;
         const mx = minx + S / 2, mz = minz + S / 2;
         if (mx * mx + mz * mz > env.maxDist * env.maxDist) continue;
       }
-      if (!aabbInFrustum(this.planes, minx, miny, minz, minx + S, miny + H, minz + S)) continue;
+      if (!aabbInFrustum(this.planes, minx, miny, minz, minx + S, miny + (chunk.maxY || 0) + 2, minz + S)) continue;
       const d = (minx + 8) ** 2 + (minz + 8) ** 2;
       // Lo subterráneo se dibuja si estás bajo la superficie del chunk o cerca (para ver bien las bocas de cueva y tus pozos).
       let e = visible[nv++];

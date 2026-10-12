@@ -112,3 +112,7 @@ Si querés apoyar el proyecto (dominio, hosting e infraestructura), podés invit
 ---
 
 © LeiaNET — proyecto independiente, sin fines de lucro.
+
+## 🫧 Modo Aero (Frutiger Aero 2007)
+
+Escribí **`aero`** con el teclado en cualquier página (fuera de un campo de texto) o tocá el botón 🫧 abajo a la derecha: el sitio pasa a estilo Frutiger Aero (cielo, vidrio líquido, botones glossy, burbujas y colinas) con música ambiente generada con WebAudio (botón 🎵 para silenciar). Se guarda en `localStorage` y se mantiene entre páginas. Archivos: `assets/aero-mode.css` + `assets/aero-mode.js`. Además existe `aero.html`, un "Aero Writer" donde el texto que escribís sale en vidrio brillante.
