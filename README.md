@@ -9,9 +9,9 @@ Sitio web oficial de **LeiaNET (LeiaNETWORK)**, un hub para gamers y devs: utili
 ## ✨ Qué tiene el sitio
 
 - **Estado en vivo** de los servidores (online / offline / a medias) en la hero section.
-- **Minecraft** — Survival, Creativo y PVP, con IP para copiar al toque.
-- **Counter-Strike 1.6** — Nuevo Mixto, Only Dust2 y Deathmatch.
-- **Haxball** — salas 2v2 / 3v3 / 4v4 "Gana y Sigue" + sala pública, con link directo para entrar.
+- **Minecraft** — 1 servidor principal (anárquico y PVP, 1.12.2 – 26.2), con IP para copiar al toque. Hoy figura como "No disponible".
+- **Counter-Strike 1.6** — Mixto activo; Only Dust2 y Deathmatch figuran como "No disponible".
+- **Haxball** — 1 sala pública, con link directo para entrar.
 - **Cafecito** — sección de apoyo económico al dominio, hosting e infraestructura.
 - **FAQ** desplegable sobre el proyecto y cómo conectarse.
 - **Redes sociales y contacto** (Discord, Instagram, X, TikTok, Twitch, WhatsApp, mail).
@@ -125,4 +125,4 @@ Si querés apoyar el proyecto (dominio, hosting e infraestructura), podés invit
 
 ## 🫧 Modo Aero (Frutiger Aero 2007)
 
-Escribí **`aero`** con el teclado en cualquier página (fuera de un campo de texto) o tocá el botón 🫧 abajo a la derecha: el sitio pasa a estilo Frutiger Aero (cielo, vidrio líquido, botones glossy, burbujas y colinas) con música ambiente generada con WebAudio (botón 🎵 para silenciar). Se guarda en `localStorage` y se mantiene entre páginas. Archivos: `assets/aero-mode.css` + `assets/aero-mode.js`. Además existe `aero.html`, un "Aero Writer" donde el texto que escribís sale en vidrio brillante.
+Escribí **`aero`** con el teclado en cualquier página (fuera de un campo de texto) o tocá el botón 🫧 abajo a la derecha: el sitio pasa a estilo Frutiger Aero (cielo, vidrio líquido, botones glossy, burbujas y colinas) con música ambiente generada con WebAudio (botón 🎵 para silenciar). Se guarda en `localStorage` y se mantiene entre páginas. Archivos: `assets/aero-mode.css` + `assets/aero-mode.js`.

@@ -1,12 +1,6 @@
-<!DOCTYPE html><html lang="es"><head><script>(function(){var v=null,q=(location.search.match(/[?&]aero=([01])/)||[])[1];if(q!==undefined){v=q;try{localStorage.setItem('leianet-aero',q)}catch(e){}try{window.name=(window.name||'').replace(/(?:^|\|)leianet-aero:[^|]*/g,'')+'|leianet-aero:'+q}catch(e){}}else{try{v=localStorage.getItem('leianet-aero')}catch(e){}if(v===null){var m=(window.name||'').match(/(?:^|\|)leianet-aero:([^|]*)/);v=m?m[1]:null}}if(v==='1')document.documentElement.classList.add('aero')})()</script><meta charset="UTF-8">
+<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><script>(function(){var v=null,q=(location.search.match(/[?&]aero=([01])/)||[])[1];if(q!==undefined){v=q;try{localStorage.setItem('leianet-aero',q)}catch(e){}try{window.name=(window.name||'').replace(/(?:^|\|)leianet-aero:[^|]*/g,'')+'|leianet-aero:'+q}catch(e){}}else{try{v=localStorage.getItem('leianet-aero')}catch(e){}if(v===null){var m=(window.name||'').match(/(?:^|\|)leianet-aero:([^|]*)/);v=m?m[1]:null}}if(v==='1')document.documentElement.classList.add('aero')})()</script>
 <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-6MP6LJPFM6"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-6MP6LJPFM6');
-</script>
+<script src="assets/consent.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <script>
   // ---- adaptive performance tiers (mismo motor que index.html) -----------
@@ -75,15 +69,41 @@
       }catch(e){}
     }
     var ROUND_MS = 900;
-    function measure(cb){
-      var frames = 0, start = null;
-      function tick(ts){
-        if(start === null) start = ts;
-        frames++;
-        if(ts - start < ROUND_MS){ requestAnimationFrame(tick); }
-        else { cb(frames / ((ts - start) / 1000)); }
+    // Solo mide con la pestana visible: en segundo plano rAF se throttlea y
+    // el fps medido seria falso (-> 'ultra' cacheado 6 h). Si la pestana se
+    // oculta a mitad de ronda, se descarta la ronda y se reintenta al volver.
+    function whenVisible(fn){
+      if(!document.hidden){ fn(); return; }
+      function h(){
+        if(document.hidden) return;
+        document.removeEventListener('visibilitychange', h);
+        fn();
       }
-      requestAnimationFrame(tick);
+      document.addEventListener('visibilitychange', h);
+    }
+    function measure(cb){
+      function run(){
+        var frames = 0, start = null, aborted = false;
+        function onVis(){ if(document.hidden) aborted = true; }
+        document.addEventListener('visibilitychange', onVis);
+        function tick(ts){
+          if(aborted){
+            document.removeEventListener('visibilitychange', onVis);
+            whenVisible(run);
+            return;
+          }
+          if(start === null) start = ts;
+          frames++;
+          if(ts - start < ROUND_MS){
+            requestAnimationFrame(tick);
+          } else {
+            document.removeEventListener('visibilitychange', onVis);
+            cb(frames / ((ts - start) / 1000));
+          }
+        }
+        requestAnimationFrame(tick);
+      }
+      whenVisible(run);
     }
     function finish(tier){
       applyTier(tier, 'fps');
@@ -310,7 +330,7 @@ footer{text-align:center;padding:26px 16px;font-family:var(--mono);font-size:11p
 @media (max-width:640px),(pointer:coarse){.nebula,.nebula-mono,.grain{display:none}.stars-layer{animation:none!important}.sparkle{animation:none;opacity:.4}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}body{opacity:1}.game-card{opacity:1!important}}
 </style>
-<link rel="preload" href="assets/fonts/chakra-petch-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="assets/fonts/inter-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="assets/fonts/jetbrains-mono-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin><link rel="stylesheet" href="assets/leia-fx.css"><link rel="stylesheet" href="assets/leia-pages.css"><script>(function(){var r=document.documentElement;r.classList.add("fx-pre");setTimeout(function(){r.classList.remove("fx-pre")},4500)})()</script><link rel="stylesheet" href="assets/aero-mode.css"><script>(function(){try{var m=location.search.match(/[?&]retro=([01])/),v=m?m[1]:null;if(v===null){try{v=localStorage.getItem("leianet-retro")}catch(e){}}if(v===null){var w=(window.name||"").match(/(?:^|\|)leianet-retro:([^|]*)/);v=w?w[1]:null}if(v==="1")document.documentElement.classList.add("retrowave")}catch(e){}})()</script><link rel="stylesheet" href="assets/retrowave-mode.css"></head><body>
+<link rel="preload" href="assets/fonts/chakra-petch-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="assets/fonts/inter-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="assets/fonts/jetbrains-mono-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin><link rel="stylesheet" href="assets/leia-fx.css"><link rel="stylesheet" href="assets/leia-pages.css"><script>(function(){var r=document.documentElement;r.classList.add("fx-pre");setTimeout(function(){r.classList.remove("fx-pre")},4500)})()</script><link rel="stylesheet" href="assets/aero-mode.css"><script>(function(){try{var m=location.search.match(/[?&]retro=([01])/),v=m?m[1]:null;if(v===null){try{v=localStorage.getItem("leianet-retro")}catch(e){}}if(v===null){var w=(window.name||"").match(/(?:^|\|)leianet-retro:([^|]*)/);v=w?w[1]:null}if(v==="1")document.documentElement.classList.add("retrowave")}catch(e){}})()</script><link rel="stylesheet" href="assets/retrowave-mode.css"><style id="leia-failsafe">body{animation:leia-failsafe 0s linear 6s forwards}@keyframes leia-failsafe{to{opacity:1}}.load-veil{animation:leia-failsafe-veil 0s linear 6s forwards}@keyframes leia-failsafe-veil{to{opacity:0;visibility:hidden}}</style></head><body>
 <div class="grid-overlay"></div>
 <div class="depth-veil"></div>
 <div class="nebula"><span></span><span></span><span></span></div>
@@ -810,4 +830,5 @@ window.addEventListener('load',()=>document.body.classList.add('loaded'));
   mainNav.querySelectorAll('a').forEach(a=> a.addEventListener('click', closeNav));
 })();
 </script>
-<script src="assets/vendor/gsap.min.js"></script><script src="assets/vendor/ScrollTrigger.min.js"></script><script src="assets/vendor/SplitText.min.js"></script><script src="assets/leia-fx.js"></script><script src="assets/aero-mode.js" defer></script><script src="assets/retrowave-mode.js" defer></script></body></html>
+<script src="assets/vendor/gsap.min.js"></script><script src="assets/vendor/ScrollTrigger.min.js"></script><script src="assets/vendor/SplitText.min.js"></script><script src="assets/leia-fx.js"></script><script src="assets/aero-mode.js" defer></script><script src="assets/retrowave-mode.js" defer></script><script id="leia-failsafe-js">(function(){function show(){if(document.body)document.body.classList.add("loaded")}setTimeout(show,4000);document.addEventListener("DOMContentLoaded",function(){setTimeout(show,2500)})})();</script>
+</body></html>

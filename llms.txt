@@ -15,13 +15,11 @@ LeiaNET surgió de la idea de administrar servidores propios de Minecraft y fue 
 
 ## Servidores
 
-- [Minecraft Survival](https://leianet.ar/#minecraft): servidor SemiOP, versión 1.12.2 - 1.21.2, IP mc.leianet.ar
-- [Minecraft Creativo](https://leianet.ar/#minecraft): modo creativo libre, versión 1.21.1, IP creative.leianet.ar
-- [Minecraft PVP](https://leianet.ar/#minecraft): combate PVP clásico, versión 1.8.9, IP pvp.leianet.ar
-- [Counter-Strike 1.6](https://leianet.ar/#cs16): servidor con rotación de mapas estándar, IP cs.leianet.ar
-- [Counter-Strike 1.6 Only Dust2](https://leianet.ar/#cs16): solo de_dust2 sin rotación, IP dust2.leianet.ar
-- [Counter-Strike 1.6 Deathmatch](https://leianet.ar/#cs16): respawn instantáneo, acción directa, IP deathmatch.leianet.ar
-- [Haxball](https://leianet.ar/#haxball): 4 salas activas (2v2, 3v3, 4v4 "Gana y Sigue" y una sala pública abierta)
+- [Minecraft Servidor Principal](https://leianet.ar/#minecraft): anárquico y PVP, versiones 1.12.2 - 26.2, premium y no-premium, IP mc.leianet.ar (actualmente no disponible)
+- [Counter-Strike 1.6 Mixto](https://leianet.ar/#cs16): servidor con rotación de mapas estándar, IP cs.leianet.ar:666
+- [Counter-Strike 1.6 Only Dust2](https://leianet.ar/#cs16): solo de_dust2 sin rotación, IP dust2.leianet.ar (actualmente no disponible)
+- [Counter-Strike 1.6 Deathmatch](https://leianet.ar/#cs16): respawn instantáneo, acción directa, IP deathmatch.leianet.ar (actualmente no disponible)
+- [Haxball](https://leianet.ar/#haxball): 1 sala pública de entrada libre
 
 ## Comunidad y soporte
 

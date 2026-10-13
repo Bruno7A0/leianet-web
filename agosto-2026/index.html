@@ -1060,13 +1060,18 @@
       {id:'stars-s2', count:80, size:2, opacity:.7},
       {id:'stars-s3', count:40, size:1, opacity:1}
     ];
-    const w = 2600, h = 2000; // generous virtual canvas so it covers tall pages too
+    const vw = Math.max(window.innerWidth || 0, (window.screen && screen.width) || 0);
+    const vh = Math.max(window.innerHeight || 0, (window.screen && screen.height) || 0);
+    // lienzo segun pantalla (4K / ultrawide): antes fijo 2600x2000 dejaba zonas vacias
+    const w = Math.max(2600, vw + 200), h = Math.max(2000, Math.round(vh * 1.9));
+    const densityK = Math.min(4, (w * h) / (2600 * 2000)); // mantiene la densidad de estrellas
+    // generous virtual canvas so it covers tall pages too
 
     layers.forEach(layer=>{
       const el = document.getElementById(layer.id);
       if(!el) return;
       let shadows = [];
-      for(let i=0;i<layer.count;i++){
+      for(let i=0;i<Math.round(layer.count*densityK);i++){
         const x = Math.round(Math.random()*w);
         const y = Math.round(Math.random()*h);
         shadows.push(`${x}px ${y}px ${reduceMotion ? 0 : 0}px rgba(255,255,255,${layer.opacity})`);
@@ -1270,25 +1275,34 @@
   }
 
   document.querySelectorAll('.copy-btn').forEach(btn=>{
+    // HTML original guardado una sola vez: con doble click rapido ya no se
+    // captura el estado "Copiado" como si fuera el original.
+    const originalHTML = btn.innerHTML;
+    let copyTimer = null;
     btn.addEventListener('click', async ()=>{
+      if(btn.closest('.locked') || btn.getAttribute('aria-disabled') === 'true') return;
       const value = btn.getAttribute('data-copy');
       try{
         await navigator.clipboard.writeText(value);
       }catch(e){
         const ta = document.createElement('textarea');
         ta.value = value;
+        ta.setAttribute('readonly', '');
+        // fixed + fuera del flujo + preventScroll: evita el salto de scroll en mobile
+        ta.style.cssText = 'position:fixed;top:0;left:0;width:1px;height:1px;padding:0;border:0;opacity:0;pointer-events:none';
         document.body.appendChild(ta);
+        try{ ta.focus({preventScroll:true}); }catch(_){}
         ta.select();
-        document.execCommand('copy');
+        try{ document.execCommand('copy'); }catch(_){}
         document.body.removeChild(ta);
       }
-      const original = btn.innerHTML;
+      clearTimeout(copyTimer);
       btn.classList.add('copied');
       btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Copiado';
       showToast(value + ' copiada al portapapeles');
-      setTimeout(()=>{
+      copyTimer = setTimeout(()=>{
         btn.classList.remove('copied');
-        btn.innerHTML = original;
+        btn.innerHTML = originalHTML;
       }, 1600);
     });
   });
@@ -1371,6 +1385,13 @@
       const summary = item.querySelector('summary');
       const answer = item.querySelector('.faq-a');
       if(!summary || !answer) return;
+      let closeState = null;
+      function cancelClose(){
+        if(!closeState) return;
+        answer.removeEventListener('transitionend', closeState.onEnd);
+        clearTimeout(closeState.timer);
+        closeState = null;
+      }
 
       summary.addEventListener('click', (e)=>{
         e.preventDefault();
@@ -1386,16 +1407,33 @@
           // clean collapse+fade. We just need to keep [open] on the
           // <details> until the transition finishes (native details
           // hides its content immediately otherwise), then remove it.
-          answer.addEventListener('transitionend', function handler(ev){
-            if(ev.propertyName !== 'grid-template-rows') return;
-            item.removeAttribute('open');
-            answer.removeEventListener('transitionend', handler);
-          });
+          // Respaldo: si transitionend no dispara (modo rendimiento,
+          // reduced-motion, transicion en 0s) un timer cierra igual. Los
+          // listeners/timers viejos se limpian para que no cierren un item
+          // que el usuario ya reabrio.
+          cancelClose();
+          const td = (parseFloat(getComputedStyle(answer).transitionDuration) || 0) * 1000;
+          const finishClose = ()=>{
+            cancelClose();
+            if(item.classList.contains('closing') || td === 0){
+              item.removeAttribute('open');
+              item.classList.remove('closing');
+            }
+          };
+          if(td === 0){ finishClose(); return; }
+          const onEnd = (ev)=>{
+            if(ev.target !== answer) return;
+            if(ev.propertyName !== 'grid-template-rows' && ev.propertyName !== 'max-height') return;
+            finishClose();
+          };
+          answer.addEventListener('transitionend', onEnd);
+          closeState = { onEnd: onEnd, timer: setTimeout(finishClose, td + 200) };
           // trigger the closing state (kick off on next frame so the
           // browser registers the current open state first)
-          requestAnimationFrame(()=> item.classList.add('closing'));
+          requestAnimationFrame(()=>{ if(closeState) item.classList.add('closing'); });
         } else {
           playClick(); // opening sound
+          cancelClose();
           item.setAttribute('open', '');
           item.classList.remove('closing');
           // Force the browser to register the "closed" (0fr) state first,
