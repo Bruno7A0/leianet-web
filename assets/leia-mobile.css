@@ -35,14 +35,20 @@ html:not(.retrowave):not(.aero){
   --display:-apple-system,BlinkMacSystemFont,"SF Pro Display","Inter",system-ui,"Segoe UI",sans-serif;
   --body:-apple-system,BlinkMacSystemFont,"SF Pro Text","Inter",system-ui,"Segoe UI",sans-serif;
 }
+html{overflow-x:clip}
 body{
   font-size:17px;line-height:1.5;
-  overflow-x:clip;
+  overflow-x:clip;max-width:100%;
   padding-left:var(--lm-sal);padding-right:var(--lm-sar);
 }
 a,button,summary,.card,.btn{touch-action:manipulation}
 button,.btn,.link-btn{-webkit-user-select:none;user-select:none}
 ::selection{background:rgba(120,160,255,.35)}
+
+/* nada puede ensanchar la página: el navegador móvil agrandaría la vista
+   para incluirlo y todo el contenido se correría a la derecha */
+main{overflow-x:clip;max-width:100%}
+.hero-glass-orb{width:calc(100% + 24px);height:115%}   /* era 120%: se salía de la pantalla */
 
 /* ----------------------------------------------- rendimiento en táctil -- */
 .planet-parallax,.planet-parallax-2,.asteroid-parallax,.satellite-parallax,
@@ -86,8 +92,8 @@ header{
 /* ---------------------------------------------------------- tipografía -- */
 .hero{padding:clamp(22px,6vw,56px) 6px 6px}
 .hero h1,h1{
-  font-weight:700;font-size:clamp(2.35rem,11.2vw,3.5rem);line-height:1.04;letter-spacing:-.032em;
-  text-wrap:balance;margin:0 0 16px;
+  font-weight:700;font-size:clamp(1.9rem,8.2vw,3.5rem);line-height:1.08;letter-spacing:-.032em;
+  margin:0 0 16px;
 }
 .hero p.lead{font-size:clamp(17px,4.6vw,20px);line-height:1.5;color:var(--text-dim);max-width:34em;margin:0 0 24px;text-wrap:pretty}
 .hero-live{font-size:12px;margin-top:18px}
