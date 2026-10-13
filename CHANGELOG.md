@@ -1,6 +1,6 @@
 # Changelog — bugs reales
 
-- **Pantalla en blanco si `load` tarda**: failsafe en CSS (6 s) y JS (2,5–4 s) en las 10 páginas con `body{opacity:0}`.
+- **Pantalla en blanco si `load` tarda**: failsafe solo en JS (muestra la página 0,8 s después de DOMContentLoaded, o a los 3 s como tope). Se quitó el failsafe CSS por animación (podía causar pantalla negra).
 - **Modo "ultra" falso cacheado 6 h**: la medición de FPS espera a que la pestaña sea visible y descarta la ronda si se oculta.
 - **FAQ trabado**: timer de respaldo si `transitionend` no dispara; se limpian listeners/timers al reabrir rápido.
 - **Botón copiar**: el HTML original se guarda una vez (doble click ya no deja "Copiado"); fallback `textarea` con `position:fixed` + `preventScroll`.
