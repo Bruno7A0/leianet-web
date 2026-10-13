@@ -1,0 +1,326 @@
+/* ==========================================================================
+   LeiaNET — capa móvil / tablet (estilo Apple)
+   Se carga AL FINAL del <head>, pisa lo de leia-fx.css sin tocar el desktop.
+   - Legibilidad: tipografía de sistema (SF), cuerpo 16-17px, mejor contraste.
+   - Comodidad: objetivos táctiles >= 44px, dock inferior al alcance del pulgar,
+     menú como hoja inferior (bottom sheet) con gesto de arrastrar para cerrar.
+   - Rendimiento: solo header, dock, menú y banner usan blur; se apagan los
+     objetos decorativos y las sombras enormes en táctil.
+   - Respeta safe-areas (notch / barra home), dvh, reduced-motion y los modos
+     de rendimiento del sitio (html.low-perf / html.perf-mid).
+   ========================================================================== */
+
+@media (max-width:1100px), (hover:none) and (pointer:coarse){
+
+/* ------------------------------------------------------------ tokens ---- */
+:root{
+  --lm-sat:env(safe-area-inset-top,0px);
+  --lm-sab:env(safe-area-inset-bottom,0px);
+  --lm-sal:env(safe-area-inset-left,0px);
+  --lm-sar:env(safe-area-inset-right,0px);
+  --lm-ease:cubic-bezier(.32,.72,0,1);
+  --lm-glass:rgba(30,30,33,.68);
+  --lm-glass-edge:rgba(255,255,255,.13);
+  --lm-off:12px;                       /* alto reservado abajo para flotantes */
+  /* más contraste que el original (#706f74 no llegaba a AA sobre #0f0f11) */
+  --text-dim:#b6b7bc;
+  --text-mute:#908f95;
+}
+html{
+  -webkit-text-size-adjust:100%;text-size-adjust:100%;
+  -webkit-tap-highlight-color:transparent;
+  scroll-behavior:smooth;scroll-padding-top:calc(88px + var(--lm-sat));
+}
+html:not(.retrowave):not(.aero){
+  --display:-apple-system,BlinkMacSystemFont,"SF Pro Display","Inter",system-ui,"Segoe UI",sans-serif;
+  --body:-apple-system,BlinkMacSystemFont,"SF Pro Text","Inter",system-ui,"Segoe UI",sans-serif;
+}
+body{
+  font-size:17px;line-height:1.5;
+  overflow-x:clip;
+  padding-left:var(--lm-sal);padding-right:var(--lm-sar);
+}
+a,button,summary,.card,.btn{touch-action:manipulation}
+button,.btn,.link-btn{-webkit-user-select:none;user-select:none}
+::selection{background:rgba(120,160,255,.35)}
+
+/* ----------------------------------------------- rendimiento en táctil -- */
+.planet-parallax,.planet-parallax-2,.asteroid-parallax,.satellite-parallax,
+.nebula-mono,.ambient,.grain,.cursor-glow,.grid-overlay,.depth-veil{display:none !important}
+section.game::before{
+  transform:none !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.07) !important;   /* sin sombra de 90px */
+  background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.015)) !important;
+}
+.card:hover,.nv-row:hover,.social-card:hover,.contact-card:hover,.cafecito-card:hover{transform:none !important}
+.nv-row::after{display:none}
+
+/* feedback de toque (propiedad `scale`: no choca con los transforms de GSAP) */
+.btn,.link-btn,.copy-btn,.nv-more,.nv-row,.social-card,.perk-row,.faq-item summary,
+.icon-btn,.nav-toggle,.back-to-top,.to-top,.twitch-chat-toggle{
+  transition:scale .35s var(--lm-ease),background-color .2s,border-color .2s,color .2s,opacity .25s;
+}
+.btn:active,.link-btn:active,.copy-btn:active,.nv-more:active,.nv-row:active,
+.social-card:active,.icon-btn:active,.nav-toggle:active{scale:.96}
+.faq-item summary:active{scale:.985}
+
+/* ------------------------------------------------------------ header ---- */
+header{
+  top:max(8px,var(--lm-sat));
+  margin:max(8px,var(--lm-sat)) auto 0;
+  width:calc(100% - 20px - var(--lm-sal) - var(--lm-sar));
+  min-height:58px;padding:7px 8px 7px 16px;border-radius:24px;
+  background:var(--lm-glass);
+  -webkit-backdrop-filter:blur(22px) saturate(180%);backdrop-filter:blur(22px) saturate(180%);
+  border:1px solid var(--lm-glass-edge);
+  box-shadow:0 12px 30px -18px rgba(0,0,0,.8),inset 0 1px 0 rgba(255,255,255,.08);
+}
+.brand img{height:30px;width:auto}
+.header-right{gap:6px}
+.icon-btn,.nav-toggle{width:44px;height:44px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center}
+.icon-btn{background:rgba(255,255,255,.07);border:0}
+.icon-btn svg{width:18px;height:18px}
+.nav-toggle{padding:0;gap:5px;background:rgba(255,255,255,.07)}
+.nav-toggle span{width:18px;height:2px}
+
+/* ---------------------------------------------------------- tipografía -- */
+.hero{padding:clamp(22px,6vw,56px) 6px 6px}
+.hero h1,h1{
+  font-weight:700;font-size:clamp(2.35rem,11.2vw,3.5rem);line-height:1.04;letter-spacing:-.032em;
+  text-wrap:balance;margin:0 0 16px;
+}
+.hero p.lead{font-size:clamp(17px,4.6vw,20px);line-height:1.5;color:var(--text-dim);max-width:34em;margin:0 0 24px;text-wrap:pretty}
+.hero-live{font-size:12px;margin-top:18px}
+.sec-head h2,.sec-head-copy h2{font-weight:700;font-size:clamp(1.75rem,7.6vw,2.5rem);line-height:1.06;letter-spacing:-.03em}
+.sec-head-main{flex:1 1 100%;min-width:0}
+.sec-head .online-pill{margin-left:0}
+.sec-head-copy .sec-sub{font-size:16px;line-height:1.4;max-width:none;color:var(--text-dim)}
+.tag,.eyebrow{font-size:12px;letter-spacing:.06em}
+.count,.online-pill,.sec-head .count{font-size:12px}
+.card h3{font-size:1.3rem;letter-spacing:-.02em;line-height:1.2}
+.card p,.card .desc{font-size:16px;line-height:1.5;color:var(--text-dim)}
+.mc-chip{font-size:13px;padding:7px 12px;border-radius:999px}
+.info-bar p{font-size:15px;line-height:1.5}
+.cafecito-msg p{font-size:16.5px;line-height:1.55}
+.cafecito-note,.donor-foot{font-size:13px}
+.perk-name{font-size:16px}
+.perk-desc{font-size:14.5px;line-height:1.45}
+.novedad-titulo{font-size:17px}
+.faq-item summary{font-size:17px;line-height:1.3;min-height:60px;padding:16px 18px;letter-spacing:-.015em}
+.faq-item .faq-a-inner{font-size:16px;line-height:1.55}
+.social-name{font-size:16px}
+.social-handle{font-size:13px}
+.contact-card h4{font-size:21px;letter-spacing:-.02em}
+.contact-card p{font-size:15.5px;line-height:1.5}
+footer{font-size:13px}
+footer .fbrand,footer .fmeta{font-size:13px}
+
+/* ------------------------------------------------------------ botones --- */
+.btn,.link-btn{
+  min-height:52px;border-radius:16px;font-family:var(--body);font-size:16px;font-weight:600;
+  letter-spacing:-.01em;text-transform:none;
+}
+.btn.primary{background:#f5f5f7;color:#111113;border-color:transparent;box-shadow:0 10px 26px -14px rgba(255,255,255,.5)}
+.hero-cta{display:flex;flex-direction:column;gap:10px}
+.hero-cta .btn{width:100%;justify-content:center}
+.copy-btn{min-height:44px;min-width:44px;padding:0 14px;border-radius:12px;font-size:14px}
+.ip-row{border-radius:16px;padding:6px 6px 6px 16px;gap:10px;align-items:center}
+.ip-row code{font-size:15px}
+.nv-more{min-height:48px;border-radius:14px;font-size:14px}
+
+/* ---------------------------------------------------- hero / estado ----- */
+.status-card{border-radius:24px}
+.status-head{padding:14px 18px}
+.status-head span.lbl{font-size:12px}
+.status-head .all-ok{font-size:12px;padding:6px 12px}
+.status-list{grid-template-columns:1fr;gap:2px;padding:6px}
+.status-row{min-height:64px;padding:10px 12px;border-radius:18px}
+.status-icon{width:42px;height:42px;border-radius:12px}
+.status-row .name{font-size:16.5px;font-weight:600;letter-spacing:-.01em}
+.status-row .sub{font-size:13px}
+.status-pill{font-size:13px}
+
+/* ------------------------------------------------- secciones y cards ---- */
+main{gap:12px;padding:6px 10px calc(28px + var(--lm-sab))}
+section.game{padding:22px 14px;--r-tl:28;--r-tr:28;--r-br:28;--r-bl:28;scroll-margin-top:calc(88px + var(--lm-sat))}
+.sec-head{margin-bottom:20px;gap:10px 12px}
+.sec-head .icon-badge{width:58px;height:58px;border-radius:17px}
+.card,.cafecito-card,.contact-card,.novedad-card{border-radius:22px}
+.card{padding:20px 18px}
+.faq-item{border-radius:20px}
+.social-card{border-radius:20px;min-height:68px}
+.social-icon{width:44px;height:44px}
+.ticker{padding:6px 0}
+
+/* tarjetas no disponibles: píldora discreta en vez de cinta que tapa el texto */
+.chain-band{display:none !important}
+.card.locked > *:not(.lock-overlay){filter:saturate(.7) brightness(.8)}
+.lock-overlay{align-items:flex-start;justify-content:flex-end;padding:14px}
+.lock-badge{
+  flex-direction:row;gap:7px;padding:6px 12px 6px 9px;border-radius:999px;
+  background:rgba(40,12,16,.82);border:1px solid rgba(255,90,110,.4);box-shadow:none;
+  -webkit-backdrop-filter:none;backdrop-filter:none;
+}
+.lock-icon-wrap{animation:none;width:auto;height:auto;background:none;border:0;box-shadow:none}
+.lock-icon-wrap svg{width:15px;height:15px}
+.lock-title{font-size:11.5px;letter-spacing:.06em}
+.lock-sub{display:none}
+.card:not(.card-wide) .lock-title{display:none}      /* cards angostas: solo el candado */
+.card:not(.card-wide) .lock-badge{padding:8px}
+
+/* ------------------------------------------------ flotantes y avisos ---- */
+.back-to-top,.to-top{
+  right:calc(14px + var(--lm-sar));bottom:calc(var(--lm-off) + 8px);width:46px;height:46px;z-index:55;
+  transition:opacity .25s ease,transform .25s ease,visibility .25s,bottom .45s var(--lm-ease),scale .35s var(--lm-ease);
+}
+.twitch-chat-toggle{
+  left:calc(14px + var(--lm-sal));bottom:calc(var(--lm-off) + 8px);width:50px;height:50px;
+  transition:bottom .45s var(--lm-ease),scale .35s var(--lm-ease),border-color .2s,color .2s,background .2s,box-shadow .25s;
+}
+.twitch-chat-panel{
+  left:10px;right:10px;width:auto;bottom:calc(var(--lm-off) + 68px);
+  height:min(62dvh,520px);border-radius:24px;
+}
+#toast{bottom:calc(var(--lm-off) + 12px);border-radius:16px;font-size:14px;padding:12px 18px;max-width:calc(100vw - 32px)}
+
+/* banner de cookies (assets/consent.js usa estilos en línea → !important) */
+#leia-consent{
+  left:10px !important;right:10px !important;bottom:calc(var(--lm-off) + 4px) !important;
+  max-width:520px !important;padding:16px !important;border-radius:22px !important;
+  background:rgba(30,30,33,.86) !important;border:1px solid var(--lm-glass-edge) !important;
+  -webkit-backdrop-filter:blur(22px) saturate(180%);backdrop-filter:blur(22px) saturate(180%);
+  font:15px/1.45 var(--body) !important;gap:12px !important;
+  padding-bottom:calc(16px + env(safe-area-inset-bottom,0px)) !important;
+}
+#leia-consent button{min-height:44px !important;padding:0 18px !important;border-radius:14px !important;font-size:15px !important}
+#leia-consent span{flex:1 1 100% !important}
+#leia-consent button{flex:1 1 calc(50% - 6px) !important}
+
+/* ------------------------------ modos de rendimiento: sin blur extra ---- */
+html.low-perf header,html.low-perf .lm-dock,html.low-perf .lm-sheet,html.low-perf #leia-consent{
+  -webkit-backdrop-filter:none !important;backdrop-filter:none !important;background:#1b1b1e !important;
+}
+html.perf-mid .lm-sheet,html.perf-mid .lm-dock{-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
+  header,.lm-dock,.lm-sheet{background:#1b1b1e}
+}
+
+} /* fin: móvil + tablet general */
+
+
+/* ==========================================================================
+   Tablet vertical (iPad / Android tablet): 700–980px
+   ========================================================================== */
+@media (min-width:700px) and (max-width:980px){
+  main{grid-template-columns:repeat(2,minmax(0,1fr));padding-left:16px;padding-right:16px}
+  .hero,.ticker{grid-column:1/-1}
+  section.game#social,section.game#contact{grid-column:span 1}
+  section.game{padding:26px 20px}
+  .hero h1{font-size:clamp(3rem,7.6vw,4rem)}
+  .sec-head h2,.sec-head-copy h2{font-size:clamp(1.8rem,3.5vw,2.3rem)}
+  .sec-head .icon-badge{width:54px;height:54px}
+  .hero p.lead{font-size:20px}
+  .hero-cta{flex-direction:row}
+  .hero-cta .btn{width:auto;min-width:200px}
+  .status-list{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .status-row{flex-direction:column;align-items:flex-start;gap:10px}
+  .status-row-info{width:100%}
+}
+
+
+/* ==========================================================================
+   ≤880px: menú hoja inferior + dock (reemplazan al nav lateral original)
+   ========================================================================== */
+@media (max-width:880px){
+  :root{--lm-off:calc(86px + var(--lm-sab))}
+  html.lm-dock-hidden{--lm-off:12px}
+  body{padding-bottom:calc(98px + var(--lm-sab))}
+
+  /* el nav original queda de respaldo (sin JS); con JS lo reemplaza la hoja */
+  html.lm-js #main-nav{display:none !important}
+  .nav-backdrop{
+    z-index:85;background:rgba(0,0,0,.5);
+    opacity:0;pointer-events:none;transition:opacity .35s ease;
+  }
+  .nav-backdrop.open{opacity:1;pointer-events:auto}
+
+  /* ---- hoja inferior ---- */
+  .lm-sheet{
+    position:fixed;left:0;right:0;bottom:0;z-index:90;margin:0 auto;width:100%;max-width:560px;
+    max-height:min(86dvh,740px);overflow-y:auto;overscroll-behavior:contain;
+    padding:8px 14px calc(20px + var(--lm-sab));
+    border-radius:30px 30px 0 0;
+    background:rgba(28,28,31,.8);
+    -webkit-backdrop-filter:blur(34px) saturate(180%);backdrop-filter:blur(34px) saturate(180%);
+    border:1px solid var(--lm-glass-edge);border-bottom:0;
+    box-shadow:0 -24px 70px -24px rgba(0,0,0,.75);
+    transform:translateY(105%);visibility:hidden;
+    transition:transform .5s var(--lm-ease),visibility 0s linear .5s;
+  }
+  .lm-sheet.open{transform:translateY(0);visibility:visible;transition:transform .5s var(--lm-ease),visibility 0s}
+  .lm-sheet.drag{transition:none}
+  .lm-grab{width:38px;height:5px;border-radius:3px;background:rgba(255,255,255,.28);margin:2px auto 10px}
+  .lm-top{display:flex;align-items:center;justify-content:space-between;padding:2px 4px 4px}
+  .lm-title{font:700 22px/1.2 var(--display);letter-spacing:-.025em}
+  .lm-done{
+    min-height:44px;padding:0 6px;border:0;background:none;color:#7aa7ff;
+    font:600 17px/1 var(--body);cursor:pointer;
+  }
+  .lm-group{background:rgba(255,255,255,.07);border-radius:18px;overflow:hidden;margin-top:12px}
+  .lm-row{
+    position:relative;display:flex;align-items:center;gap:14px;min-height:56px;padding:0 14px 0 16px;
+    color:var(--text);text-decoration:none;font:500 17px/1.2 var(--body);letter-spacing:-.01em;
+    transition:background-color .15s;
+  }
+  .lm-row:active{background:rgba(255,255,255,.12)}
+  .lm-row[aria-current=page] .lm-name{color:#7aa7ff}
+  .lm-row + .lm-row::before{content:'';position:absolute;top:0;left:62px;right:0;height:.5px;background:rgba(255,255,255,.14)}
+  .lm-ico{
+    flex:none;width:32px;height:32px;border-radius:9px;display:grid;place-items:center;
+    font-size:18px;line-height:1;background:var(--c,#3a3a3f);
+  }
+  .lm-name{flex:1;min-width:0}
+  .lm-chev{flex:none;width:16px;height:16px;color:var(--text-mute);opacity:.8}
+
+  /* ---- dock inferior ---- */
+  .lm-dock{
+    position:fixed;left:50%;translate:-50% 0;bottom:max(10px,var(--lm-sab));z-index:60;
+    width:min(calc(100% - 24px),460px);height:66px;padding:6px;
+    display:grid;grid-template-columns:repeat(5,minmax(0,1fr));
+    border-radius:30px;background:var(--lm-glass);
+    -webkit-backdrop-filter:blur(24px) saturate(180%);backdrop-filter:blur(24px) saturate(180%);
+    border:1px solid var(--lm-glass-edge);
+    box-shadow:0 18px 40px -16px rgba(0,0,0,.75),inset 0 1px 0 rgba(255,255,255,.08);
+    transition:transform .5s var(--lm-ease),opacity .3s ease;
+  }
+  html.lm-dock-hidden .lm-dock{transform:translateY(calc(100% + 28px));opacity:0;pointer-events:none}
+  .lm-pill{
+    position:absolute;top:6px;bottom:6px;left:6px;width:calc((100% - 12px) / 5);border-radius:24px;
+    background:rgba(255,255,255,.15);box-shadow:inset 0 1px 0 rgba(255,255,255,.12);
+    transition:transform .55s var(--lm-ease),opacity .25s ease;pointer-events:none;
+  }
+  .lm-it{
+    position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
+    min-width:0;padding:0;border:0;background:none;border-radius:24px;cursor:pointer;
+    color:#a1a1a8;font:600 11px/1 var(--body);letter-spacing:.005em;text-decoration:none;
+    transition:color .25s,scale .3s var(--lm-ease);
+  }
+  .lm-it svg{width:25px;height:25px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+  .lm-it.on{color:#fff}
+  .lm-it:active{scale:.92}
+}
+
+@media (max-width:880px) and (min-width:700px){
+  .lm-dock{width:min(calc(100% - 48px),520px)}
+}
+
+/* sin JS no existe el dock ni la hoja */
+html:not(.lm-js) .lm-dock,html:not(.lm-js) .lm-sheet{display:none}
+
+/* escritorio: nada de esto se ve */
+@media (min-width:881px){.lm-dock,.lm-sheet{display:none !important}}
+
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .lm-sheet,.lm-dock,.lm-pill{transition:none !important}
+}
