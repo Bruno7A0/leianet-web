@@ -34,12 +34,17 @@
     chev:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m9 5 7 7-7 7"/></svg>'
   };
 
-  // emoji + color por destino (se arma con los links reales del nav)
+  // icono + color por destino (se arma con los links reales del nav)
   var META = {
-    '#minecraft':{e:'⛏️',c:'#4d8a3a'}, '#cs16':{e:'🎯',c:'#c98a2c'}, '#haxball':{e:'⚽',c:'#3f9a54'},
-    '#novedades':{e:'📣',c:'#8a5cd6'}, 'utilidades.html':{e:'🛠️',c:'#3b6fd8'},
-    'https://foro.leianet.ar':{e:'💬',c:'#d6567e'}, '#cafecito':{e:'☕',c:'#b8862e'},
-    '#faq':{e:'❓',c:'#5b6372'}, '#contact':{e:'✉️',c:'#3a8fc2'}
+    '#minecraft':{e:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8l8-4 8 4v8l-8 4-8-4z"/><path d="M4 8l8 4 8-4M12 12v8"/></svg>',c:'#4d8a3a'},
+    '#cs16':{e:'<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/><path d="M12 1v4M12 19v4M1 12h4M19 12h4"/></svg>',c:'#c98a2c'},
+    '#haxball':{e:'<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m12 8 3.5 2.5-1.3 4h-4.4l-1.3-4z"/></svg>',c:'#3f9a54'},
+    '#novedades':{e:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 11 18-5v12L3 14z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg>',c:'#8a5cd6'},
+    'utilidades.html':{e:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 6.5a4 4 0 0 0-5.3 5.2L4 17a1.8 1.8 0 0 0 2.5 2.5l5.3-5.2a4 4 0 0 0 5.2-5.3l-2.6 2.6-2.2-.6-.6-2.2z"/></svg>',c:'#3b6fd8'},
+    'https://foro.leianet.ar':{e:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.7 7L3 20.5l1.6-5A8 8 0 1 1 21 12z"/></svg>',c:'#d6567e'},
+    '#cafecito':{e:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h13v6a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5z"/><path d="M17 10h1.5a2.5 2.5 0 0 1 0 5H17M8 2v3M12 2v3"/></svg>',c:'#b8862e'},
+    '#faq':{e:'<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 2.5-3 4.5M12 18h.01"/></svg>',c:'#5b6372'},
+    '#contact':{e:'<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>',c:'#3a8fc2'}
   };
   var GROUPS = [
     ['#minecraft','#cs16','#haxball'],

@@ -80,7 +80,7 @@
       '<div id="dr-footer-hint">ESPACIO / CLICK / TAP para saltar &nbsp;·&nbsp; ESC para cerrar</div>' +
       '<div id="dr-leaderboard">' +
         '<div id="dr-lb-header">' +
-          '<div id="dr-lb-title">🏆 Ranking completo</div>' +
+          '<div id="dr-lb-title">Ranking completo</div>' +
           '<div id="dr-lb-close" title="Cerrar">&times;</div>' +
         '</div>' +
         '<div id="dr-lb-body"><div id="dr-lb-list"></div></div>' +

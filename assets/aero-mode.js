@@ -53,7 +53,7 @@
     [A,B].forEach(function(a){if(a){a.pause();a.currentTime=0;a.volume=0}});
     cur=A;gain=0;first=true;
   }
-  function applyMute(){if(muteBtn)muteBtn.textContent=muted?'🔇':'🎵'}
+  function applyMute(){if(muteBtn)muteBtn.innerHTML=muted?'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4z"/><path d="m22 9-6 6M16 9l6 6"/></svg>':'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14"/></svg>'}
 
   /* ---------- visual ---------- */
   function showToast(msg){
@@ -159,12 +159,12 @@
     apply();decorateAll();
     if(v){
       if(gesture&&!(window.matchMedia&&matchMedia('(prefers-reduced-motion:reduce)').matches)){var sw=document.createElement('div');sw.className='aero-sweep';document.body.appendChild(sw);setTimeout(function(){sw.remove()},1400)}
-      showToast('✨ Modo Aero activado');if(gesture)startMusic()}else showToast('Modo Aero desactivado · escribí "aero" para volver');
+      showToast('Modo Aero activado');if(gesture)startMusic()}else showToast('Modo Aero desactivado · escribí "aero" para volver');
   }
   function buildCtl(){
     ctl=document.createElement('div');ctl.id='aero-ctl';
-    muteBtn=document.createElement('button');muteBtn.className='aero-mute';muteBtn.textContent=muted?'🔇':'🎵';muteBtn.title='Música';muteBtn.setAttribute('aria-label','Música Aero');
-    var t=document.createElement('button');t.className='aero-toggle';t.textContent='🫧';t.title='Volver al modo original';t.setAttribute('aria-label','Volver al modo original');
+    muteBtn=document.createElement('button');muteBtn.className='aero-mute';muteBtn.innerHTML=muted?'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4z"/><path d="m22 9-6 6M16 9l6 6"/></svg>':'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14"/></svg>';muteBtn.title='Música';muteBtn.setAttribute('aria-label','Música Aero');
+    var t=document.createElement('button');t.className='aero-toggle';t.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="14" r="6"/><circle cx="17" cy="7" r="3.5"/></svg>';t.title='Volver al modo original';t.setAttribute('aria-label','Volver al modo original');
     ctl.appendChild(muteBtn);ctl.appendChild(t);document.body.appendChild(ctl);
     t.onclick=function(){setOn(!on,true)};
     muteBtn.onclick=function(){muted=!muted;set(MUTE,muted?'1':'0');if(!muted)startMusic();applyMute()};

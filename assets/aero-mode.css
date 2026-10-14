@@ -273,3 +273,5 @@ html.aero .aero-flare{position:absolute;border-radius:50%;mix-blend-mode:screen;
  animation:aeroSweep 1.25s cubic-bezier(.4,.1,.2,1) forwards}
 @keyframes aeroSweep{to{transform:translateX(110%)}}
 @media (prefers-reduced-motion:reduce){html.aero .aero-orb,html.aero .aero-glint,.aero-sweep{animation:none}.aero-sweep{display:none}}
+
+.aero-mute svg,.aero-toggle svg{width:1.15em;height:1.15em;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}

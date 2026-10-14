@@ -76,7 +76,7 @@
     [A,B].forEach(function(a){if(a){a.pause();a.currentTime=0;a.volume=0}});
     cur=A;gain=0;first=true;resumeAt=0;if(ctl)ctl.classList.remove('playing');
   }
-  function applyMute(){if(ctl)ctl.classList.toggle('muted',muted);if(muteBtn){muteBtn.textContent=muted?'🔇':'🎵';muteBtn.title=muted?'Activar música':'Silenciar música'}}
+  function applyMute(){if(ctl)ctl.classList.toggle('muted',muted);if(muteBtn){muteBtn.innerHTML=muted?'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4z"/><path d="m22 9-6 6M16 9l6 6"/></svg>':'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14"/></svg>';muteBtn.title=muted?'Activar música':'Silenciar música'}}
   window.addEventListener('pagehide',savePos);
   document.addEventListener('visibilitychange',function(){if(document.visibilityState==='hidden')savePos()});
 
@@ -177,8 +177,8 @@
   function buildCtl(){
     ctl=document.createElement('div');ctl.id='rw-ctl';
     var pill=document.createElement('div');pill.className='rw-now';pill.innerHTML='<span class="rw-eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span class="rw-track">Neon Highway</span>';
-    muteBtn=document.createElement('button');muteBtn.className='rw-mute';muteBtn.textContent=muted?'🔇':'🎵';muteBtn.setAttribute('aria-label','Música Retrowave');
-    var t=document.createElement('button');t.className='rw-toggle';t.textContent='🌆';t.title='Volver al modo original';t.setAttribute('aria-label','Volver al modo original');
+    muteBtn=document.createElement('button');muteBtn.className='rw-mute';muteBtn.innerHTML=muted?'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4z"/><path d="m22 9-6 6M16 9l6 6"/></svg>':'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14"/></svg>';muteBtn.setAttribute('aria-label','Música Retrowave');
+    var t=document.createElement('button');t.className='rw-toggle';t.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="11" r="5"/><path d="M2 18h20M5 21h14"/></svg>';t.title='Volver al modo original';t.setAttribute('aria-label','Volver al modo original');
     ctl.appendChild(pill);ctl.appendChild(muteBtn);ctl.appendChild(t);document.body.appendChild(ctl);
     t.onclick=function(){setOn(!on,true)};
     muteBtn.onclick=function(){muted=!muted;set(MUTE,muted?'1':'0');if(!muted)startMusic();applyMute()};

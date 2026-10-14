@@ -313,18 +313,18 @@ html.perf-mid header,html.perf-mid .chip,html.perf-mid .seg,html.perf-mid .note,
 <footer><div class="fbrand"><img width="860" height="150" loading="lazy" decoding="async" src="assets/logo_leianetwork.webp" alt="LeiaNETWORK"><span>© 2026 LeiaNET</span></div><div class="fmeta">AI COMPARE · parte de LeiaNET · hub para devs y gamers · Última actualización 9/10/26 · <b>leianet.ar</b></div></footer>
 <script>
 const CATS = [
-  {id:'general', label:'General', icon:'★'},
-  {id:'razonamiento', label:'Razonamiento', icon:'🧠'},
-  {id:'matematicas', label:'Matemáticas', icon:'∑'},
-  {id:'programacion', label:'Programación', icon:'</>'},
-  {id:'agentico', label:'Agéntico', icon:'⚙'},
-  {id:'rag', label:'RAG', icon:'🔎'},
-  {id:'chatbot', label:'Chatbot', icon:'💬'},
-  {id:'escritura', label:'Escritura', icon:'✎'},
-  {id:'imagenes', label:'Imágenes', icon:'🖼'},
-  {id:'video', label:'Video', icon:'🎬'},
-  {id:'contexto', label:'Contexto', icon:'📚'},
-  {id:'costo', label:'Costo', icon:'$'},
+  {id:'general', label:'General', icon:''},
+  {id:'razonamiento', label:'Razonamiento', icon:''},
+  {id:'matematicas', label:'Matemáticas', icon:''},
+  {id:'programacion', label:'Programación', icon:''},
+  {id:'agentico', label:'Agéntico', icon:''},
+  {id:'rag', label:'RAG', icon:''},
+  {id:'chatbot', label:'Chatbot', icon:''},
+  {id:'escritura', label:'Escritura', icon:''},
+  {id:'imagenes', label:'Imágenes', icon:''},
+  {id:'video', label:'Video', icon:''},
+  {id:'contexto', label:'Contexto', icon:''},
+  {id:'costo', label:'Costo', icon:''},
 ];
 
 // precio = USD por 1M tokens [input, output], fuente oficial del proveedor (ver sección Fuentes)
@@ -399,7 +399,7 @@ function renderChips(){
   CATS.forEach(c=>{
     const b=document.createElement('button');
     b.className='chip'+(c.id===activeCat?' active':'');
-    b.innerHTML=`<span>${c.icon}</span> ${c.label}`;
+    b.textContent=c.label;
     b.onclick=()=>{activeCat=c.id;renderChips();renderList();};
     row.appendChild(b);
   });

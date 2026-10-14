@@ -312,3 +312,5 @@ html.retrowave.low-perf .rw-aurora,html.retrowave.low-perf .rw-shoot,html.retrow
 html.retrowave.low-perf .rw-aurora{display:none}
 html.retrowave.low-perf .rw-mtn.back{filter:none}
 html.retrowave footer{padding-bottom:84px!important}
+
+.rw-mute svg,.rw-toggle svg{width:1.15em;height:1.15em;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}

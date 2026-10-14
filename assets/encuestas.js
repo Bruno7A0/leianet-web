@@ -124,7 +124,7 @@
       var mine = (p.miVoto || []).indexOf(o.id) !== -1;
       html += '<div class="poll-bar' + (win ? ' win' : '') + '" style="--w:' + pct + '%">' +
         (v ? '<span class="poll-fill"></span>' : '') +
-        '<span class="poll-label">' + esc(o.texto) + (mine ? '<span class="poll-check" title="Tu voto">✓</span>' : '') + '</span>' +
+        '<span class="poll-label">' + esc(o.texto) + (mine ? '<span class="poll-check" title="Tu voto"><svg viewBox="0 0 24 24" aria-hidden="true" style="width:1em;height:1em;fill:none;stroke:currentColor;stroke-width:3;stroke-linecap:round;stroke-linejoin:round"><path d="m5 12 5 5 9-10"/></svg></span>' : '') + '</span>' +
         '<span class="poll-num"><b>' + pctTxt(pct) + '</b> · ' + v + ' ' + (v === 1 ? 'voto' : 'votos') + '</span>' +
       '</div>';
     });
@@ -136,7 +136,7 @@
       var txt = !total ? 'VOTACIÓN CERRADA. SIN VOTOS'
         : g.length === 1 ? 'VOTACIÓN CERRADA. GANADOR: <b>' + nombres[0] + '</b>'
         : 'VOTACIÓN CERRADA. GANADORES (EMPATE): <b>' + nombres.join(' · ') + '</b>';
-      html += '<div class="poll-closed"><span aria-hidden="true">🔒</span><span>' + txt + '</span></div>';
+      html += '<div class="poll-closed"><span class="poll-lock" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></span><span>' + txt + '</span></div>';
     }
     return html;
   }
@@ -162,7 +162,7 @@
   function card(p){
     var cerr = p.cerrada, ver = cerr || p.yaVoto;
     return '<article class="poll-card' + (cerr ? ' is-closed' : '') + '" data-id="' + p.id + '">' +
-      '<div class="poll-head"><span class="poll-badge">📊 Encuesta</span>' +
+      '<div class="poll-head"><span class="poll-badge">Encuesta</span>' +
       '<span class="poll-chip">' + (p.multiple ? 'Múltiple choice' : 'Una sola opción') + '</span>' +
       (cerr
         ? '<span class="poll-timer">Cerró el ' + new Date(p.cierra).toLocaleDateString('es-AR') + '</span>'
@@ -177,7 +177,7 @@
   modal.setAttribute('aria-hidden', 'true');
   modal.innerHTML = '<div class="nv-backdrop" data-close></div>' +
     '<div class="nv-dialog" role="dialog" aria-modal="true" aria-label="Encuesta">' +
-      '<div class="nv-dialog-head"><h3>📊 Encuesta</h3>' +
+      '<div class="nv-dialog-head"><h3>Encuesta</h3>' +
       '<button type="button" class="nv-close" data-close aria-label="Cerrar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div>' +
       '<div class="nv-dialog-body" id="poll-modal-body"></div>' +
     '</div>';
@@ -195,7 +195,7 @@
   function fila(p, i){
     var cerr = p.cerrada;
     return '<button type="button" class="nv-row poll-row' + (cerr ? ' is-closed' : '') + '" data-id="' + p.id + '" style="--i:' + i + '">' +
-      '<span class="novedad-icono">' + (cerr ? '🔒' : '📊') + '</span>' +
+      '<span class="novedad-icono">' + (cerr ? '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>' : '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 21V10M12 21V4M19 21v-7"/></svg>') + '</span>' +
       '<span class="nv-row-main">' +
         '<span class="novedad-header"><span class="novedad-badge">Encuesta</span>' +
         (cerr
