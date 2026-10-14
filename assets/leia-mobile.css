@@ -331,3 +331,40 @@ html:not(.lm-js) .lm-dock,html:not(.lm-js) .lm-sheet{display:none}
   html{scroll-behavior:auto}
   .lm-sheet,.lm-dock,.lm-pill{transition:none !important}
 }
+
+/* ==========================================================================
+   FIX desborde horizontal en celulares (< 700px)
+   `grid-template-columns:1fr` equivale a minmax(auto,1fr): si algo adentro
+   no puede achicarse (textos nowrap, filas de estado, cinta del ticker) la
+   columna se ensancha más que la pantalla y el contenido se corta a la
+   derecha. minmax(0,1fr) + min-width:0 obliga a respetar el ancho real.
+   ========================================================================== */
+@media (max-width:699px){
+  main{grid-template-columns:minmax(0,1fr)}
+  main > *{min-width:0;max-width:100%}
+  .hero{grid-template-columns:minmax(0,1fr)}
+  .hero > *{min-width:0}
+  .hero h1,.hero p.lead,.sec-head-copy,.card h3,.card p,.card .desc,
+  .novedad-titulo,.novedad-texto,.info-bar p,.cafecito-msg p,.faq-item .faq-a-inner{
+    overflow-wrap:anywhere;word-break:normal;
+  }
+  .status-card,.status-list{min-width:0;max-width:100%}
+  .status-list{grid-template-columns:minmax(0,1fr)}
+  .status-row{gap:10px;min-width:0}
+  .status-row-info{min-width:0;flex:1 1 auto}
+  .status-row-info > div:not(.status-icon){min-width:0}
+  .status-row .name,.status-row .sub{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .status-pill{flex:0 0 auto;white-space:nowrap}
+  .status-head{gap:10px;flex-wrap:wrap}
+  .status-head span.lbl{flex:1 1 auto;min-width:0}
+  .status-head .all-ok{white-space:nowrap;flex:0 0 auto}
+  .cards{grid-template-columns:minmax(0,1fr)}
+  .ip-row{min-width:0}
+  .ip-row code{min-width:0;flex:1 1 0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .social-row,.contact-wrap,.cafecito-wrap{grid-template-columns:minmax(0,1fr)}
+  .social-card,.social-btn{min-width:0}
+  .social-meta{min-width:0}
+  .social-handle,.social-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  img,video,svg,iframe,table{max-width:100%}
+  pre,code{max-width:100%;overflow-x:auto}
+}
