@@ -6,7 +6,7 @@ LeiaNET surgió de la idea de administrar servidores propios de Minecraft y fue 
 
 ## Utilidades
 
-- [Utilidades](https://leianet.ar/utilidades.html): página con todas las herramientas gratuitas de LeiaNET
+- [Utilidades](https://leianet.ar/#utilidades): sección del inicio con todas las herramientas gratuitas de LeiaNET
 - [AI Compare](https://leianet.ar/iacompare.html): ranking de modelos de IA por categoría, con precio por millón de tokens, ventana de contexto y fuentes
 - [Steam In Linux](https://leianet.ar/steam-preview.html): qué juegos de tu biblioteca de Steam corren en Linux, según datos de ProtonDB
 - [Can I Run IT?](https://leianet.ar/canirun.html): elegí tu hardware y mirá qué juegos corre tu PC

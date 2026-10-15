@@ -224,7 +224,7 @@
     document.body.appendChild(tb);
     var menu=document.createElement('div');menu.id='w95-menu';
     menu.innerHTML='<div class="w95-menu-side"><span>Leia<b>NET</b>95</span></div><div class="w95-menu-items">'+
-      '<a href="index.html">Inicio</a><a href="utilidades.html">Utilidades</a><a href="index.html#minecraft">Minecraft</a><a href="index.html#cs16">Counter-Strike 1.6</a><a href="index.html#foro">Foro</a><a href="https://discord.gg/3Hsy6JrSMH" target="_blank" rel="noopener">Discord</a><hr>'+
+      '<a href="index.html">Inicio</a><a href="index.html#utilidades">Utilidades</a><a href="index.html#minecraft">Minecraft</a><a href="index.html#cs16">Counter-Strike 1.6</a><a href="index.html#foro">Foro</a><a href="https://discord.gg/3Hsy6JrSMH" target="_blank" rel="noopener">Discord</a><hr>'+
       '<button type="button" id="w95-off">Salir de Windows 95…</button></div>';
     document.body.appendChild(menu);
     var st=tb.querySelector('#w95-start');
@@ -242,7 +242,7 @@
   function w95Icons(){
     if(document.getElementById('w95-icons'))return;
     var d=document.createElement('div');d.id='w95-icons';
-    var L=[['Inicio','index.html','assets/favicon-48.png'],['Minecraft','index.html#minecraft','assets/logo_minecraft.webp'],['Counter-Strike 1.6','index.html#cs16','assets/logo_cs_transparent.webp'],['Utilidades','utilidades.html','assets/favicon-48.png'],['Foro','index.html#foro','assets/favicon-48.png']];
+    var L=[['Inicio','index.html','assets/favicon-48.png'],['Minecraft','index.html#minecraft','assets/logo_minecraft.webp'],['Counter-Strike 1.6','index.html#cs16','assets/logo_cs_transparent.webp'],['Utilidades','index.html#utilidades','assets/favicon-48.png'],['Foro','index.html#foro','assets/favicon-48.png']];
     d.innerHTML=L.map(function(i){return '<a class="w95-ico" href="'+i[1]+'"><i style="background-image:url('+i[2]+')"></i><span>'+i[0]+'</span></a>'}).join('');
     document.body.appendChild(d);
     d.addEventListener('click',function(e){var a=e.target.closest('.w95-ico');if(!a)return;e.preventDefault();
