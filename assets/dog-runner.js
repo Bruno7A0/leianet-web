@@ -17,9 +17,9 @@
     return 'assets/';
   })();
 
-  var IMG_RUN1 = ASSET_PATH + 'dog_run1.png';
-  var IMG_RUN2 = ASSET_PATH + 'dog_run2.png';
-  var IMG_JUMP = ASSET_PATH + 'dog_jump.png';
+  /* sprite sheet de la perra corriendo (40 cuadros de 228x119, fondo transparente) */
+  var IMG_SHEET = ASSET_PATH + 'dog_run_sheet.webp';
+  var RUN_N = 40, RUN_FW = 228, RUN_FH = 119, RUN_FRAME_MS = 84, JUMP_FRAME = 2;
   var SND_JUMP = ASSET_PATH + 'saltar.mp3';
   var SND_MUSIC = ASSET_PATH + 'musica.mp3';
 
@@ -121,12 +121,8 @@
   }
 
   /* ---------------- assets ---------------- */
-  var runImgs = [new Image(), new Image()];
-  runImgs[0].src = IMG_RUN1;
-  runImgs[1].src = IMG_RUN2;
-
-  var jumpImg = new Image();
-  jumpImg.src = IMG_JUMP;
+  var runSheet = new Image();
+  runSheet.src = IMG_SHEET;
 
   var jumpSound = new Audio(SND_JUMP);
   var music = new Audio(SND_MUSIC);
@@ -209,7 +205,7 @@
   var nickGateDone = false; // se resetea cada vez que se abre el juego
 
   var dog = {
-    x: 70, y: 0, w: 114, h: 57,
+    x: 70, y: 0, w: 114, h: 60,
     jumping: false, jumpStart: 0,
     jumpDur: 600, jumpHeight: 138
   };
@@ -395,9 +391,9 @@
   }
 
   function drawDog(now){
-    var jumpReady = jumpImg.complete && jumpImg.naturalWidth > 0;
-    var img = dog.jumping ? (jumpReady ? jumpImg : runImgs[0]) : runImgs[runFrameIndex];
+    var img = runSheet;
     if (!img.complete || img.naturalWidth === 0) return;
+    var sx = (dog.jumping ? JUMP_FRAME : runFrameIndex) * RUN_FW;
     drawPixelShadow(dog.x + dog.w/2, dog.w*0.8, GROUND_Y+2);
     if (dog.jumping){
       var t = Math.min(1, (now - dog.jumpStart) / dog.jumpDur);
@@ -405,10 +401,10 @@
       ctx.save();
       ctx.translate(Math.round(dog.x + dog.w/2), Math.round(dog.y + dog.h/2));
       ctx.rotate(tilt);
-      ctx.drawImage(img, -dog.w/2, -dog.h/2, dog.w, dog.h);
+      ctx.drawImage(img, sx, 0, RUN_FW, RUN_FH, -dog.w/2, -dog.h/2, dog.w, dog.h);
       ctx.restore();
     } else {
-      ctx.drawImage(img, Math.round(dog.x), Math.round(dog.y), dog.w, dog.h);
+      ctx.drawImage(img, sx, 0, RUN_FW, RUN_FH, Math.round(dog.x), Math.round(dog.y), dog.w, dog.h);
     }
   }
 
@@ -528,7 +524,7 @@
     scoreEl.textContent = score;
 
     runFrameTimer += dt;
-    if (runFrameTimer > 110){ runFrameTimer = 0; runFrameIndex = 1 - runFrameIndex; }
+    if (runFrameTimer > RUN_FRAME_MS){ runFrameTimer -= RUN_FRAME_MS; if (runFrameTimer > RUN_FRAME_MS) runFrameTimer = 0; runFrameIndex = (runFrameIndex + 1) % RUN_N; }
 
     updateDogY(now);
     drawDog(now);
