@@ -1,0 +1,291 @@
+@font-face{font-family:"W95 Sans";src:url(fonts/ms-sans-serif-es.ttf) format("truetype");font-weight:400;font-style:normal;font-display:swap}
+@font-face{font-family:"W95 Sans";src:url(fonts/ms-sans-serif-bold-es.ttf) format("truetype");font-weight:700;font-style:normal;font-display:swap}
+/* ===== LeiaNET · modo Windows 95 (activar escribiendo "win95") =====
+   Paleta: #008080 escritorio · #c0c0c0 gris · #000080 barra de título · #ffffff / #808080 / #000000 biseles. */
+html.win95{
+ --w95-teal:#008080;--w95-gray:#c0c0c0;--w95-navy:#000080;--w95-white:#fff;--w95-shadow:#808080;--w95-black:#000;
+ --bg:#008080;--bg-elev:#c0c0c0;--bg-elev-2:#c0c0c0;
+ --border:#808080;--border-soft:#808080;
+ --text:#000;--text-dim:#000;--text-mute:#404040;
+ --accent:#000080;--accent-soft:#c0c0c0;--ok:#008000;
+ --header-bg:#c0c0c0;--radius:0;
+ --display:"W95 Sans","MS Sans Serif",'W95 Sans','MS Sans Serif',Tahoma,Verdana,sans-serif;--mono:"Courier New",Courier,monospace;
+ --hair:#808080;--hair-hot:#000080;--panel:#c0c0c0;--lift-sm:none;--lift-md:none;--lift-lg:none;
+ --glass-fill:#c0c0c0;--glass-fill-strong:#c0c0c0;--glass-border:#808080;--glass-border-hover:#000080;
+ --glass-blur:none;--glass-blur-sm:none;--glass-shadow:none;--glass-shadow-sm:none;
+ --bevel-out:inset -1px -1px 0 #000,inset 1px 1px 0 #fff,inset -2px -2px 0 #808080,inset 2px 2px 0 #dfdfdf;
+ --bevel-in:inset -1px -1px 0 #fff,inset 1px 1px 0 #000,inset -2px -2px 0 #dfdfdf,inset 2px 2px 0 #808080;
+ --field:inset -1px -1px 0 #fff,inset 1px 1px 0 #808080,inset -2px -2px 0 #dfdfdf,inset 2px 2px 0 #000;
+ color-scheme:light;
+}
+html.win95,html.win95 body{background:#008080!important}
+html.win95 body,html.win95 body *:not(svg):not(svg *):not(code):not(pre){font-family:"W95 Sans","MS Sans Serif",'W95 Sans','MS Sans Serif',Tahoma,Verdana,sans-serif!important;border-radius:0!important;
+ -webkit-font-smoothing:none;font-smooth:never;text-rendering:optimizeSpeed}
+html.win95 body{color:#000!important;padding-bottom:40px;font-size:13px}
+html.win95 body *{text-shadow:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;text-transform:none}
+
+/* fuera el espacio original */
+html.win95 .grid-overlay,html.win95 .depth-veil,html.win95 .nebula,html.win95 .nebula-mono,html.win95 .starfield,html.win95 .noise,
+html.win95 .planet-parallax,html.win95 .planet-parallax-2,html.win95 .planet-wrap,html.win95 .planet-wrap-2,html.win95 .planet-glow,html.win95 .planet-ring,
+html.win95 .planet,html.win95 .planet-2,html.win95 .asteroid-parallax,html.win95 .asteroid-wrap,html.win95 .asteroid,
+html.win95 .satellite-parallax,html.win95 .satellite-wrap,html.win95 .satellite,html.win95 .meteor,html.win95 .meteor-trail,html.win95 .meteor-rock,
+html.win95 .shooting-star,html.win95 .stars-layer,html.win95 .sparkle,html.win95 #sparkles,html.win95 .ambient,html.win95 .grain,
+html.win95 .cursor-glow,html.win95 .hero-glass-orb{display:none!important;animation:none!important}
+html.win95 .planet404{display:inline-block!important;width:.55em!important;height:.55em!important;background:#c0c0c0!important;border:0!important;box-shadow:var(--bevel-out)!important;animation:none!important}
+
+#win95-scene{position:fixed;inset:0;z-index:0;pointer-events:none;background:#008080}
+html.win95 main,html.win95 footer,html.win95 section,html.win95 header{position:relative;z-index:1}
+
+/* header = barra de menú de una ventana */
+html.win95 header{z-index:5!important;background:#c0c0c0!important;border:0!important;box-shadow:var(--bevel-out)!important;color:#000}
+html.win95 header::after{display:none!important}
+html.win95 a{color:#000080;text-decoration:underline}
+html.win95 nav a{color:#000!important;text-decoration:none;font-weight:400;padding:3px 10px;border:1px solid transparent}
+html.win95 nav a:hover,html.win95 nav a.active{background:#c0c0c0!important;color:#000!important;box-shadow:var(--bevel-out)!important;transform:none!important}
+html.win95 nav a:active{box-shadow:var(--bevel-in)!important}
+html.win95 .brand img,html.win95 .fbrand img{filter:none}
+
+/* títulos: sobre el escritorio (blanco) y en barras de título (azul) */
+html.win95 h1{color:#fff!important;font-weight:700}
+html.win95 h1 span{color:#ffff00!important;-webkit-text-fill-color:#ffff00!important;background:none!important;animation:none!important}
+html.win95 h3,html.win95 h4{color:#000!important;font-weight:700}
+html.win95 .sec-head{background:linear-gradient(90deg,#000080,#1084d0)!important;border:0!important;padding:3px 6px!important;margin-bottom:14px!important;align-items:center;gap:8px}
+html.win95 .sec-head h2,html.win95 .sec-head .sec-sub,html.win95 .sec-head p{color:#fff!important;font-size:13px!important;font-weight:700;margin:0;letter-spacing:0}
+html.win95 .sec-head .sec-index{color:#fff!important;border:0!important;background:transparent!important;padding:0!important}
+html.win95 .sec-head .count{color:#000!important;background:#c0c0c0!important;border:0!important;box-shadow:var(--bevel-out)!important;padding:1px 8px!important}
+html.win95 .sec-head .icon-badge{width:20px!important;height:20px!important;min-width:20px;background:transparent!important;border:0!important;box-shadow:none!important;transform:none!important}
+html.win95 .sec-head .icon-badge img{padding:1px!important}
+html.win95 h2{color:#fff!important}
+html.win95 p,html.win95 li,html.win95 .desc,html.win95 .sec-sub,html.win95 .lead{color:#000!important}
+html.win95 .hero p.lead{color:#fff!important}
+html.win95 .sec-index,html.win95 .eyebrow{color:#fff!important}
+html.win95 .eyebrow .dot,html.win95 .hero-live .dot{background:#00ff00!important;box-shadow:inset -1px -1px 0 #006400!important;border-radius:0!important}
+
+/* ventanas: tarjetas y paneles con bisel */
+html.win95 .card,html.win95 .social-card,html.win95 .perk-row,html.win95 .faq-item,html.win95 .status-row,html.win95 .novedad-card,
+html.win95 .info-bar,html.win95 .card-wide,html.win95 .panel,html.win95 .box,html.win95 .modal,html.win95 .status-card,
+html.win95 [class*="-card"],html.win95 [class*="card-"]{
+ background:#c0c0c0!important;border:0!important;border-radius:0!important;box-shadow:var(--bevel-out)!important;color:#000!important;transform:none!important}
+html.win95 .card:hover,html.win95 .social-card:hover,html.win95 .card-wide:hover,html.win95 .novedad-card:hover,html.win95 .status-row:hover{
+ background:#c0c0c0!important;box-shadow:var(--bevel-out)!important;transform:none!important}
+html.win95 .card *,html.win95 .social-card *,html.win95 .novedad-card *,html.win95 .faq-item *,html.win95 .status-row *,html.win95 .card-wide *,html.win95 .info-bar *{color:#000}
+html.win95 .card::before,html.win95 .card::after{display:none!important}
+html.win95 .card-wide-info,html.win95 .card-wide-actions{background:none!important;border:0!important;box-shadow:none!important}
+html.win95 .card h3{background:#000080;color:#fff!important;margin:-2px -2px 10px;padding:2px 6px;font-size:13px}
+html.win95 section.game,html.win95 .hero{background:#c0c0c0!important;box-shadow:var(--bevel-out)!important;margin-top:18px;margin-bottom:18px;padding-top:12px!important;padding-bottom:22px!important;color:#000}
+html.win95 .hero{padding-top:36px!important;padding-bottom:36px!important}
+html.win95 .hero h1{color:#000080!important}html.win95 .hero h1 span{color:#800000!important;-webkit-text-fill-color:#800000!important}
+html.win95 .hero p.lead,html.win95 .hero .eyebrow,html.win95 .hero-live{color:#000!important}
+html.win95 .chain-band{background:repeating-linear-gradient(45deg,#808080 0 14px,#c0c0c0 14px 28px)!important;box-shadow:none!important;border:1px solid #000!important}
+html.win95 .lock-badge{background:#c0c0c0!important;border:0!important;box-shadow:var(--bevel-out)!important}
+html.win95 .lock-icon-wrap{background:#000080!important;color:#fff!important;box-shadow:none!important}
+html.win95 .lock-title,html.win95 .lock-sub{color:#000!important}
+
+/* botones: relieve; al clickear se hunden */
+html.win95 .btn,html.win95 .link-btn,html.win95 .copy-btn,html.win95 .icon-btn,html.win95 button:not(.w95-start):not(.nav-toggle){
+ color:#000!important;background:#c0c0c0!important;border:0!important;border-radius:0!important;box-shadow:var(--bevel-out)!important;
+ font-weight:400;letter-spacing:0;padding:5px 14px;min-height:23px;cursor:default;transition:none!important;outline-offset:-5px}
+html.win95 .btn:hover,html.win95 .link-btn:hover,html.win95 .copy-btn:hover,html.win95 .icon-btn:hover,html.win95 button:hover{background:#c0c0c0!important;color:#000!important;transform:none!important}
+html.win95 .btn:active,html.win95 .link-btn:active,html.win95 .copy-btn:active,html.win95 .icon-btn:active,html.win95 button:active{
+ box-shadow:var(--bevel-in)!important;padding:6px 13px 4px 15px!important;transform:none!important}
+html.win95 .btn.primary,html.win95 .btn.solid,html.win95 .link-btn{font-weight:700;box-shadow:inset -1px -1px 0 #000,inset 1px 1px 0 #fff,inset -2px -2px 0 #808080,inset 2px 2px 0 #dfdfdf,0 0 0 1px #000!important}
+html.win95 .btn.coffee,html.win95 .btn.discord{background:#c0c0c0!important;color:#000!important}
+html.win95 .btn::after,html.win95 .btn::before{display:none!important}
+html.win95 .nav-toggle{background:#c0c0c0!important;box-shadow:var(--bevel-out)!important;border:0!important}
+html.win95 .nav-toggle span{background:#000!important}
+
+/* tags / estados */
+html.win95 .tag,html.win95 .mc-chip,html.win95 .status-pill,html.win95 .online-pill,html.win95 .all-ok{
+ background:#c0c0c0!important;color:#000!important;border:0!important;border-radius:0!important;box-shadow:var(--bevel-in)!important;padding:1px 8px}
+html.win95 .status-pill.offline{color:#800000!important}html.win95 .status-pill.warn,html.win95 .all-ok.warn{color:#808000!important}
+html.win95 .all-ok:not(.warn){color:#006400!important}
+html.win95 .pulse-dot{border-radius:0!important;box-shadow:none!important}
+html.win95 .icon-badge,html.win95 .perk-icon,html.win95 .info-icon,html.win95 .contact-icon,html.win95 .novedad-icono,html.win95 .status-icon,html.win95 .social-icon{
+ background:#c0c0c0!important;border:0!important;border-radius:0!important;color:#000!important;box-shadow:var(--bevel-in)!important;transform:none!important}
+html.win95 .icon-badge svg,html.win95 .perk-icon svg,html.win95 .info-icon svg,html.win95 .contact-icon svg{color:#000080!important;stroke:#000080!important}
+html.win95 img{image-rendering:pixelated}
+html.win95 .brand img,html.win95 .fbrand img,html.win95 .sec-head img{image-rendering:auto}
+
+/* campos hundidos */
+html.win95 input,html.win95 select,html.win95 textarea{background:#fff!important;color:#000!important;border:0!important;border-radius:0!important;box-shadow:var(--field)!important;padding:4px 6px}
+html.win95 input:focus,html.win95 select:focus,html.win95 textarea:focus{outline:1px dotted #000!important;outline-offset:-4px;box-shadow:var(--field)!important}
+html.win95 ::placeholder{color:#808080}
+html.win95 code,html.win95 pre,html.win95 .ip-row{background:#fff!important;color:#000!important;border:0!important;box-shadow:var(--field)!important;font-family:"Courier New",Courier,monospace!important}
+html.win95 hr{border:0;border-top:1px solid #808080;border-bottom:1px solid #fff}
+html.win95 table,html.win95 td,html.win95 th{color:#000;border-color:#808080!important}
+
+/* ticker / footer / scroll */
+html.win95 .ticker{background:#c0c0c0!important;border:0!important;box-shadow:var(--bevel-in)!important}
+html.win95 .ticker-item,html.win95 .ticker-item.solid{color:#000!important;-webkit-text-stroke:0!important}
+html.win95 .ticker-item img{filter:none!important;opacity:1!important}
+html.win95 footer{background:#c0c0c0!important;border:0!important;box-shadow:var(--bevel-out)!important;color:#000;margin-bottom:18px}
+html.win95 footer *{color:#000}
+html.win95 .scroll-progress .bar{background:#000080!important;box-shadow:none!important}
+html.win95 :focus-visible{outline:1px dotted #000!important;outline-offset:-4px}
+html.win95 ::selection{background:#000080;color:#fff}
+html.win95 ::-webkit-scrollbar{width:16px;height:16px}
+html.win95 ::-webkit-scrollbar-track{background:repeating-conic-gradient(#c0c0c0 0 25%,#fff 0 50%) 0 0/2px 2px}
+html.win95 ::-webkit-scrollbar-thumb{background:#c0c0c0;box-shadow:var(--bevel-out)}
+html.win95 ::-webkit-scrollbar-button{background:#c0c0c0;box-shadow:var(--bevel-out);width:16px;height:16px}
+html.win95 .back-to-top{color:#000!important;background:#c0c0c0!important;border:0!important;box-shadow:var(--bevel-out)!important;bottom:48px!important}
+html.win95 #toast{background:#ffffe1!important;color:#000!important;border:1px solid #000!important;box-shadow:none!important}
+html.win95 .faq-item summary,html.win95 .faq-item button{color:#000!important;background:transparent!important;box-shadow:none!important;font-weight:700}
+html.win95 .faq-item[open],html.win95 .faq-item.open{box-shadow:var(--bevel-in)!important}
+
+/* barra de tareas + menú Inicio */
+#w95-taskbar,#w95-menu,.tm-ctl#win95-ctl{display:none}
+html.win95 #w95-taskbar{position:fixed;left:0;right:0;bottom:0;height:34px;z-index:99990;display:flex;align-items:center;gap:4px;padding:3px 4px;
+ background:#c0c0c0;box-shadow:inset 0 1px 0 #dfdfdf,inset 0 2px 0 #fff;border-top:1px solid #c0c0c0}
+html.win95 #w95-taskbar button.w95-start{display:flex;align-items:center;gap:5px;height:26px;padding:0 8px;font-weight:700;color:#000;background:#c0c0c0;border:0;cursor:default;box-shadow:var(--bevel-out);font-size:13px}
+html.win95 #w95-taskbar button.w95-start.down{box-shadow:var(--bevel-in)}
+.w95-flag{display:grid;grid-template-columns:7px 7px;gap:1px;width:15px;height:15px}
+.w95-flag i{display:block}.w95-flag i:nth-child(1){background:#f00}.w95-flag i:nth-child(2){background:#0a0}.w95-flag i:nth-child(3){background:#00f}.w95-flag i:nth-child(4){background:#fd0}
+.w95-sep{width:2px;height:24px;margin:0 3px;box-shadow:inset 1px 0 0 #808080,inset -1px 0 0 #fff}
+.w95-task{flex:1;max-width:260px;height:26px;display:flex;align-items:center;padding:0 8px;font-size:12px;color:#000;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;
+ background:repeating-conic-gradient(#c0c0c0 0 25%,#fff 0 50%) 0 0/2px 2px;box-shadow:var(--bevel-in);font-weight:700}
+.w95-tray{margin-left:auto;height:26px;display:flex;align-items:center;padding:0 10px;font-size:12px;color:#000;box-shadow:inset 1px 1px 0 #808080,inset -1px -1px 0 #fff}
+html.win95 #w95-menu{position:fixed;left:4px;bottom:36px;z-index:99991;width:220px;display:none;background:#c0c0c0;box-shadow:var(--bevel-out)}
+html.win95 #w95-menu.open{display:flex}
+.w95-menu-side{width:26px;background:linear-gradient(0deg,#000080,#1084d0);display:flex;align-items:flex-end;justify-content:center;padding:6px 0}
+.w95-menu-side span{writing-mode:vertical-rl;transform:rotate(180deg);color:#c0c0c0;font-size:17px;white-space:nowrap}
+.w95-menu-side b{color:#fff}
+.w95-menu-items{flex:1;padding:3px;display:flex;flex-direction:column}
+html.win95 #w95-menu a,html.win95 #w95-menu button{display:block;text-align:left;padding:8px 12px;color:#000!important;text-decoration:none;background:transparent!important;border:0!important;box-shadow:none!important;font-size:13px;min-height:0}
+html.win95 #w95-menu a:hover,html.win95 #w95-menu button:hover{background:#000080!important;color:#fff!important}
+html.win95 #w95-menu hr{margin:3px 2px}
+
+/* control flotante + aviso */
+html.win95 #win95-ctl{display:inline-flex;bottom:44px;right:20px;color:#000!important;background:#c0c0c0!important;border:0!important;border-radius:0!important;box-shadow:var(--bevel-out)!important}
+html.win95 #win95-ctl:active{box-shadow:var(--bevel-in)!important}
+html.win95 #win95-toast{background:#ffffe1;color:#000;border:1px solid #000;font:12px 'W95 Sans','MS Sans Serif',Tahoma,Verdana,sans-serif;padding:8px 14px;box-shadow:2px 2px 0 rgba(0,0,0,.5)}
+html.win95 #win95-toast::before{content:"ⓘ ";color:#000080;font-weight:700}
+html.win95 .tm-toast{transition:none}
+
+@media (max-width:700px){html.win95 .w95-task{display:none}html.win95 #win95-ctl{right:10px}}
+@media print{#w95-taskbar,#w95-menu{display:none!important}}
+
+/* ---- pulido Win95 ---- */
+html.win95 .btn.primary,html.win95 .btn.solid,html.win95 .link-btn{background:#c0c0c0!important;color:#000!important;text-shadow:none!important}
+html.win95 .btn.primary:focus-visible,html.win95 .btn.solid:focus-visible,html.win95 .btn:focus-visible,html.win95 button:focus-visible{outline:1px dotted #000!important;outline-offset:-5px}
+html.win95 .w95-task{background:#c0c0c0;box-shadow:inset -1px -1px 0 #fff,inset 1px 1px 0 #000,inset -2px -2px 0 #dfdfdf,inset 2px 2px 0 #808080;font-weight:700}
+/* widgets flotantes por encima de la barra de tareas */
+html.win95 #twitch-chat-toggle{bottom:46px!important;border-radius:0!important;background:#c0c0c0!important;color:#000!important;box-shadow:var(--bevel-out)!important;border:0!important}
+html.win95 #back-to-top{bottom:46px!important}
+html.win95 #win95-ctl{bottom:96px!important}
+html.win95 #twitch-chat-panel{bottom:106px!important;border-radius:0!important;background:#c0c0c0!important;box-shadow:var(--bevel-out)!important;border:0!important}
+/* aviso de cookies como cuadro de diálogo */
+html.win95 #leia-consent{bottom:46px!important;border-radius:0!important;background:#c0c0c0!important;color:#000!important;border:0!important;box-shadow:var(--bevel-out),2px 2px 0 #000!important;backdrop-filter:none!important;font-family:'W95 Sans','MS Sans Serif','W95 Sans','MS Sans Serif',Tahoma,Verdana,sans-serif}
+html.win95 #leia-consent *{color:#000!important;text-shadow:none!important}
+html.win95 #leia-consent button{background:#c0c0c0!important;border-radius:0!important}
+/* cinta de marca: sin degradés de desvanecido */
+html.win95 .marquee,html.win95 [class*="marquee"]{-webkit-mask-image:none!important;mask-image:none!important}
+html.win95 [class*="marquee"]::before,html.win95 [class*="marquee"]::after{display:none!important}
+html.win95 .ticker{-webkit-mask-image:none!important;mask-image:none!important}
+html.win95 .ticker::before,html.win95 .ticker::after{display:none!important}
+
+/* =====================================================================
+   WIN95 · rediseño v2: ventanas reales, escritorio vivo, diálogos
+   ===================================================================== */
+html.win95{--w95-ctrls:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='50' height='14' shape-rendering='crispEdges'%3E%3Crect x='0' y='0' width='16' height='14' fill='%23000'/%3E%3Crect x='0' y='0' width='15' height='13' fill='%23fff'/%3E%3Crect x='1' y='1' width='14' height='12' fill='%23808080'/%3E%3Crect x='1' y='1' width='13' height='11' fill='%23dfdfdf'/%3E%3Crect x='2' y='2' width='12' height='10' fill='%23c0c0c0'/%3E%3Crect x='16' y='0' width='16' height='14' fill='%23000'/%3E%3Crect x='16' y='0' width='15' height='13' fill='%23fff'/%3E%3Crect x='17' y='1' width='14' height='12' fill='%23808080'/%3E%3Crect x='17' y='1' width='13' height='11' fill='%23dfdfdf'/%3E%3Crect x='18' y='2' width='12' height='10' fill='%23c0c0c0'/%3E%3Crect x='34' y='0' width='16' height='14' fill='%23000'/%3E%3Crect x='34' y='0' width='15' height='13' fill='%23fff'/%3E%3Crect x='35' y='1' width='14' height='12' fill='%23808080'/%3E%3Crect x='35' y='1' width='13' height='11' fill='%23dfdfdf'/%3E%3Crect x='36' y='2' width='12' height='10' fill='%23c0c0c0'/%3E%3Crect x='4' y='9' width='6' height='2'/%3E%3Crect x='19' y='3' width='9' height='8'/%3E%3Crect x='20' y='5' width='7' height='5' fill='%23c0c0c0'/%3E%3Cpath d='M38 3h2v1h1v1h1v1h2v-1h1v-1h1v-1h2v1h-1v1h-1v1h-1v1h1v1h1v1h1v1h-2v-1h-1v-1h-1v-1h-2v1h-1v1h-1v1h-2v-1h1v-1h1v-1h1v-1h-1v-1h-1v-1h-1z' transform='translate%28-1 0%29'/%3E%3C/svg%3E")}
+
+/* barras de título: activa (azul) / inactiva (gris), con botones de ventana */
+html.win95 .sec-head{position:relative;display:flex!important;align-items:center;min-height:22px;padding:2px 3px 2px 4px!important;margin:-2px -2px 14px!important;
+ background:linear-gradient(90deg,#808080,#b5b5b5)!important}
+html.win95 section.game:hover .sec-head,html.win95 section.game:focus-within .sec-head,html.win95 .card:hover>.sec-head{background:linear-gradient(90deg,#000080,#1084d0)!important}
+html.win95 .sec-head:not(:hover)::after{opacity:1}
+html.win95 .sec-head::after{content:"";display:block!important;flex:0 0 50px;width:50px;height:14px;margin-left:auto;background:var(--w95-ctrls) no-repeat 0 0;position:static!important;inset:auto!important}
+html.win95 .sec-head h2,html.win95 .sec-head .sec-sub{font-size:12px!important;line-height:1.2}
+html.win95 .sec-head .sec-sub{font-weight:400!important;opacity:.9}
+html.win95 .sec-head-main{gap:6px!important;align-items:center}
+html.win95 .sec-head .sec-sub::before{content:"- "}
+html.win95 .sec-head-copy{display:flex!important;align-items:baseline;gap:6px;flex-wrap:wrap}
+html.win95 .sec-head-copy>*{margin:0!important}
+html.win95 .w95-min{align-self:start!important;height:auto!important}
+
+/* hero = ventana "LeiaNET.exe" */
+html.win95 .hero{padding:46px 28px 30px!important;margin:18px 0!important;box-shadow:var(--bevel-out)!important}
+html.win95 .hero::before{content:"LeiaNET.exe - Inicio";display:flex!important;align-items:center;position:absolute!important;inset:3px 3px auto 3px!important;width:auto!important;height:20px!important;padding:0 60px 0 24px;
+ background:url(favicon-16.png) no-repeat 4px center,linear-gradient(90deg,#000080,#1084d0)!important;color:#fff;font-weight:700;font-size:12px;border:0!important;border-radius:0!important;transform:none!important;filter:none!important;opacity:1!important}
+html.win95 .hero::after{content:"";display:block!important;position:absolute!important;top:6px!important;right:6px!important;left:auto!important;bottom:auto!important;width:50px!important;height:14px!important;
+ background:var(--w95-ctrls) no-repeat 0 0!important;border:0!important;box-shadow:none!important;opacity:1!important;transform:none!important;filter:none!important;animation:none!important}
+html.win95 .hero>.hero-bar-icon,html.win95 .hero .w95-ico{display:none}
+html.win95 .hero h1{text-shadow:none!important;font-size:clamp(30px,5vw,52px)!important;line-height:1.05;margin:6px 0 14px}
+html.win95 .hero .lead{max-width:52ch;font-size:14px!important;line-height:1.55}
+html.win95 .hero-live{display:inline-flex;align-items:center;gap:6px;padding:2px 8px;box-shadow:var(--bevel-in)!important;background:#c0c0c0!important;font-size:11px}
+
+/* ventanas minimizadas */
+html.win95 section.w95-min .sec-head~*,html.win95 .hero.w95-min>*:not(.sec-head){display:none!important}
+html.win95 section.w95-min{padding-bottom:6px!important}
+html.win95 .hero.w95-min{padding:30px 0 0!important;min-height:0!important}
+html.win95 section.w95-min .sec-head{margin-bottom:0!important}
+
+/* group-box (etched) para bloques informativos */
+html.win95 .info-bar,html.win95 .section-eyebrow,html.win95 .status-head{box-shadow:inset 1px 1px 0 #808080,inset -1px -1px 0 #fff,1px 1px 0 #fff,-1px -1px 0 #808080!important;background:transparent!important}
+html.win95 .card-wide{padding:10px 12px!important}
+html.win95 .card-wide:active{box-shadow:var(--bevel-in)!important}
+
+/* enlaces */
+html.win95 main a:not(.btn):not(.link-btn):not(nav a):visited{color:#800080}
+html.win95 main a:not(.btn):not(.link-btn):hover{color:#0000ff}
+
+/* ticker como barra de estado */
+html.win95 .ticker{box-shadow:inset 1px 1px 0 #808080,inset -1px -1px 0 #fff!important;padding:3px 0!important}
+html.win95 .ticker-item{font-size:12px!important;font-weight:700}
+
+/* ICONOS DE ESCRITORIO (solo en pantallas anchas, donde sobra margen) */
+#w95-icons{display:none}
+@media (min-width:1500px){
+ html.win95 #w95-icons{display:flex;position:fixed;left:14px;top:14px;z-index:2;flex-direction:column;gap:14px;width:86px}
+}
+.w95-ico{display:flex;flex-direction:column;align-items:center;gap:4px;text-decoration:none!important;cursor:default;padding:2px;outline:0}
+.w95-ico i{display:block;width:40px;height:40px;background:#c0c0c0 center/28px no-repeat;box-shadow:var(--bevel-out)}
+.w95-ico span{color:#fff!important;font-size:12px;text-align:center;line-height:1.15;padding:1px 3px;word-break:break-word}
+.w95-ico.sel span{background:#000080;outline:1px dotted #ffff00}
+.w95-ico.sel i{filter:brightness(.8) sepia(.3) hue-rotate(200deg)}
+
+/* barra de tareas con icono + bandeja */
+html.win95 .w95-task{background:#c0c0c0 url(favicon-16.png) no-repeat 6px center;padding-left:26px;box-shadow:inset 1px 1px 0 #000,inset -1px -1px 0 #fff,inset 2px 2px 0 #808080,inset -2px -2px 0 #dfdfdf;font-weight:700}
+html.win95 .w95-tray{gap:8px}
+.w95-tray .w95-snd{width:14px;height:12px;background:linear-gradient(#000,#000) 0 4px/4px 4px no-repeat,linear-gradient(135deg,#000 50%,transparent 50%) 3px 1px/7px 10px no-repeat;opacity:.8}
+
+/* cuadro de mensaje */
+#w95-dlg{position:fixed;left:50%;top:38%;transform:translate(-50%,-50%);z-index:99995;min-width:290px;max-width:min(420px,92vw);background:#c0c0c0;box-shadow:inset -1px -1px 0 #000,inset 1px 1px 0 #dfdfdf,inset -2px -2px 0 #808080,inset 2px 2px 0 #fff,4px 4px 0 rgba(0,0,0,.35);padding:3px;display:none}
+#w95-dlg.open{display:block}
+#w95-dlg .t{display:flex;align-items:center;justify-content:space-between;background:linear-gradient(90deg,#000080,#1084d0);color:#fff;font-weight:700;font-size:12px;padding:2px 3px 2px 6px;height:20px}
+#w95-dlg .t u{display:block;width:16px;height:14px;background:#c0c0c0;color:#000;text-decoration:none;text-align:center;line-height:12px;font-size:11px;box-shadow:inset -1px -1px 0 #000,inset 1px 1px 0 #fff,inset -2px -2px 0 #808080,inset 2px 2px 0 #dfdfdf}
+#w95-dlg .b{display:flex;gap:14px;padding:16px 16px 6px;align-items:center;color:#000;font-size:12px;line-height:1.4}
+#w95-dlg .b em{flex:0 0 32px;height:32px;border-radius:50%!important;background:#f00;color:#fff;font:700 22px/32px Arial,sans-serif;text-align:center;font-style:normal;box-shadow:inset -2px -2px 0 #800000,inset 2px 2px 0 #ff8080}
+#w95-dlg .f{display:flex;justify-content:center;padding:10px 0 12px}
+#w95-dlg .f button{min-width:76px;padding:4px 12px;color:#000;background:#c0c0c0;border:0;cursor:default;font-size:12px;box-shadow:inset -1px -1px 0 #000,inset 1px 1px 0 #fff,inset -2px -2px 0 #808080,inset 2px 2px 0 #dfdfdf,0 0 0 1px #000;outline:1px dotted #000;outline-offset:-5px}
+#w95-dlg .f button:active{box-shadow:inset 1px 1px 0 #000,inset -1px -1px 0 #fff,inset 2px 2px 0 #808080,inset -2px -2px 0 #dfdfdf,0 0 0 1px #000;padding:5px 11px 3px 13px}
+html.win95 .sec-head-copy{flex-wrap:nowrap!important;min-width:0;overflow:hidden}
+html.win95 .sec-head-copy .sec-sub{width:auto!important;flex:0 1 auto;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+html.win95 .sec-head-main{flex:1 1 auto;min-width:0}
+@media (max-width:700px){html.win95 .sec-head-copy .sec-sub{display:none}html.win95 .hero{padding:44px 14px 24px!important}}
+html.win95 .sec-head-copy{flex-direction:row!important}
+/* modo bajo rendimiento / móvil: ganan los colores Win95 */
+html.win95:not(.x) header,html.win95:not(.x) .lm-dock,html.win95:not(.x) .lm-sheet,html.win95:not(.x) #leia-consent{background:#c0c0c0!important;color:#000!important;border:0!important;border-radius:0!important;box-shadow:var(--bevel-out)!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+html.win95:not(.x) .lm-dock a,html.win95:not(.x) .lm-dock button,html.win95:not(.x) .lm-sheet a,html.win95:not(.x) .lm-sheet button{color:#000!important;border-radius:0!important}
+html.win95:not(.x) .lm-dock{bottom:40px!important}
+html.win95:not(.x) #leia-consent{bottom:44px!important;font:13px 'W95 Sans','MS Sans Serif',Tahoma,Verdana,sans-serif!important}
+html.win95:not(.x) #leia-consent button{border-radius:0!important;min-height:30px!important;font-size:13px!important}
+
+/* ---- tipografía bitmap MS Sans Serif (11 px = grilla original; 22/33 px = escala entera) ---- */
+html.win95 body,html.win95 body *:not(svg):not(svg *):not(code):not(pre){font-family:"W95 Sans","MS Sans Serif",Tahoma,Verdana,sans-serif!important;letter-spacing:0!important;font-synthesis:none;font-kerning:none;font-variant-ligatures:none}
+html.win95 body{font-size:11px!important;line-height:1.45}
+html.win95 body *:not(svg):not(svg *):not(h1):not(h1 *):not(#w95-dlg .b em){font-size:11px!important}
+html.win95 h1,html.win95 .hero h1{font-size:33px!important;line-height:1.1!important;font-weight:700}
+html.win95 h2:not(.sec-head h2){font-size:22px!important}
+html.win95 strong,html.win95 b,html.win95 h2,html.win95 h3,html.win95 h4,html.win95 .sec-head h2,html.win95 .btn.primary,html.win95 .w95-task,html.win95 .w95-start{font-weight:700}
+html.win95 code,html.win95 pre,html.win95 .ip-row,html.win95 input,html.win95 textarea{font-family:"Courier New",Courier,monospace!important;font-size:12px!important}
+html.win95 .hero .lead{font-size:11px!important;line-height:1.6!important;max-width:62ch}
+html.win95 .btn,html.win95 .link-btn,html.win95 button{padding:5px 14px;line-height:1.2}
+html.win95 .sec-head h2{font-size:11px!important}
+@media (max-width:700px){html.win95 h1,html.win95 .hero h1{font-size:22px!important}}
+html.win95 body *:not(svg):not(svg *){word-spacing:1px}
+html.win95 h1,html.win95 .hero h1{word-spacing:3px}
+
+/* botón de música (a la izquierda del control de salida) */
+html.win95 #win95-mute{display:inline-flex;bottom:96px!important;right:70px;color:#000!important;background:#c0c0c0!important;border:0!important;border-radius:0!important;box-shadow:var(--bevel-out)!important}
+html.win95 #win95-mute:active{box-shadow:var(--bevel-in)!important}
+@media (max-width:700px){html.win95 #win95-mute{right:60px}}

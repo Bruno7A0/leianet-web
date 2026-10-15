@@ -1,0 +1,142 @@
+/* ===== LeiaNET · modo Game Boy (activar escribiendo "gameboy") =====
+   Paleta DMG: #0f380f · #306230 · #8bac0f · #9bbc0f. Todo cuadrado, bordes gruesos, sombras duras sin degradés. */
+html.gameboy{
+ --bg:#9bbc0f;--bg-elev:#9bbc0f;--bg-elev-2:#8bac0f;
+ --border:#0f380f;--border-soft:#306230;
+ --text:#0f380f;--text-dim:#0f380f;--text-mute:#306230;
+ --accent:#0f380f;--accent-soft:rgba(15,56,15,.12);--ok:#0f380f;
+ --header-bg:#9bbc0f;--radius:0;
+ --display:"Courier New",Courier,monospace;--mono:"Courier New",Courier,monospace;
+ --hair:#306230;--hair-hot:#0f380f;
+ --panel:#9bbc0f;--lift-sm:none;--lift-md:none;--lift-lg:none;
+ --glass-fill:#9bbc0f;--glass-fill-strong:#8bac0f;--glass-border:#0f380f;--glass-border-hover:#0f380f;
+ --glass-blur:none;--glass-blur-sm:none;--glass-shadow:0 0 8px rgba(15,56,15,.35);--glass-shadow-sm:0 0 5px rgba(15,56,15,.3);
+ color-scheme:light;
+}
+html.gameboy,html.gameboy body{background:#9bbc0f!important}
+html.gameboy body,html.gameboy body *:not(svg):not(svg *):not(canvas){font-family:"Courier New",Courier,monospace!important;border-radius:0!important}
+html.gameboy body{color:#0f380f!important;text-shadow:none}
+
+/* se apaga el espacio original: lo reemplaza la lluvia de código */
+html.gameboy .grid-overlay,html.gameboy .depth-veil,html.gameboy .nebula,html.gameboy .nebula-mono,html.gameboy .starfield,html.gameboy .noise,
+html.gameboy .planet-parallax,html.gameboy .planet-parallax-2,html.gameboy .planet-wrap,html.gameboy .planet-wrap-2,html.gameboy .planet-glow,html.gameboy .planet-ring,
+html.gameboy .planet,html.gameboy .planet-2,html.gameboy .asteroid-parallax,html.gameboy .asteroid-wrap,html.gameboy .asteroid,
+html.gameboy .satellite-parallax,html.gameboy .satellite-wrap,html.gameboy .satellite,html.gameboy .meteor,html.gameboy .meteor-trail,html.gameboy .meteor-rock,
+html.gameboy .shooting-star,html.gameboy .stars-layer,html.gameboy .sparkle,html.gameboy #sparkles,html.gameboy .ambient,html.gameboy .grain,
+html.gameboy .cursor-glow,html.gameboy .hero-glass-orb{display:none!important;animation:none!important}
+html.gameboy .planet404{display:inline-block!important;width:.55em!important;height:.55em!important;background:#0f380f!important;border:0!important;box-shadow:3px 3px 0 #306230!important;border-radius:0!important;animation:none!important}
+
+html.gameboy main,html.gameboy footer,html.gameboy section,html.gameboy header{position:relative;z-index:1}
+
+/* header / nav */
+html.gameboy header{background:#9bbc0f!important;border:1px solid #0f380f!important;box-shadow:3px 3px 0 #306230!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+html.gameboy header::after{display:none!important}
+html.gameboy a{color:#0f380f;text-decoration:none}
+html.gameboy nav a{color:#0f380f!important;font-weight:400}
+html.gameboy nav a::before{content:"[ ";opacity:.6}html.gameboy nav a::after{content:" ]";opacity:.6}
+html.gameboy nav a:hover,html.gameboy nav a.active{background:#0f380f!important;color:#9bbc0f!important;text-shadow:none!important;box-shadow:none!important}
+html.gameboy .brand img,html.gameboy .fbrand img{filter:grayscale(1) contrast(1.3) sepia(1) hue-rotate(40deg) saturate(2.4) brightness(.8) drop-shadow(2px 2px 0 #306230)}
+
+/* títulos */
+html.gameboy h1,html.gameboy h2,html.gameboy h3,html.gameboy h4,html.gameboy .sec-head h2{color:#0f380f!important;font-weight:700;letter-spacing:.02em;text-transform:uppercase;text-shadow:none!important}
+html.gameboy h1 span{color:#0f380f!important;-webkit-text-fill-color:#0f380f!important;background:none!important;animation:none!important}
+html.gameboy h2::before{content:"\25B6  ";color:#0f380f;font-size:.7em}
+html.gameboy h2::after{content:"\25AE";color:#0f380f;animation:gbBlink 1s steps(1) infinite}
+@keyframes gbBlink{50%{opacity:0}}
+html.gameboy p,html.gameboy li,html.gameboy .desc,html.gameboy .sec-sub,html.gameboy .lead{color:#0f380f;text-shadow:none}
+html.gameboy .lead{color:#0f380f}
+html.gameboy .sec-index,html.gameboy .eyebrow{color:#0f380f!important;border-color:#306230!important;letter-spacing:.1em}
+html.gameboy .eyebrow .dot,html.gameboy .hero-live .dot{background:#0f380f!important;box-shadow:3px 3px 0 #306230!important;border-radius:0!important}
+html.gameboy .sec-head{border-bottom:1px solid #306230}
+
+/* tarjetas: marcos cuadrados verdes */
+html.gameboy .card,html.gameboy .social-card,html.gameboy .game,html.gameboy .perk-row,html.gameboy .faq-item,html.gameboy .status-row,html.gameboy .novedad-card,
+html.gameboy .info-bar,html.gameboy .card-wide,html.gameboy .panel,html.gameboy .box,html.gameboy .modal,html.gameboy .status-card,
+html.gameboy [class*="-card"],html.gameboy [class*="card-"]{
+ background:rgba(155,188,15,.88)!important;border:3px solid #0f380f!important;border-radius:0!important;box-shadow:4px 4px 0 #306230!important;
+ backdrop-filter:none!important;-webkit-backdrop-filter:none!important;color:#0f380f}
+html.gameboy section.game{background:transparent!important;border:0!important;box-shadow:none!important}
+html.gameboy .card:hover,html.gameboy .social-card:hover,html.gameboy .card-wide:hover,html.gameboy .novedad-card:hover{
+ background:#8bac0f!important;border-color:#0f380f!important;box-shadow:3px 3px 0 #306230!important;transform:none!important}
+html.gameboy .card-wide-info,html.gameboy .card-wide-actions{background:none!important;border:0!important;box-shadow:none!important}
+html.gameboy .card::before,html.gameboy .card::after{display:none!important}
+html.gameboy .chain-band{background:repeating-linear-gradient(45deg,#306230 0 14px,#9bbc0f 14px 28px)!important;border-color:#0f380f!important;box-shadow:none!important}
+html.gameboy .lock-badge{background:#9bbc0f!important;border:1px solid #0f380f!important;box-shadow:3px 3px 0 #306230!important}
+html.gameboy .lock-icon-wrap{color:#9bbc0f!important;background:#0f380f!important;box-shadow:none!important}
+html.gameboy .lock-title{color:#0f380f!important}html.gameboy .lock-sub{color:#0f380f!important}
+
+/* botones */
+html.gameboy .btn,html.gameboy .link-btn,html.gameboy .copy-btn,html.gameboy .icon-btn,html.gameboy button{
+ color:#0f380f!important;background:#306230!important;border:1px solid #0f380f!important;border-radius:0!important;text-transform:uppercase;letter-spacing:.06em;
+ box-shadow:none!important;text-shadow:none;transition:none}
+html.gameboy .btn:hover,html.gameboy .link-btn:hover,html.gameboy .copy-btn:hover,html.gameboy .icon-btn:hover,html.gameboy button:hover{
+ background:#0f380f!important;color:#9bbc0f!important;text-shadow:none!important;box-shadow:3px 3px 0 #306230!important}
+html.gameboy .btn.primary,html.gameboy .btn.solid,html.gameboy .link-btn,html.gameboy .btn.coffee,html.gameboy .btn.discord{background:#306230!important;color:#0f380f!important;border-color:#0f380f!important}
+html.gameboy .btn:active{transform:translate(1px,1px)}
+html.gameboy .nav-toggle span{background:#0f380f!important}
+
+/* tags / estados */
+html.gameboy .tag,html.gameboy .mc-chip,html.gameboy .status-pill,html.gameboy .online-pill,html.gameboy .all-ok,html.gameboy .sec-head .count{
+ background:#306230!important;color:#0f380f!important;border:1px solid #0f380f!important;border-radius:0!important;text-shadow:none;box-shadow:none}
+html.gameboy .status-pill.offline{background:#9bbc0f!important;color:#0f380f!important;border-style:dashed!important;opacity:.7}
+html.gameboy .status-pill.warn,html.gameboy .all-ok.warn{background:#9bbc0f!important;color:#0f380f!important;border-style:dotted!important}
+html.gameboy .pulse-dot{border-radius:0!important;box-shadow:3px 3px 0 #306230}
+html.gameboy .icon-badge,html.gameboy .perk-icon,html.gameboy .info-icon,html.gameboy .contact-icon,html.gameboy .novedad-icono,html.gameboy .status-icon,html.gameboy .social-icon{
+ background:#306230!important;border:1px solid #0f380f!important;border-radius:0!important;color:#0f380f!important;box-shadow:none!important}
+html.gameboy .icon-badge img,html.gameboy .social-icon img,html.gameboy .status-icon img{filter:grayscale(1) brightness(1.1) sepia(1) hue-rotate(40deg) saturate(1.6)}
+html.gameboy .icon-badge svg,html.gameboy .perk-icon svg,html.gameboy .info-icon svg,html.gameboy .contact-icon svg{color:#0f380f!important;stroke:#0f380f!important}
+
+/* inputs / código */
+html.gameboy input,html.gameboy select,html.gameboy textarea{background:#9bbc0f!important;color:#0f380f!important;border:1px solid #0f380f!important;border-radius:0!important;caret-color:#0f380f;box-shadow:none!important}
+html.gameboy input:focus,html.gameboy select:focus,html.gameboy textarea:focus{background:#8bac0f!important;box-shadow:3px 3px 0 #306230!important;outline:none!important}
+html.gameboy ::placeholder{color:#306230}
+html.gameboy code,html.gameboy pre,html.gameboy .ip-row{background:#9bbc0f!important;color:#0f380f!important;border:1px solid #306230!important}
+html.gameboy hr{border-color:#306230}
+html.gameboy table,html.gameboy td,html.gameboy th{color:#0f380f;border-color:#306230!important}html.gameboy th{color:#0f380f}
+
+/* ticker / footer / scroll */
+html.gameboy .ticker{background:#8bac0f!important;border-top:1px solid #0f380f!important;border-bottom:1px solid #0f380f!important;box-shadow:none!important}
+html.gameboy .ticker-item{color:#0f380f!important;-webkit-text-stroke:0!important}
+html.gameboy .ticker-item.solid{color:#0f380f!important}
+html.gameboy .ticker-item img{filter:grayscale(1) sepia(1) hue-rotate(40deg) saturate(1.6)!important;opacity:.9!important}
+html.gameboy footer{background:rgba(155,188,15,.9)!important;border-top:1px solid #0f380f!important;box-shadow:none!important;color:#0f380f}
+html.gameboy .scroll-progress .bar{background:#0f380f!important;box-shadow:3px 3px 0 #306230!important}
+html.gameboy :focus-visible{outline:2px solid #0f380f!important;outline-offset:2px}
+html.gameboy ::selection{background:#0f380f;color:#9bbc0f;text-shadow:none}
+html.gameboy ::-webkit-scrollbar{width:12px}html.gameboy ::-webkit-scrollbar-track{background:#9bbc0f;border-left:1px solid #306230}
+html.gameboy ::-webkit-scrollbar-thumb{background:#0f380f;border:2px solid #9bbc0f}
+html.gameboy .back-to-top{color:#0f380f!important;border:1px solid #0f380f!important;background:#9bbc0f!important;box-shadow:none!important}
+html.gameboy #toast{background:#9bbc0f!important;color:#0f380f!important;border:1px solid #0f380f!important;box-shadow:3px 3px 0 #306230!important}
+html.gameboy .faq-item summary,html.gameboy .faq-item button{color:#0f380f;background:transparent!important;border:0!important;text-transform:none}
+html.gameboy .faq-item[open],html.gameboy .faq-item.open{border-color:#0f380f!important}
+html.gameboy img:not(.brand img):not(.fbrand img){filter:grayscale(1) contrast(1.15) sepia(1) hue-rotate(40deg) saturate(1.5) brightness(.85)}
+
+/* control flotante + aviso */
+html.gameboy #gameboy-ctl{display:inline-flex;color:#0f380f!important;background:#9bbc0f!important;border:1px solid #0f380f!important;border-radius:0!important;box-shadow:3px 3px 0 #306230!important}
+html.gameboy #gameboy-ctl:hover{background:#0f380f!important;color:#9bbc0f!important}
+html.gameboy #gameboy-mute{display:inline-flex;color:#0f380f!important;background:#9bbc0f!important;border:1px solid #0f380f!important;border-radius:0!important;box-shadow:3px 3px 0 #306230!important}
+html.gameboy #gameboy-mute:hover{background:#0f380f!important;color:#9bbc0f!important}
+html.gameboy #gameboy-toast{background:#9bbc0f;color:#0f380f;border:1px solid #0f380f;box-shadow:3px 3px 0 #306230;letter-spacing:.08em}
+
+/* rendimiento / accesibilidad */
+@media (prefers-reduced-motion:reduce){html.gameboy h2::after{animation:none}}
+
+/* ---- escena LCD ---- */
+#gameboy-scene{position:fixed;inset:0;z-index:0;pointer-events:none;background:#9bbc0f;overflow:hidden}
+#gameboy-scene .gb-lcd{position:absolute;inset:0;background-image:linear-gradient(rgba(15,56,15,.13) 1px,transparent 1px),linear-gradient(90deg,rgba(15,56,15,.13) 1px,transparent 1px);background-size:3px 3px}
+#gameboy-scene .gb-ghost{position:absolute;left:0;right:0;top:-30%;height:30%;background:linear-gradient(180deg,transparent,rgba(139,172,15,.55),transparent);animation:gbRefresh 7s linear infinite}
+#gameboy-scene .gb-vig{position:absolute;inset:0;background:radial-gradient(ellipse 85% 75% at 50% 45%,transparent 55%,rgba(48,98,48,.45))}
+@keyframes gbRefresh{to{transform:translateY(430%)}}
+html.gameboy main,html.gameboy footer,html.gameboy section,html.gameboy header{position:relative;z-index:1}
+html.gameboy body{font-weight:700;letter-spacing:.02em}
+html.gameboy h1,html.gameboy h2,html.gameboy h3{letter-spacing:.06em}
+html.gameboy .btn:active,html.gameboy button:active{transform:translate(3px,3px);box-shadow:none!important}
+html.gameboy #gameboy-ctl,html.gameboy #gameboy-mute{border-width:3px!important}
+html.gameboy #gameboy-toast{border-width:3px;letter-spacing:.1em}
+html.gameboy.low-perf #gameboy-scene .gb-ghost{display:none}
+@media (prefers-reduced-motion:reduce){html.gameboy h2::after,#gameboy-scene .gb-ghost{animation:none}}
+
+/* nav sin corchetes (en Game Boy no entran) + aviso de cookies */
+html.gameboy nav a::before,html.gameboy nav a::after{content:none!important}
+html.gameboy #leia-consent{background:#9bbc0f!important;color:#0f380f!important;border:3px solid #0f380f!important;box-shadow:4px 4px 0 #306230!important}
+html.gameboy #leia-consent *{color:#0f380f!important}

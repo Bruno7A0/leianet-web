@@ -40,6 +40,37 @@ Escribí **`retrowave`** en cualquier página (fuera de un input) para activarlo
 - Logo neón propio (`logo_leianetwork_retro.webp`) en header y footer, igual que Aero usa el de vidrio; carretera, reflejo del sol, estrellas fugaces y parallax de scroll; reproductor con ecualizador.
 - Archivos: `assets/retrowave-mode.js`, `assets/retrowave-mode.css`, `assets/retrowave-music.mp3`, fuente `assets/fonts/orbitron-*`.
 
+## 🟩 Modo Matrix y 🪟 Modo Windows 95
+
+Escribí **`matrix`** o **`win95`** en cualquier página (fuera de un input) para activarlos; volvé a escribir la palabra (o tocá el botón flotante) para salir.
+
+- **Matrix**: fondo `#000000`, texto y bordes `#00ff00`, `#003300` para botones/inputs, `#80ff80` para resaltados. Lluvia de código en canvas, scanlines, tipografía Courier New, todo cuadrado.
+- **Windows 95**: escritorio `#008080`, ventanas `#c0c0c0`, barras de título `#000080` → `#1084d0`, biseles `#fff / #808080 / #000`. Botones que se hunden al click, campos hundidos, barra de tareas con menú Inicio y reloj.
+- Misma mecánica que Aero/Retrowave: se guarda entre páginas (localStorage + `window.name` + `?matrix=1` / `?win95=1` en los links internos) y los seis modos son excluyentes entre sí.
+- Respeta `prefers-reduced-motion` y el modo de bajo rendimiento.
+- **Música de fondo** en Matrix (`matrix-music.mp3`, ambient/techno oscuro) y Windows 95 (`win95-music.mp3`, instrumental estilo MIDI de época): loop con crossfade, volumen bajito, botón de silencio junto al de salida y se retoma desde donde iba al cambiar de página. Son composiciones originales sintetizadas (no hay samples de terceros).
+- **Ladrido de Windows 95**: `assets/ladrido-8bit.wav` ahora es lo-fi a propósito (≈2,9 kHz, 4 bits, sin filtro anti-aliasing y con un poco de hiss); dura lo mismo que antes, así que la animación sigue sincronizada.
+- Archivos: `assets/theme-modes.js` (todos estos modos + reproductor de música), `assets/matrix-mode.css`, `assets/win95-mode.css`.
+
+## 🎮 Modo Game Boy y 🟨 Modo Brutalista
+
+Escribí **`gameboy`** o **`brutal`** en cualquier página (fuera de un input); misma mecánica que el resto (se guardan entre páginas con `?gameboy=1` / `?brutal=1`, son excluyentes entre sí, respetan `prefers-reduced-motion` y el modo de bajo rendimiento).
+
+- **Game Boy**: paleta de 4 verdes de la DMG (`#0f380f #306230 #8bac0f #9bbc0f`), pantalla LCD con grilla de píxeles y "ghosting" de refresco, tipografía monoespaciada en negrita, bordes gruesos y sombras duras, imágenes teñidas de verde, beep "ba-ding" al activar. Música chiptune (`gameboy-music.mp3`: pulsos, triángulo y ruido).
+- **Brutalista** (neobrutalismo): fondo crema con puntos, figuras planas flotando, bordes de 3 px, sombras duras que se hunden al click, tarjetas que rotan entre amarillo/rosa/azul/verde y títulos con marcador. Música funk (`brutal-music.mp3`).
+- Ambos usan el botón flotante de salida + botón de música, y el ladrido del logo tiene burbuja propia en cada estilo.
+- Archivos: `assets/theme-modes.js`, `assets/gameboy-mode.css`, `assets/brutal-mode.css`, `assets/gameboy-music.mp3`, `assets/brutal-music.mp3`.
+
+## 🕯️ Modo Dark Fantasy
+
+Escribí **`darkfantasy`** en cualquier página (fuera de un input); misma mecánica que el resto (se guarda entre páginas con `?darkfantasy=1`, es excluyente con los demás modos, respeta `prefers-reduced-motion` y el modo de bajo rendimiento).
+
+- **Paleta**: `#201a32 · #4e3c5d · #896991 · #e5a4c7 · #f5c2d9` (ciruela nocturno → malva → rosa pálido). Sin naranjas ni rojos: tono sombrío, no festivo.
+- **Escena**: cielo violeta con Vía Láctea y estrellas titilantes, eclipse, montañas dentadas en capas con niebla, árboles muertos y un acantilado con muralla y torres con techo de hongo (ventanas y puntos de luz que parpadean, estandarte, braseros mágicos, cuervos). Motas de luz que suben, estrella fugaz ocasional y parallax suave con el mouse.
+- **Interfaz**: tarjetas de piedra oscura con marco grabado, títulos serif en mayúsculas con subrayado degradé, botones ciruela con brillo malva, foco de teclado rosa pálido. Logo y ladrido teñidos de malva.
+- **Música**: `darkfantasy-music.mp3`, ambient oscuro original sintetizado (drone, pads, campanas y tambor grave), con botón de silencio.
+- Archivos: `assets/theme-modes.js`, `assets/darkfantasy-mode.css`, `assets/darkfantasy-music.mp3`.
+
 ## 📊 Encuestas (sección Novedades)
 
 Las encuestas se muestran arriba de las novedades y se crean desde `admin.html` (mismo token que las novedades).

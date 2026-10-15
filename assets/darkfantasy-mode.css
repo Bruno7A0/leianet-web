@@ -1,0 +1,195 @@
+/* ===== LeiaNET · modo Dark Fantasy (activar escribiendo "darkfantasy") =====
+   Paleta: #201a32 · #4e3c5d · #896991 · #e5a4c7 · #f5c2d9 (ciruela nocturno → malva → rosa pálido). Sin naranjas ni rojos.
+   Cielo violeta con Vía Láctea, montañas dentadas, acantilado con torres-hongo, niebla, motas mágicas y un eclipse. */
+@font-face{font-family:"Highcrest";font-style:normal;font-weight:400 900;font-display:swap;src:url(fonts/highcrest.ttf) format("truetype")}
+html.darkfantasy{
+ --df-void:#120f1d;--df-char:#1a1629;--df-night:#0f172a;--df-stone:#4e3c5d;--df-stone2:#6b5585;--df-moss:#3b4231;--df-wine:#4e3c5d;
+ --df-blood:#896991;--df-gold:#e5a4c7;--df-magic:#f5c2d9;--df-bone:#eadbe6;--df-bone-dim:#b49cb0;
+ --bg:#09070e;--bg-elev:#0e0b15;--bg-elev-2:#131019;
+ --border:#4e3c5d;--border-soft:#2a2340;
+ --text:#eadbe6;--text-dim:#c4afc0;--text-mute:#9b8699;
+ --accent:#e5a4c7;--accent-soft:rgba(229,164,199,.14);--ok:#7da05a;
+ --header-bg:rgba(10,7,16,.9);--radius:2px;
+ --gothic:"Highcrest","Palatino Linotype",Georgia,serif;
+ --ui:"Cinzel","Trajan Pro","Copperplate","Copperplate Gothic Light","Palatino Linotype",Georgia,serif;
+ --display:var(--ui);
+ --body:"Palatino Linotype","Book Antiqua",Palatino,Georgia,serif;
+ --mono:"JetBrains Mono",ui-monospace,monospace;
+ --hair:#4e3c5d;--hair-hot:#896991;--panel:#0b0911;--lift-sm:none;--lift-md:none;--lift-lg:none;
+ --glass-fill:rgba(9,7,14,.88);--glass-fill-strong:rgba(6,5,10,.95);--glass-border:#4e3c5d;--glass-border-hover:#896991;
+ --glass-blur:blur(4px);--glass-blur-sm:blur(3px);--glass-shadow:0 10px 30px rgba(0,0,0,.6);--glass-shadow-sm:0 6px 18px rgba(0,0,0,.55);
+ color-scheme:dark;
+}
+html.darkfantasy,html.darkfantasy body{background:#07050b!important}
+html.darkfantasy body{color:#eadbe6!important;font-family:var(--body);letter-spacing:.005em}
+html.darkfantasy body *:not(svg):not(svg *):not(canvas):not(.pulse-dot):not(.dot):not(i){border-radius:2px}
+
+/* se apaga el espacio original: lo reemplaza la escena */
+html.darkfantasy .grid-overlay,html.darkfantasy .depth-veil,html.darkfantasy .nebula,html.darkfantasy .nebula-mono,html.darkfantasy .starfield,html.darkfantasy .noise,
+html.darkfantasy .planet-parallax,html.darkfantasy .planet-parallax-2,html.darkfantasy .planet-wrap,html.darkfantasy .planet-wrap-2,html.darkfantasy .planet-glow,html.darkfantasy .planet-ring,
+html.darkfantasy .planet,html.darkfantasy .planet-2,html.darkfantasy .asteroid-parallax,html.darkfantasy .asteroid-wrap,html.darkfantasy .asteroid,
+html.darkfantasy .satellite-parallax,html.darkfantasy .satellite-wrap,html.darkfantasy .satellite,html.darkfantasy .meteor,html.darkfantasy .meteor-trail,html.darkfantasy .meteor-rock,
+html.darkfantasy .shooting-star,html.darkfantasy .stars-layer,html.darkfantasy .sparkle,html.darkfantasy #sparkles,html.darkfantasy .ambient,html.darkfantasy .grain,
+html.darkfantasy .cursor-glow,html.darkfantasy .hero-glass-orb{display:none!important;animation:none!important}
+html.darkfantasy .planet404{display:inline-block!important;width:.55em!important;height:.55em!important;background:radial-gradient(circle,#120f1d 58%,#e5a4c7 62%,#896991 78%,transparent 100%)!important;border:0!important;box-shadow:0 0 14px rgba(137,105,145,.7)!important;border-radius:50%!important;animation:none!important}
+html.darkfantasy main,html.darkfantasy footer,html.darkfantasy section,html.darkfantasy header{position:relative;z-index:1}
+
+/* ================= ESCENA ================= */
+#darkfantasy-scene{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;background:#120f1d}
+#darkfantasy-scene canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+#darkfantasy-scene .df-cliff{position:absolute;right:-24px;bottom:-24px;height:min(92vh,150vw);width:auto;aspect-ratio:520/640;display:block;will-change:translate;filter:drop-shadow(-14px 0 26px rgba(0,0,0,.55))}
+#darkfantasy-scene .df-fog{position:absolute;left:-30%;right:-30%;bottom:-6%;height:46%;pointer-events:none;
+ background:radial-gradient(ellipse 38% 55% at 18% 70%,rgba(137,105,145,.2),transparent 70%),radial-gradient(ellipse 34% 48% at 52% 82%,rgba(100,76,125,.22),transparent 70%),radial-gradient(ellipse 40% 52% at 84% 74%,rgba(150,100,160,.16),transparent 70%);
+ animation:dfFog 70s ease-in-out infinite alternate}
+#darkfantasy-scene .df-fog2{bottom:-14%;height:36%;opacity:.9;
+ background:radial-gradient(ellipse 36% 50% at 30% 80%,rgba(200,150,210,.12),transparent 70%),radial-gradient(ellipse 42% 46% at 70% 86%,rgba(110,84,135,.16),transparent 72%);
+ animation-duration:95s;animation-direction:alternate-reverse}
+@keyframes dfFog{from{transform:translateX(-7%)}to{transform:translateX(7%)}}
+#darkfantasy-scene .df-vig{position:absolute;inset:0;background:radial-gradient(ellipse 120% 95% at 50% 42%,transparent 40%,rgba(4,3,8,.85) 100%),linear-gradient(180deg,rgba(4,3,8,.45),transparent 26%,transparent 60%,rgba(4,3,8,.6))}
+/* velo para que el texto lea bien sobre el paisaje */
+#darkfantasy-scene .df-veil{position:absolute;inset:0;background:rgba(6,4,12,.5)}
+#darkfantasy-scene .df-birds{position:absolute;left:0;top:0;width:100%;height:42%;overflow:hidden}
+#darkfantasy-scene .df-bird{position:absolute;left:0;width:22px;height:10px;translate:-8vw 0;animation:dfBird linear infinite;opacity:.8}
+#darkfantasy-scene .df-bird svg{width:100%;height:100%;display:block;animation:dfFlap .55s ease-in-out infinite alternate;transform-origin:50% 100%}
+@keyframes dfBird{to{translate:112vw -40px}}
+@keyframes dfFlap{to{transform:scaleY(.45)}}
+/* cliff: luces, banderas y llamas */
+#darkfantasy-scene .df-dot{animation:dfTwk 3.2s ease-in-out infinite}
+#darkfantasy-scene .df-d2{animation-duration:4.6s;animation-delay:-1.3s}
+#darkfantasy-scene .df-d3{animation-duration:2.4s;animation-delay:-.7s}
+@keyframes dfTwk{0%,100%{opacity:.35}50%{opacity:1}}
+#darkfantasy-scene .df-win{animation:dfWin 5s steps(1) infinite}
+#darkfantasy-scene .df-win.w2{animation-duration:7s;animation-delay:-2s}
+@keyframes dfWin{0%{opacity:1}12%{opacity:.78}20%{opacity:1}57%{opacity:.86}63%{opacity:1}}
+#darkfantasy-scene .df-flame{transform-box:fill-box;transform-origin:50% 100%;animation:dfFlame .42s ease-in-out infinite alternate}
+#darkfantasy-scene .df-flame.f2{animation-duration:.55s;animation-delay:-.2s}
+@keyframes dfFlame{from{transform:scale(1,1) skewX(-3deg)}to{transform:scale(.86,1.18) skewX(4deg)}}
+#darkfantasy-scene .df-glow{animation:dfGlow 2.6s ease-in-out infinite alternate}
+@keyframes dfGlow{from{opacity:.55}to{opacity:1}}
+#darkfantasy-scene .df-banner{transform-box:fill-box;transform-origin:50% 0;animation:dfSway 4.5s ease-in-out infinite alternate}
+@keyframes dfSway{from{transform:rotate(-3deg) skewX(2deg)}to{transform:rotate(4deg) skewX(-3deg)}}
+html.darkfantasy.low-perf #darkfantasy-scene .df-fog,html.darkfantasy.low-perf #darkfantasy-scene .df-bird,html.darkfantasy.low-perf #darkfantasy-scene .df-bird svg,
+html.darkfantasy.low-perf #darkfantasy-scene .df-dot,html.darkfantasy.low-perf #darkfantasy-scene .df-banner{animation:none}
+html.darkfantasy.low-perf #darkfantasy-scene .df-cliff{filter:none}
+html.darkfantasy.low-perf #darkfantasy-scene .df-birds{display:none}
+@media (prefers-reduced-motion:reduce){
+ #darkfantasy-scene .df-fog,#darkfantasy-scene .df-bird,#darkfantasy-scene .df-bird svg,#darkfantasy-scene .df-dot,#darkfantasy-scene .df-win,
+ #darkfantasy-scene .df-flame,#darkfantasy-scene .df-glow,#darkfantasy-scene .df-banner{animation:none}
+ #darkfantasy-scene .df-birds{display:none}
+}
+
+/* ================= HEADER / NAV ================= */
+html.darkfantasy header{background:linear-gradient(180deg,rgba(18,14,28,.96),rgba(9,7,14,.95))!important;border:1px solid #4e3c5d!important;border-bottom:1px solid #896991!important;box-shadow:0 8px 28px rgba(0,0,0,.65),0 1px 0 rgba(229,164,199,.25) inset!important}
+html.darkfantasy header::after{display:none!important}
+html.darkfantasy a{color:#e5a4c7;text-decoration:none;transition:color .2s,text-shadow .2s}
+html.darkfantasy a:hover{color:#f5c2d9;text-shadow:0 0 10px rgba(229,164,199,.45)}
+html.darkfantasy nav a{color:#ddc9d8!important;font-family:var(--ui)!important;font-weight:600;letter-spacing:.1em;text-transform:uppercase;border:1px solid transparent}
+html.darkfantasy nav a:hover,html.darkfantasy nav a.active{color:#f5c2d9!important;background:rgba(78,60,93,.55)!important;border-color:#896991!important;box-shadow:0 0 14px rgba(137,105,145,.45),inset 0 0 10px rgba(0,0,0,.5)!important}
+html.darkfantasy .brand img,html.darkfantasy .fbrand img{filter:grayscale(1) sepia(1) saturate(2.6) hue-rotate(270deg) brightness(.92) drop-shadow(0 0 10px rgba(137,105,145,.75))}
+
+/* ================= TÍTULOS ================= */
+html.darkfantasy h1,html.darkfantasy h2,html.darkfantasy h3,html.darkfantasy h4,html.darkfantasy .sec-head h2{
+ font-family:var(--gothic)!important;color:#f5e6ee!important;font-weight:700;letter-spacing:.03em;text-transform:none;font-size-adjust:none;text-shadow:0 2px 18px rgba(137,105,145,.55),0 0 2px #000!important}
+html.darkfantasy h1 span{background:linear-gradient(180deg,#f5c2d9 0%,#e5a4c7 52%,#896991 100%)!important;-webkit-background-clip:text!important;background-clip:text!important;color:transparent!important;-webkit-text-fill-color:transparent!important;animation:none!important;text-shadow:none!important;filter:drop-shadow(0 2px 12px rgba(137,105,145,.6))}
+html.darkfantasy h1{line-height:1.22;padding-top:.12em;margin-bottom:.35em}
+html.darkfantasy h1,html.darkfantasy h2,html.darkfantasy h3,html.darkfantasy h4{font-size-adjust:none}
+html.darkfantasy h4{font-family:var(--ui)!important;text-transform:uppercase;letter-spacing:.12em;font-size:.85em}
+html.darkfantasy h2::after{content:"";display:block;width:min(240px,60%);height:2px;margin-top:10px;background:linear-gradient(90deg,#896991,#e5a4c7 55%,transparent);box-shadow:0 0 10px rgba(137,105,145,.6)}
+html.darkfantasy p,html.darkfantasy li,html.darkfantasy .desc,html.darkfantasy .sec-sub,html.darkfantasy .lead{color:#ddc9d8!important;text-shadow:0 1px 3px rgba(0,0,0,.85)}
+html.darkfantasy .sec-index,html.darkfantasy .eyebrow{color:#e5a4c7!important;border:1px solid #5f4a72!important;background:rgba(78,60,93,.4)!important;letter-spacing:.2em;font-family:var(--ui)!important;text-transform:uppercase}
+html.darkfantasy .eyebrow .dot,html.darkfantasy .hero-live .dot{background:#896991!important;box-shadow:0 0 10px #896991,0 0 20px rgba(137,105,145,.6)!important}
+html.darkfantasy .sec-head{border-bottom:1px solid transparent;border-image:linear-gradient(90deg,#896991,#4e3c5d 40%,transparent) 1}
+
+/* ================= TARJETAS ================= */
+html.darkfantasy .card,html.darkfantasy .social-card,html.darkfantasy .game,html.darkfantasy .perk-row,html.darkfantasy .faq-item,html.darkfantasy .status-row,html.darkfantasy .novedad-card,
+html.darkfantasy .info-bar,html.darkfantasy .card-wide,html.darkfantasy .panel,html.darkfantasy .box,html.darkfantasy .modal,html.darkfantasy .status-card,
+html.darkfantasy [class*="-card"],html.darkfantasy [class*="card-"]{
+ background:linear-gradient(180deg,rgba(20,16,30,.88),rgba(8,6,13,.95))!important;border:1px solid #4e3c5d!important;border-top-color:rgba(229,164,199,.45)!important;border-radius:2px!important;
+ box-shadow:0 12px 32px rgba(0,0,0,.65),inset 0 0 0 1px rgba(0,0,0,.6),inset 0 1px 0 rgba(229,164,199,.18)!important;
+ backdrop-filter:blur(4px)!important;-webkit-backdrop-filter:blur(4px)!important;color:#eadbe6;transition:border-color .25s,box-shadow .25s,transform .25s}
+html.darkfantasy section.game{background:transparent!important;border:0!important;box-shadow:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+html.darkfantasy .card:hover,html.darkfantasy .social-card:hover,html.darkfantasy .card-wide:hover,html.darkfantasy .novedad-card:hover{
+ border-color:#896991!important;border-top-color:#e5a4c7!important;transform:translateY(-3px)!important;
+ box-shadow:0 16px 38px rgba(0,0,0,.75),0 0 26px rgba(137,105,145,.2),inset 0 0 0 1px rgba(0,0,0,.6),inset 0 1px 0 rgba(229,164,199,.35)!important}
+html.darkfantasy .card-wide-info,html.darkfantasy .card-wide-actions{background:none!important;border:0!important;box-shadow:none!important;backdrop-filter:none!important}
+html.darkfantasy .card::after,html.darkfantasy .social-card::after,html.darkfantasy .novedad-card::after{display:none!important}
+/* marco interior dorado, tipo grabado */
+html.darkfantasy .card,html.darkfantasy .social-card,html.darkfantasy .novedad-card,html.darkfantasy .card-wide{position:relative}
+html.darkfantasy .card::before,html.darkfantasy .social-card::before,html.darkfantasy .novedad-card::before,html.darkfantasy .card-wide::before{
+ content:""!important;display:block!important;position:absolute!important;inset:4px!important;border:1px solid rgba(229,164,199,.14)!important;border-radius:0!important;background:none!important;opacity:1!important;transform:none!important;pointer-events:none;z-index:0}
+html.darkfantasy .chain-band{background:repeating-linear-gradient(90deg,#2a2340 0 10px,#4e3c5d 10px 14px,#1a1629 14px 24px)!important;border:1px solid #6b5585!important;box-shadow:0 0 12px rgba(0,0,0,.8)!important}
+html.darkfantasy .lock-badge{background:rgba(78,60,93,.85)!important;border:1px solid #896991!important;box-shadow:0 0 18px rgba(137,105,145,.5)!important}
+html.darkfantasy .lock-icon-wrap{color:#e5a4c7!important;background:#1a1629!important;border:1px solid #5f4a72!important;box-shadow:none!important}
+html.darkfantasy .lock-title{color:#f5e6ee!important}html.darkfantasy .lock-sub{color:#c4afc0!important}
+
+/* ================= BOTONES ================= */
+html.darkfantasy .btn,html.darkfantasy .link-btn,html.darkfantasy .copy-btn,html.darkfantasy .icon-btn,html.darkfantasy button{
+ color:#f1dfe9!important;background:linear-gradient(180deg,#352b4a,#201a32)!important;border:1px solid #6b5585!important;border-radius:2px!important;
+ font-family:var(--ui);font-weight:700;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;text-shadow:0 1px 2px #000;
+ box-shadow:inset 0 1px 0 rgba(229,164,199,.25),0 3px 10px rgba(0,0,0,.6)!important;transition:background .2s,box-shadow .2s,border-color .2s,color .2s}
+html.darkfantasy .btn:hover,html.darkfantasy .link-btn:hover,html.darkfantasy .copy-btn:hover,html.darkfantasy .icon-btn:hover,html.darkfantasy button:hover{
+ background:linear-gradient(180deg,#5a4672,#2a2340)!important;border-color:#e5a4c7!important;color:#f5c2d9!important;
+ box-shadow:inset 0 1px 0 rgba(229,164,199,.4),0 0 20px rgba(137,105,145,.6)!important}
+html.darkfantasy .btn:active,html.darkfantasy .copy-btn:active,html.darkfantasy button:active{transform:translateY(1px);box-shadow:inset 0 2px 8px rgba(0,0,0,.8)!important}
+html.darkfantasy .btn.primary,html.darkfantasy .btn.solid,html.darkfantasy .link-btn{background:linear-gradient(180deg,#896991,#4e3c5d)!important;border-color:#e5a4c7!important;color:#f5c2d9!important}
+html.darkfantasy .btn.discord{background:linear-gradient(180deg,#2b2547,#1a1629)!important;border-color:#6b5585!important}
+html.darkfantasy .btn.coffee{background:linear-gradient(180deg,#6b5585,#3a2e4e)!important;border-color:#e5a4c7!important}
+html.darkfantasy .nav-toggle span{background:#e5a4c7!important}
+
+/* ================= TAGS / ESTADOS ================= */
+html.darkfantasy .tag,html.darkfantasy .mc-chip,html.darkfantasy .status-pill,html.darkfantasy .online-pill,html.darkfantasy .all-ok,html.darkfantasy .sec-head .count{
+ background:rgba(26,26,26,.85)!important;color:#e5a4c7!important;border:1px solid #6b5585!important;font-family:var(--ui);letter-spacing:.08em;text-shadow:none;box-shadow:none}
+html.darkfantasy .status-pill,html.darkfantasy .online-pill,html.darkfantasy .all-ok{background:rgba(59,66,49,.55)!important;color:#b9d49a!important;border-color:#5a6a45!important}
+html.darkfantasy .status-pill.offline{background:rgba(78,60,93,.6)!important;color:#e5a4c7!important;border-color:#896991!important;opacity:1}
+html.darkfantasy .status-pill.warn,html.darkfantasy .all-ok.warn{background:rgba(229,164,199,.14)!important;color:#e5a4c7!important;border-color:#8a6418!important}
+html.darkfantasy .pulse-dot{background:#896991!important;box-shadow:0 0 10px #896991!important}
+html.darkfantasy .status-pill:not(.offline) .pulse-dot,html.darkfantasy .online-pill .pulse-dot,html.darkfantasy .all-ok .pulse-dot{background:#8fc060!important;box-shadow:0 0 10px #8fc060!important}
+html.darkfantasy .icon-badge,html.darkfantasy .perk-icon,html.darkfantasy .info-icon,html.darkfantasy .contact-icon,html.darkfantasy .novedad-icono,html.darkfantasy .status-icon,html.darkfantasy .social-icon{
+ background:radial-gradient(circle at 50% 30%,#3a2e4e,#120f1d)!important;border:1px solid #5f4a72!important;color:#e5a4c7!important;box-shadow:inset 0 0 12px rgba(0,0,0,.8),0 0 10px rgba(137,105,145,.3)!important}
+html.darkfantasy .icon-badge svg,html.darkfantasy .perk-icon svg,html.darkfantasy .info-icon svg,html.darkfantasy .contact-icon svg{color:#e5a4c7!important;stroke:#e5a4c7!important}
+html.darkfantasy .social-icon img,html.darkfantasy .icon-badge img,html.darkfantasy .status-icon img{filter:grayscale(1) sepia(1) saturate(1.8) hue-rotate(270deg) brightness(.95)}
+
+/* ================= INPUTS / CÓDIGO ================= */
+html.darkfantasy input,html.darkfantasy select,html.darkfantasy textarea{background:rgba(8,5,13,.92)!important;color:#f1dfe9!important;border:1px solid #6b5585!important;border-radius:2px!important;caret-color:#f5c2d9;box-shadow:inset 0 2px 8px rgba(0,0,0,.7)!important}
+html.darkfantasy input:focus,html.darkfantasy select:focus,html.darkfantasy textarea:focus{border-color:#f5c2d9!important;box-shadow:inset 0 2px 8px rgba(0,0,0,.7),0 0 16px rgba(245,194,217,.35)!important;outline:none!important}
+html.darkfantasy ::placeholder{color:#8a7590}
+html.darkfantasy code,html.darkfantasy pre,html.darkfantasy .ip-row{background:rgba(5,3,9,.92)!important;color:#e5a4c7!important;border:1px solid #4e3c5d!important}
+html.darkfantasy hr{border:0;height:1px;background:linear-gradient(90deg,transparent,#896991,#e5a4c7,#896991,transparent)}
+html.darkfantasy table,html.darkfantasy td,html.darkfantasy th{color:#eadbe6;border-color:#4e3c5d!important}
+html.darkfantasy th{background:rgba(78,60,93,.55);color:#e5a4c7;font-family:var(--ui);letter-spacing:.08em}
+
+/* ================= TICKER / FOOTER / SCROLL ================= */
+html.darkfantasy .ticker{background:linear-gradient(180deg,#1c1730,#120f1d)!important;border-top:1px solid #896991!important;border-bottom:1px solid #896991!important;box-shadow:0 0 20px rgba(137,105,145,.3)!important}
+html.darkfantasy .ticker-item{color:#e5a4c7!important;-webkit-text-stroke:0!important;font-family:var(--ui)!important;letter-spacing:.14em;text-shadow:0 0 10px rgba(229,164,199,.4)!important}
+html.darkfantasy .ticker-item.solid{color:#f5e6ee!important}
+html.darkfantasy .ticker-item img{filter:grayscale(1) sepia(1) saturate(2) hue-rotate(270deg) brightness(.9)!important;opacity:.85!important}
+html.darkfantasy footer{background:linear-gradient(180deg,rgba(8,5,12,.82),rgba(3,1,6,.96))!important;border-top:1px solid #896991!important;box-shadow:0 -10px 40px rgba(0,0,0,.7)!important;color:#c4afc0}
+html.darkfantasy footer a{color:#c4afc0}html.darkfantasy footer a:hover{color:#e5a4c7}
+html.darkfantasy footer h4{color:#e5a4c7!important}
+html.darkfantasy .scroll-progress .bar{background:linear-gradient(90deg,#896991,#e5a4c7)!important;box-shadow:0 0 12px rgba(137,105,145,.8)!important}
+html.darkfantasy :focus-visible{outline:2px solid #f5c2d9!important;outline-offset:2px}
+html.darkfantasy ::selection{background:#896991;color:#f5c2d9;text-shadow:none}
+html.darkfantasy ::-webkit-scrollbar{width:12px}html.darkfantasy ::-webkit-scrollbar-track{background:#120f1d;border-left:1px solid #2a2340}
+html.darkfantasy ::-webkit-scrollbar-thumb{background:linear-gradient(180deg,#6b5585,#2a2340);border:2px solid #120f1d;border-radius:0}
+html.darkfantasy ::-webkit-scrollbar-thumb:hover{background:#896991}
+html.darkfantasy .back-to-top{color:#e5a4c7!important;border:1px solid #896991!important;background:rgba(28,23,46,.94)!important;box-shadow:0 0 16px rgba(137,105,145,.5)!important}
+html.darkfantasy #toast{background:rgba(28,23,46,.96)!important;color:#f1dfe9!important;border:1px solid #896991!important;box-shadow:0 0 20px rgba(137,105,145,.5)!important}
+html.darkfantasy .faq-item summary,html.darkfantasy .faq-item button{color:#f5e6ee!important;background:transparent!important;border:0!important;box-shadow:none!important;text-transform:none;letter-spacing:.03em}
+html.darkfantasy .faq-item[open],html.darkfantasy .faq-item.open{border-color:#896991!important}
+html.darkfantasy .hero{text-shadow:0 2px 14px rgba(0,0,0,.9)}
+
+/* ================= CONTROL FLOTANTE + MÚSICA + AVISO ================= */
+html.darkfantasy #darkfantasy-ctl,html.darkfantasy #darkfantasy-mute{display:inline-flex;color:#e5a4c7!important;background:radial-gradient(circle at 50% 25%,#352b4a,#120f1d)!important;border:1px solid #896991!important;border-radius:50%!important;box-shadow:0 0 16px rgba(137,105,145,.55),inset 0 0 10px rgba(0,0,0,.8)!important}
+html.darkfantasy #darkfantasy-ctl:hover,html.darkfantasy #darkfantasy-mute:hover{color:#f5c2d9!important;border-color:#e5a4c7!important;box-shadow:0 0 22px rgba(229,164,199,.55),inset 0 0 10px rgba(0,0,0,.8)!important}
+html.darkfantasy #darkfantasy-toast{background:rgba(28,23,46,.96);color:#f1dfe9;border:1px solid #896991;box-shadow:0 0 26px rgba(137,105,145,.6);font:700 13px var(--ui);letter-spacing:.14em;text-transform:uppercase;border-radius:2px}
+html.darkfantasy #leia-consent{background:rgba(12,8,18,.96)!important;color:#eadbe6!important;border:1px solid #896991!important;box-shadow:0 0 24px rgba(137,105,145,.2)!important}
+html.darkfantasy #leia-consent *{color:#eadbe6!important}
+
+/* ================= MÓVIL ================= */
+@media (max-width:700px){
+ #darkfantasy-scene .df-cliff{height:min(70vh,125vw);right:-60px}
+ #darkfantasy-scene .df-veil{background:rgba(6,4,12,.62)}
+ html.darkfantasy .card,html.darkfantasy .social-card,html.darkfantasy .novedad-card,html.darkfantasy .card-wide{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+}
+html.darkfantasy.low-perf .card,html.darkfantasy.low-perf .social-card,html.darkfantasy.low-perf .novedad-card,html.darkfantasy.low-perf .card-wide,html.darkfantasy.low-perf header{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+@media (prefers-reduced-motion:reduce){html.darkfantasy .card,html.darkfantasy .btn,html.darkfantasy button{transition:none}html.darkfantasy .card:hover{transform:none!important}}

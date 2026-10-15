@@ -1,0 +1,143 @@
+/* ===== LeiaNET · modo Brutalista (activar escribiendo "brutal") =====
+   Neobrutalismo: fondo crema #fff1d0, tinta #111, bordes gruesos, sombras duras sin desenfoque,
+   colores planos (#ffd93d amarillo · #ff6b9d rosa · #4d96ff azul · #6bcb77 verde · #ff8e3c naranja). */
+html.brutal{
+ --bt-ink:#111;--bt-yellow:#ffd93d;--bt-pink:#ff6b9d;--bt-blue:#4d96ff;--bt-green:#6bcb77;--bt-orange:#ff8e3c;--bt-cream:#fff1d0;
+ --bg:#fff1d0;--bg-elev:#fff;--bg-elev-2:#ffe9a8;
+ --border:#111;--border-soft:#111;
+ --text:#111;--text-dim:#222;--text-mute:#444;
+ --accent:#111;--accent-soft:#ffd93d;--ok:#0f7a33;
+ --header-bg:#fff;--radius:0;
+ --display:"Chakra Petch","Arial Black",Impact,sans-serif;--mono:"JetBrains Mono",ui-monospace,monospace;--body:"Inter",system-ui,sans-serif;
+ --hair:#111;--hair-hot:#111;--panel:#fff;--lift-sm:none;--lift-md:none;--lift-lg:none;
+ --glass-fill:#fff;--glass-fill-strong:#fff;--glass-border:#111;--glass-border-hover:#111;
+ --glass-blur:none;--glass-blur-sm:none;--glass-shadow:6px 6px 0 #111;--glass-shadow-sm:4px 4px 0 #111;
+ color-scheme:light;
+}
+html.brutal,html.brutal body{background:#fff1d0!important}
+html.brutal body{color:#111!important;font-weight:500}
+html.brutal body *{text-shadow:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+html.brutal body *:not(svg):not(svg *):not(canvas):not(.pulse-dot):not(.dot):not(i){border-radius:0!important}
+
+/* fuera el espacio original: lo reemplazan las figuras */
+html.brutal .grid-overlay,html.brutal .depth-veil,html.brutal .nebula,html.brutal .nebula-mono,html.brutal .starfield,html.brutal .noise,
+html.brutal .planet-parallax,html.brutal .planet-parallax-2,html.brutal .planet-wrap,html.brutal .planet-wrap-2,html.brutal .planet-glow,html.brutal .planet-ring,
+html.brutal .planet,html.brutal .planet-2,html.brutal .asteroid-parallax,html.brutal .asteroid-wrap,html.brutal .asteroid,
+html.brutal .satellite-parallax,html.brutal .satellite-wrap,html.brutal .satellite,html.brutal .meteor,html.brutal .meteor-trail,html.brutal .meteor-rock,
+html.brutal .shooting-star,html.brutal .stars-layer,html.brutal .sparkle,html.brutal #sparkles,html.brutal .ambient,html.brutal .grain,
+html.brutal .cursor-glow,html.brutal .hero-glass-orb{display:none!important;animation:none!important}
+html.brutal .planet404{display:inline-block!important;width:.55em!important;height:.55em!important;background:#ff6b9d!important;border:3px solid #111!important;box-shadow:3px 3px 0 #111!important;animation:none!important}
+
+/* escena: puntos + figuras planas flotando */
+#brutal-scene{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;background:#fff1d0 radial-gradient(rgba(17,17,17,.16) 1.6px,transparent 1.7px) 0 0/22px 22px}
+#brutal-scene .bt-s{position:absolute;display:block;border:4px solid #111;box-shadow:8px 8px 0 #111;animation:btFloat 7s ease-in-out infinite alternate}
+#brutal-scene .bt-s1{width:190px;height:190px;border-radius:50%;background:#ffd93d;top:9%;left:-120px}
+#brutal-scene .bt-s2{width:150px;height:150px;background:#ff6b9d;top:52%;right:-96px;transform:rotate(12deg);animation-delay:-2s}
+#brutal-scene .bt-s3{width:120px;height:120px;background:#4d96ff;bottom:6%;left:-78px;transform:rotate(45deg);animation-delay:-4s}
+#brutal-scene .bt-s4{width:92px;height:92px;border-radius:50%;background:#6bcb77;top:24%;right:-34px;animation-delay:-1s}
+#brutal-scene .bt-s5{width:230px;height:58px;background:#ff8e3c;bottom:18%;right:-120px;transform:rotate(-8deg);animation-delay:-3s}
+@keyframes btFloat{to{translate:0 -18px}}
+html.brutal main,html.brutal footer,html.brutal section,html.brutal header{position:relative;z-index:1}
+
+/* header / nav */
+html.brutal header{background:#fff!important;border:3px solid #111!important;box-shadow:6px 6px 0 #111!important}
+html.brutal header::after{display:none!important}
+html.brutal a{color:#111;text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:3px}
+html.brutal nav a{color:#111!important;font-weight:800;text-transform:uppercase;text-decoration:none;letter-spacing:.03em;border:2px solid transparent}
+html.brutal nav a:hover,html.brutal nav a.active{background:#ffd93d!important;color:#111!important;border-color:#111!important;box-shadow:3px 3px 0 #111!important}
+html.brutal .brand img,html.brutal .fbrand img{filter:brightness(0) drop-shadow(2px 2px 0 #ff6b9d)}
+
+/* títulos */
+html.brutal h1,html.brutal h2,html.brutal h3,html.brutal h4,html.brutal .sec-head h2{
+ font-family:"Chakra Petch","Arial Black",Impact,sans-serif!important;color:#111!important;font-weight:700;text-transform:uppercase;letter-spacing:.01em}
+html.brutal h1 span{color:#111!important;-webkit-text-fill-color:#111!important;background:#ffd93d!important;padding:0 .14em;-webkit-box-decoration-break:clone;box-decoration-break:clone;animation:none!important;box-shadow:4px 4px 0 #111}
+html.brutal h2::after{content:"";display:block;width:72px;height:10px;margin-top:8px;background:#ff6b9d;border:3px solid #111;box-sizing:content-box}
+html.brutal p,html.brutal li,html.brutal .desc,html.brutal .sec-sub,html.brutal .lead{color:#111!important}
+html.brutal .sec-index,html.brutal .eyebrow{background:#ff6b9d!important;color:#111!important;border:3px solid #111!important;box-shadow:3px 3px 0 #111;padding:2px 10px;font-weight:800}
+html.brutal .eyebrow .dot,html.brutal .hero-live .dot{background:#6bcb77!important;border:2px solid #111!important;box-shadow:none!important}
+html.brutal .sec-head{border-bottom:4px solid #111}
+
+/* tarjetas: planas, blancas, con sombra dura; cada tanto un color */
+html.brutal .card,html.brutal .social-card,html.brutal .game,html.brutal .perk-row,html.brutal .faq-item,html.brutal .status-row,html.brutal .novedad-card,
+html.brutal .info-bar,html.brutal .card-wide,html.brutal .panel,html.brutal .box,html.brutal .modal,html.brutal .status-card,
+html.brutal [class*="-card"],html.brutal [class*="card-"]{
+ background:#fff!important;border:3px solid #111!important;box-shadow:6px 6px 0 #111!important;color:#111;transition:transform .12s,box-shadow .12s}
+html.brutal .card:nth-child(4n+1),html.brutal .social-card:nth-child(4n+1),html.brutal .novedad-card:nth-child(4n+1){background:#ffe27a!important}
+html.brutal .card:nth-child(4n+2),html.brutal .social-card:nth-child(4n+2),html.brutal .novedad-card:nth-child(4n+2){background:#ffb3cf!important}
+html.brutal .card:nth-child(4n+3),html.brutal .social-card:nth-child(4n+3),html.brutal .novedad-card:nth-child(4n+3){background:#a8cbff!important}
+html.brutal .card:nth-child(4n),html.brutal .social-card:nth-child(4n),html.brutal .novedad-card:nth-child(4n){background:#b5ebbc!important}
+html.brutal section.game{background:transparent!important;border:0!important;box-shadow:none!important}
+html.brutal .card:hover,html.brutal .social-card:hover,html.brutal .card-wide:hover,html.brutal .novedad-card:hover{transform:translate(-3px,-3px)!important;box-shadow:9px 9px 0 #111!important}
+html.brutal .card-wide-info,html.brutal .card-wide-actions{background:none!important;border:0!important;box-shadow:none!important}
+html.brutal .card::before,html.brutal .card::after{display:none!important}
+html.brutal .chain-band{background:repeating-linear-gradient(45deg,#ffd93d 0 16px,#111 16px 32px)!important;border:3px solid #111!important;box-shadow:none!important}
+html.brutal .lock-badge{background:#ff6b9d!important;border:3px solid #111!important;box-shadow:4px 4px 0 #111!important}
+html.brutal .lock-icon-wrap{color:#111!important;background:#fff!important;border:2px solid #111!important;box-shadow:none!important}
+html.brutal .lock-title,html.brutal .lock-sub{color:#111!important}
+
+/* botones */
+html.brutal .btn,html.brutal .link-btn,html.brutal .copy-btn,html.brutal .icon-btn,html.brutal button{
+ color:#111!important;background:#ffd93d!important;border:3px solid #111!important;box-shadow:4px 4px 0 #111!important;
+ font-weight:800;text-transform:uppercase;letter-spacing:.03em;text-decoration:none;transition:transform .08s,box-shadow .08s}
+html.brutal .btn:hover,html.brutal .link-btn:hover,html.brutal .copy-btn:hover,html.brutal .icon-btn:hover,html.brutal button:hover{
+ background:#ffe27a!important;transform:translate(-2px,-2px);box-shadow:6px 6px 0 #111!important}
+html.brutal .btn:active,html.brutal .link-btn:active,html.brutal .copy-btn:active,html.brutal button:active{transform:translate(4px,4px);box-shadow:0 0 0 #111!important}
+html.brutal .btn.primary,html.brutal .btn.solid,html.brutal .link-btn{background:#ff6b9d!important;color:#111!important}
+html.brutal .btn.discord{background:#4d96ff!important;color:#111!important}
+html.brutal .btn.coffee{background:#ff8e3c!important;color:#111!important}
+html.brutal .nav-toggle span{background:#111!important}
+
+/* tags / estados */
+html.brutal .tag,html.brutal .mc-chip,html.brutal .status-pill,html.brutal .online-pill,html.brutal .all-ok,html.brutal .sec-head .count{
+ background:#fff!important;color:#111!important;border:2px solid #111!important;font-weight:800;box-shadow:2px 2px 0 #111}
+html.brutal .status-pill,html.brutal .online-pill,html.brutal .all-ok{background:#6bcb77!important}
+html.brutal .status-pill.offline{background:#ff8a8a!important;opacity:1}
+html.brutal .status-pill.warn,html.brutal .all-ok.warn{background:#ffd93d!important}
+html.brutal .pulse-dot{background:#111!important;box-shadow:none!important}
+html.brutal .icon-badge,html.brutal .perk-icon,html.brutal .info-icon,html.brutal .contact-icon,html.brutal .novedad-icono,html.brutal .status-icon,html.brutal .social-icon{
+ background:#fff!important;border:3px solid #111!important;color:#111!important;box-shadow:3px 3px 0 #111!important}
+html.brutal .icon-badge svg,html.brutal .perk-icon svg,html.brutal .info-icon svg,html.brutal .contact-icon svg{color:#111!important;stroke:#111!important}
+
+/* inputs / código */
+html.brutal input,html.brutal select,html.brutal textarea{background:#fff!important;color:#111!important;border:3px solid #111!important;box-shadow:3px 3px 0 #111!important;caret-color:#111;font-weight:600}
+html.brutal input:focus,html.brutal select:focus,html.brutal textarea:focus{background:#fff8d6!important;box-shadow:5px 5px 0 #4d96ff!important;outline:none!important}
+html.brutal ::placeholder{color:#555}
+html.brutal code,html.brutal pre,html.brutal .ip-row{background:#111!important;color:#ffd93d!important;border:3px solid #111!important}
+html.brutal hr{border:0;border-top:4px solid #111}
+html.brutal table,html.brutal td,html.brutal th{color:#111;border:2px solid #111!important}
+html.brutal th{background:#ffd93d}
+
+/* ticker / footer / scroll */
+html.brutal .ticker{background:#ffd93d!important;border-top:4px solid #111!important;border-bottom:4px solid #111!important;box-shadow:none!important}
+html.brutal .ticker-item{color:#111!important;-webkit-text-stroke:0!important;font-weight:800}
+html.brutal .ticker-item img{filter:none!important;opacity:1!important}
+html.brutal footer{background:#ffd93d!important;border-top:5px solid #111!important;box-shadow:none!important;color:#111}
+html.brutal footer a,html.brutal footer p,html.brutal footer li,html.brutal footer h4{color:#111!important}
+html.brutal .scroll-progress .bar{background:#ff6b9d!important;box-shadow:0 2px 0 #111!important}
+html.brutal :focus-visible{outline:4px solid #4d96ff!important;outline-offset:2px}
+html.brutal ::selection{background:#111;color:#ffd93d}
+html.brutal ::-webkit-scrollbar{width:16px}html.brutal ::-webkit-scrollbar-track{background:#fff1d0;border-left:3px solid #111}
+html.brutal ::-webkit-scrollbar-thumb{background:#ff6b9d;border:3px solid #111}
+html.brutal .back-to-top{color:#111!important;border:3px solid #111!important;background:#4d96ff!important;box-shadow:4px 4px 0 #111!important}
+html.brutal #toast{background:#fff!important;color:#111!important;border:3px solid #111!important;box-shadow:5px 5px 0 #111!important}
+html.brutal .faq-item summary,html.brutal .faq-item button{color:#111!important;background:transparent!important;border:0!important;box-shadow:none!important;text-transform:none;font-weight:800}
+html.brutal .faq-item[open],html.brutal .faq-item.open{background:#ffe27a!important}
+
+/* control flotante + música + aviso */
+html.brutal #brutal-ctl,html.brutal #brutal-mute{display:inline-flex;color:#111!important;background:#ffd93d!important;border:3px solid #111!important;border-radius:0!important;box-shadow:4px 4px 0 #111!important}
+html.brutal #brutal-mute{background:#4d96ff!important}
+html.brutal #brutal-ctl:hover,html.brutal #brutal-mute:hover{background:#ff6b9d!important;transform:translate(-2px,-2px);box-shadow:6px 6px 0 #111!important}
+html.brutal #brutal-toast{background:#ffd93d;color:#111;border:3px solid #111;box-shadow:6px 6px 0 #111;font:800 14px "Chakra Petch","Arial Black",sans-serif;letter-spacing:.05em;text-transform:uppercase}
+
+/* rendimiento / accesibilidad / móvil */
+html.brutal.low-perf #brutal-scene .bt-s{animation:none}
+@media (max-width:700px){
+ html.brutal .card,html.brutal .social-card,html.brutal .game,html.brutal .novedad-card,html.brutal .card-wide,html.brutal header{box-shadow:4px 4px 0 #111!important}
+ #brutal-scene .bt-s{box-shadow:5px 5px 0 #111;opacity:.9}
+ #brutal-scene .bt-s1{width:120px;height:120px}#brutal-scene .bt-s5{width:150px;height:44px}
+}
+@media (prefers-reduced-motion:reduce){#brutal-scene .bt-s{animation:none}html.brutal .card,html.brutal .btn,html.brutal button{transition:none}}
+
+/* aviso de cookies */
+html.brutal #leia-consent{background:#fff!important;color:#111!important;border:3px solid #111!important;box-shadow:6px 6px 0 #111!important}
+html.brutal #leia-consent *{color:#111!important}

@@ -1,0 +1,135 @@
+/* ===== LeiaNET · modo Matrix (activar escribiendo "matrix") =====
+   Paleta: #000000 fondo · #00ff00 verde fósforo · #003300 verde oscuro · #80ff80 resaltado.
+   Tipografía monoespaciada, todo cuadrado, sin decoración. */
+html.matrix{
+ --bg:#000;--bg-elev:#000;--bg-elev-2:#001a00;
+ --border:#00ff00;--border-soft:#003300;
+ --text:#00ff00;--text-dim:#00dd00;--text-mute:#00aa00;
+ --accent:#00ff00;--accent-soft:rgba(0,255,0,.12);--ok:#00ff00;
+ --header-bg:#000;--radius:0;
+ --display:"Courier New",Courier,monospace;--mono:"Courier New",Courier,monospace;
+ --hair:#003300;--hair-hot:#00ff00;
+ --panel:#000;--lift-sm:none;--lift-md:none;--lift-lg:none;
+ --glass-fill:#000;--glass-fill-strong:#001200;--glass-border:#00ff00;--glass-border-hover:#80ff80;
+ --glass-blur:none;--glass-blur-sm:none;--glass-shadow:0 0 8px rgba(0,255,0,.35);--glass-shadow-sm:0 0 5px rgba(0,255,0,.3);
+ color-scheme:dark;
+}
+html.matrix,html.matrix body{background:#000!important}
+html.matrix body,html.matrix body *:not(svg):not(svg *):not(canvas){font-family:"Courier New",Courier,monospace!important;border-radius:0!important}
+html.matrix body{color:#00ff00!important;text-shadow:0 0 4px rgba(0,255,0,.45)}
+
+/* se apaga el espacio original: lo reemplaza la lluvia de código */
+html.matrix .grid-overlay,html.matrix .depth-veil,html.matrix .nebula,html.matrix .nebula-mono,html.matrix .starfield,html.matrix .noise,
+html.matrix .planet-parallax,html.matrix .planet-parallax-2,html.matrix .planet-wrap,html.matrix .planet-wrap-2,html.matrix .planet-glow,html.matrix .planet-ring,
+html.matrix .planet,html.matrix .planet-2,html.matrix .asteroid-parallax,html.matrix .asteroid-wrap,html.matrix .asteroid,
+html.matrix .satellite-parallax,html.matrix .satellite-wrap,html.matrix .satellite,html.matrix .meteor,html.matrix .meteor-trail,html.matrix .meteor-rock,
+html.matrix .shooting-star,html.matrix .stars-layer,html.matrix .sparkle,html.matrix #sparkles,html.matrix .ambient,html.matrix .grain,
+html.matrix .cursor-glow,html.matrix .hero-glass-orb{display:none!important;animation:none!important}
+html.matrix .planet404{display:inline-block!important;width:.55em!important;height:.55em!important;background:#00ff00!important;border:0!important;box-shadow:0 0 .4em #00ff00!important;border-radius:0!important;animation:none!important}
+
+#matrix-scene{position:fixed;inset:0;z-index:0;pointer-events:none;background:#000;overflow:hidden}
+#matrix-scene .mx-rain{position:absolute;inset:0;width:100%;height:100%;opacity:.5}
+#matrix-scene .mx-vignette{position:absolute;inset:0;background:radial-gradient(ellipse 80% 70% at 50% 45%,rgba(0,0,0,.55),rgba(0,0,0,.2) 70%,rgba(0,0,0,.7))}
+#matrix-scene .mx-scan{position:absolute;inset:0;opacity:.35;background:repeating-linear-gradient(180deg,rgba(0,0,0,0) 0 2px,rgba(0,20,0,.7) 2px 3px)}
+html.matrix main,html.matrix footer,html.matrix section,html.matrix header{position:relative;z-index:1}
+
+/* header / nav */
+html.matrix header{background:#000!important;border:1px solid #00ff00!important;box-shadow:0 0 10px rgba(0,255,0,.35)!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+html.matrix header::after{display:none!important}
+html.matrix a{color:#00ff00;text-decoration:none}
+html.matrix nav a{color:#00ff00!important;font-weight:400}
+html.matrix nav a::before{content:"[ ";opacity:.6}html.matrix nav a::after{content:" ]";opacity:.6}
+html.matrix nav a:hover,html.matrix nav a.active{background:#00ff00!important;color:#000!important;text-shadow:none!important;box-shadow:none!important}
+html.matrix .brand img,html.matrix .fbrand img{filter:grayscale(1) brightness(.9) sepia(1) hue-rotate(60deg) saturate(8) drop-shadow(0 0 5px #00ff00)}
+
+/* títulos */
+html.matrix h1,html.matrix h2,html.matrix h3,html.matrix h4,html.matrix .sec-head h2{color:#80ff80!important;font-weight:700;letter-spacing:.02em;text-transform:uppercase;text-shadow:0 0 8px rgba(0,255,0,.8)!important}
+html.matrix h1 span{color:#00ff00!important;-webkit-text-fill-color:#00ff00!important;background:none!important;animation:none!important}
+html.matrix h2::before{content:"> ";color:#00ff00}
+html.matrix h2::after{content:"_";color:#00ff00;animation:mxBlink 1s steps(1) infinite}
+@keyframes mxBlink{50%{opacity:0}}
+html.matrix p,html.matrix li,html.matrix .desc,html.matrix .sec-sub,html.matrix .lead{color:#00dd00;text-shadow:none}
+html.matrix .lead{color:#00ff00}
+html.matrix .sec-index,html.matrix .eyebrow{color:#80ff80!important;border-color:#003300!important;letter-spacing:.1em}
+html.matrix .eyebrow .dot,html.matrix .hero-live .dot{background:#00ff00!important;box-shadow:0 0 8px #00ff00!important;border-radius:0!important}
+html.matrix .sec-head{border-bottom:1px solid #003300}
+
+/* tarjetas: marcos cuadrados verdes */
+html.matrix .card,html.matrix .social-card,html.matrix .game,html.matrix .perk-row,html.matrix .faq-item,html.matrix .status-row,html.matrix .novedad-card,
+html.matrix .info-bar,html.matrix .card-wide,html.matrix .panel,html.matrix .box,html.matrix .modal,html.matrix .status-card,
+html.matrix [class*="-card"],html.matrix [class*="card-"]{
+ background:rgba(0,0,0,.88)!important;border:1px solid #00ff00!important;border-radius:0!important;box-shadow:0 0 8px rgba(0,255,0,.3)!important;
+ backdrop-filter:none!important;-webkit-backdrop-filter:none!important;color:#00ff00}
+html.matrix section.game{background:transparent!important;border:0!important;box-shadow:none!important}
+html.matrix .card:hover,html.matrix .social-card:hover,html.matrix .card-wide:hover,html.matrix .novedad-card:hover{
+ background:#001a00!important;border-color:#80ff80!important;box-shadow:0 0 18px rgba(0,255,0,.65)!important;transform:none!important}
+html.matrix .card-wide-info,html.matrix .card-wide-actions{background:none!important;border:0!important;box-shadow:none!important}
+html.matrix .card::before,html.matrix .card::after{display:none!important}
+html.matrix .chain-band{background:repeating-linear-gradient(45deg,#003300 0 14px,#000 14px 28px)!important;border-color:#00ff00!important;box-shadow:none!important}
+html.matrix .lock-badge{background:#000!important;border:1px solid #00ff00!important;box-shadow:0 0 12px rgba(0,255,0,.5)!important}
+html.matrix .lock-icon-wrap{color:#000!important;background:#00ff00!important;box-shadow:none!important}
+html.matrix .lock-title{color:#80ff80!important}html.matrix .lock-sub{color:#00ff00!important}
+
+/* botones */
+html.matrix .btn,html.matrix .link-btn,html.matrix .copy-btn,html.matrix .icon-btn,html.matrix button{
+ color:#00ff00!important;background:#003300!important;border:1px solid #00ff00!important;border-radius:0!important;text-transform:uppercase;letter-spacing:.06em;
+ box-shadow:none!important;text-shadow:0 0 5px rgba(0,255,0,.6);transition:none}
+html.matrix .btn:hover,html.matrix .link-btn:hover,html.matrix .copy-btn:hover,html.matrix .icon-btn:hover,html.matrix button:hover{
+ background:#00ff00!important;color:#000!important;text-shadow:none!important;box-shadow:0 0 14px #00ff00!important}
+html.matrix .btn.primary,html.matrix .btn.solid,html.matrix .link-btn,html.matrix .btn.coffee,html.matrix .btn.discord{background:#003300!important;color:#80ff80!important;border-color:#80ff80!important}
+html.matrix .btn:active{transform:translate(1px,1px)}
+html.matrix .nav-toggle span{background:#00ff00!important}
+
+/* tags / estados */
+html.matrix .tag,html.matrix .mc-chip,html.matrix .status-pill,html.matrix .online-pill,html.matrix .all-ok,html.matrix .sec-head .count{
+ background:#003300!important;color:#00ff00!important;border:1px solid #00ff00!important;border-radius:0!important;text-shadow:none;box-shadow:none}
+html.matrix .status-pill.offline{background:#000!important;color:#00ff00!important;border-style:dashed!important;opacity:.7}
+html.matrix .status-pill.warn,html.matrix .all-ok.warn{background:#000!important;color:#80ff80!important;border-style:dotted!important}
+html.matrix .pulse-dot{border-radius:0!important;box-shadow:0 0 8px currentColor}
+html.matrix .icon-badge,html.matrix .perk-icon,html.matrix .info-icon,html.matrix .contact-icon,html.matrix .novedad-icono,html.matrix .status-icon,html.matrix .social-icon{
+ background:#003300!important;border:1px solid #00ff00!important;border-radius:0!important;color:#00ff00!important;box-shadow:none!important}
+html.matrix .icon-badge img,html.matrix .social-icon img,html.matrix .status-icon img{filter:grayscale(1) brightness(1.1) sepia(1) hue-rotate(60deg) saturate(8)}
+html.matrix .icon-badge svg,html.matrix .perk-icon svg,html.matrix .info-icon svg,html.matrix .contact-icon svg{color:#00ff00!important;stroke:#00ff00!important}
+
+/* inputs / código */
+html.matrix input,html.matrix select,html.matrix textarea{background:#000!important;color:#00ff00!important;border:1px solid #00ff00!important;border-radius:0!important;caret-color:#00ff00;box-shadow:none!important}
+html.matrix input:focus,html.matrix select:focus,html.matrix textarea:focus{background:#001200!important;box-shadow:0 0 10px rgba(0,255,0,.6)!important;outline:none!important}
+html.matrix ::placeholder{color:#008800}
+html.matrix code,html.matrix pre,html.matrix .ip-row{background:#000!important;color:#80ff80!important;border:1px solid #003300!important}
+html.matrix hr{border-color:#003300}
+html.matrix table,html.matrix td,html.matrix th{color:#00ff00;border-color:#003300!important}html.matrix th{color:#80ff80}
+
+/* ticker / footer / scroll */
+html.matrix .ticker{background:#001200!important;border-top:1px solid #00ff00!important;border-bottom:1px solid #00ff00!important;box-shadow:none!important}
+html.matrix .ticker-item{color:#00ff00!important;-webkit-text-stroke:0!important}
+html.matrix .ticker-item.solid{color:#80ff80!important}
+html.matrix .ticker-item img{filter:grayscale(1) sepia(1) hue-rotate(60deg) saturate(8)!important;opacity:.9!important}
+html.matrix footer{background:rgba(0,0,0,.9)!important;border-top:1px solid #00ff00!important;box-shadow:none!important;color:#00dd00}
+html.matrix .scroll-progress .bar{background:#00ff00!important;box-shadow:0 0 10px #00ff00!important}
+html.matrix :focus-visible{outline:2px solid #80ff80!important;outline-offset:2px}
+html.matrix ::selection{background:#00ff00;color:#000;text-shadow:none}
+html.matrix ::-webkit-scrollbar{width:12px}html.matrix ::-webkit-scrollbar-track{background:#000;border-left:1px solid #003300}
+html.matrix ::-webkit-scrollbar-thumb{background:#00ff00;border:2px solid #000}
+html.matrix .back-to-top{color:#00ff00!important;border:1px solid #00ff00!important;background:#000!important;box-shadow:none!important}
+html.matrix #toast{background:#000!important;color:#00ff00!important;border:1px solid #00ff00!important;box-shadow:0 0 12px rgba(0,255,0,.6)!important}
+html.matrix .faq-item summary,html.matrix .faq-item button{color:#80ff80;background:transparent!important;border:0!important;text-transform:none}
+html.matrix .faq-item[open],html.matrix .faq-item.open{border-color:#80ff80!important}
+html.matrix img:not(.brand img):not(.fbrand img){filter:grayscale(.4) contrast(1.05)}
+
+/* control flotante + aviso */
+.tm-ctl{position:fixed;right:74px;bottom:16px;z-index:99999;width:44px;height:44px;padding:0;cursor:pointer;display:none;align-items:center;justify-content:center}
+.tm-ctl svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.tm-mute{position:fixed;right:126px;bottom:16px;z-index:99999;width:44px;height:44px;padding:0;cursor:pointer;display:none;align-items:center;justify-content:center}
+.tm-mute svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.tm-mute.muted svg{opacity:.55}
+html.matrix #matrix-ctl{display:inline-flex;color:#00ff00!important;background:#000!important;border:1px solid #00ff00!important;border-radius:0!important;box-shadow:0 0 12px rgba(0,255,0,.6)!important}
+html.matrix #matrix-ctl:hover{background:#00ff00!important;color:#000!important}
+html.matrix #matrix-mute{display:inline-flex;color:#00ff00!important;background:#000!important;border:1px solid #00ff00!important;border-radius:0!important;box-shadow:0 0 12px rgba(0,255,0,.6)!important}
+html.matrix #matrix-mute:hover{background:#00ff00!important;color:#000!important}
+.tm-toast{position:fixed;left:50%;top:18px;transform:translate(-50%,-110px);z-index:99999;padding:10px 20px;transition:transform .35s steps(6);white-space:nowrap;font:700 13px "Courier New",monospace}
+html.matrix #matrix-toast{background:#000;color:#00ff00;border:1px solid #00ff00;box-shadow:0 0 16px rgba(0,255,0,.7);letter-spacing:.08em}
+.tm-toast.show{transform:translate(-50%,0)}
+
+/* rendimiento / accesibilidad */
+html.matrix.low-perf #matrix-scene .mx-scan{display:none}
+@media (prefers-reduced-motion:reduce){html.matrix h2::after{animation:none}}
