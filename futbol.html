@@ -662,7 +662,7 @@ b.x=x;b.z=z;b.vx=b.vz=0;b.f=Math.atan2(-z,-x*.3);S.o=b;S.lt=t;S.pos=t;b.th=1.1;b
 function out(){let t,x,z,gk=0,ck=0;if(Math.abs(ball.z)>W+.2){t=1-S.lt;x=clamp(ball.x,-L+3,L-3);z=Math.sign(ball.z)*(W-.8)}
 else{const att=ball.x>0?0:1,sx=Math.sign(ball.x);if(S.lt===att){t=1-att;x=sx*(L-6);z=0;gk=1;if(Math.abs(ball.z)<GW+5)nearSnd()}else{t=att;x=sx*(L-1);z=Math.sign(ball.z||1)*(W-1);ck=1}}if(gk)restart(t,x,z,gk);else setp(ck?'c':'t',t,x,z)}
 function goal(t){S.sc[t]++;S.st='goal';S.tm=4.5;S.ko=1-t;S.gt=t;S.ex=t?0:1;S.chant=t?0:13;S.sil=t?6:0;S.sing=t?8:0;S.o=null;let sc=S.lt===t?S.lp:null;if(!sc){let bd=1e9;for(const q of pl)if(q.t===t&&!q.gk){const d=hy(q.x-ball.x,q.z-ball.z);if(d<bd){bd=d;sc=q}}}
-S.scorer=sc;sc.cel=4.5;S.cx=Math.sign(ball.x)*(L-6);S.cz=(sc.z>0?1:-1)*(W-4);{const mn=Math.min(45,Math.floor(S.clk/HALF*45))+(S.half-1)*45;banner('¡GOOOL!',cfg.nm[t][0].toUpperCase(),'#'+(sc.i+1)+" · "+mn+"'",cfg.kit[t][0])}{const f=$('fl');f.classList.remove('on');void f.offsetWidth;f.classList.add('on')}goalSnd(t);sfx('net');SHK=1.1;TS=.35;confetti(Math.sign(ball.x)*(L-4),(Math.random()-.5)*8,cfg.kit[t].slice(0,4));celebFx(t,cfg.kit[t].slice(0,4));if(t===0&&S.half===2&&S.clk>HALF-10){S.tm=11;S.inv=1;invade(true)}}
+S.scorer=sc;sc.cel=4.5;S.cx=Math.sign(ball.x)*(L-6);S.cz=(sc.z>0?1:-1)*(W-4);{const mn=Math.min(45,Math.floor(S.clk/HALF*45))+(S.half-1)*45;banner('¡GOOOL!',cfg.nm[t][0].toUpperCase(),'#'+(sc.i+1)+" · "+mn+"'",cfg.kit[t][0])}{const f=$('fl');f.classList.remove('on');void f.offsetWidth;f.classList.add('on')}goalSnd(t);sfx('net');SHK=1.1;if(!Net.on)TS=.35;confetti(Math.sign(ball.x)*(L-4),(Math.random()-.5)*8,cfg.kit[t].slice(0,4));celebFx(t,cfg.kit[t].slice(0,4));if(t===0&&S.half===2&&S.clk>HALF-10){S.tm=11;S.inv=1;invade(true)}}
 function kickoff(){ball.x=ball.z=0;ball.y=BR;ball.vx=ball.vy=ball.vz=0;S.o=null;S.pos=-1;
 pl.forEach(p=>{if(p.off){p.x=0;p.z=W+6;p.vx=p.vz=0;return}const h=home(p,1);Object.assign(p,{x:h[0],z:h[1],vx:0,vz:0,f:p.t?Math.PI:0,dv:0,jp:0,sl:0,cel:0,stun:0,cd:0,sh:0});});
 const tk=pl.slice(S.ko*11+8,S.ko*11+11).find(q=>!q.off)||pl[S.ko*11+7],dr=S.ko?-1:1;tk.x=-dr*.6;tk.z=0;tk.th=.5;S.o=tk;if(S.ko===0)S.sel=pl.indexOf(tk);else S.sel1=pl.indexOf(tk);S.st='ko';S.tm=1.2;S.lock=0;sfx('w')}
@@ -1001,8 +1001,19 @@ col*=tint;col=mix(col*ex*.9,aces(col*ex),.6);float l=dot(col,vec3(.299,.587,.114
  GRADE=new T.ShaderPass(GS);COMP.addPass(GRADE);COMP.setPixelRatio(pr);COMP.setSize(w,h);PPL=2;applyWx()}catch(e){console.warn(e);COMP=BLOOM=GRADE=null;PPL=3;msg('Ultra sin bloom/antialiasing: tu navegador no lo soporta',4500)}}
 pfUltra();applyWx();
 let last=performance.now(),acc=0,RDT=.016,TS=1,RA=0,LR=0;const STEP=1/60;
+/* ===== SUAVIZADO ONLINE: interpolación de render =====
+La simulación corre a 60Hz fijos (lockstep); antes se dibujaba el último tick tal cual, así que cuando un frame
+corría 0, 1 o 2 ticks los jugadores y la pelota "saltaban". Ahora se guarda el estado previo de cada tick y al
+dibujar se mezcla previo->actual según cuánto avanzó el reloj. La simulación NO se modifica (sigue determinista). */
+const IP={pp:[],b:[0,0,0],ok:0};let IPS=null;
+function ipSnap(){for(let i=0;i<pl.length;i++){const p=pl[i];let s=IP.pp[i];if(!s)s=IP.pp[i]=[0,0,0];s[0]=p.x;s[1]=p.z;s[2]=p.f}IP.b[0]=ball.x;IP.b[1]=ball.y;IP.b[2]=ball.z;IP.ok=pl.length}
+function ipApply(a){IPS=null;if(!IP.ok||IP.ok!==pl.length||S.st==='menu'||S.pz)return;a=a<0?0:a>1?1:a;const sv=[];
+for(let i=0;i<pl.length;i++){const p=pl[i],s=IP.pp[i];sv.push(p.x,p.z,p.f);const dx=p.x-s[0],dz=p.z-s[1];if(dx*dx+dz*dz<36){p.x=s[0]+dx*a;p.z=s[1]+dz*a}
+let df=p.f-s[2];if(df>Math.PI)df-=2*Math.PI;else if(df<-Math.PI)df+=2*Math.PI;if(Math.abs(df)<1.2)p.f=s[2]+df*a}
+const b=IP.b,dx=ball.x-b[0],dy=ball.y-b[1],dz=ball.z-b[2];sv.push(ball.x,ball.y,ball.z);if(dx*dx+dy*dy+dz*dz<100){ball.x=b[0]+dx*a;ball.y=b[1]+dy*a;ball.z=b[2]+dz*a}IPS=sv}
+function ipRestore(){if(!IPS)return;const sv=IPS;IPS=null;for(let i=0;i<pl.length;i++){const p=pl[i];p.x=sv[i*3];p.z=sv[i*3+1];p.f=sv[i*3+2]}const k=pl.length*3;ball.x=sv[k];ball.y=sv[k+1];ball.z=sv[k+2]}
 function loop(now){requestAnimationFrame(loop);const fd=Math.min(.05,(now-last)/1000);RDT=fd;last=now;TS+=(1-TS)*Math.min(1,1.3*fd);acc=Math.min(Net.on?.4:.25,acc+fd*TS);
-for(let n=0;acc>=STEP&&n<(Net.on?8:5);n++){const fr=poll();if(S.st!=='menu'&&!S.pz){const f=Net.step(fr);if(!f)break;applyFrames(f);update(STEP)}acc-=STEP}
-RA+=fd;if(now-LR>=PF.rmin-4){LR=now;const rdt=Math.min(.1,RA);RA=0;RDT=rdt;pfMon(rdt);if(S.st!=='menu'&&!S.pz){anim();hud()}camUpd(rdt);if(SHK>.01){cam.position.x+=(Math.random()-.5)*SHK;cam.position.y+=(Math.random()-.5)*SHK*.6;SHK*=Math.exp(-8*rdt)}else SHK=0;updRet();wxUpd(rdt);if(COMP&&PF.q>=4)COMP.render(rdt);else ren.render(scene,cam)}}
+const MAXS=Net.on?(acc>STEP*6?6:2):5;for(let n=0;acc>=STEP&&n<MAXS;n++){const fr=poll();if(S.st!=='menu'&&!S.pz){const f=Net.step(fr);if(!f)break;applyFrames(f);ipSnap();update(STEP)}acc-=STEP}
+RA+=fd;if(now-LR>=PF.rmin-4){LR=now;const rdt=Math.min(.1,RA);RA=0;RDT=rdt;pfMon(rdt);ipApply(acc/STEP);if(S.st!=='menu'&&!S.pz){anim();hud()}camUpd(rdt);if(SHK>.01){cam.position.x+=(Math.random()-.5)*SHK;cam.position.y+=(Math.random()-.5)*SHK*.6;SHK*=Math.exp(-8*rdt)}else SHK=0;updRet();wxUpd(rdt);if(COMP&&PF.q>=4)COMP.render(rdt);else ren.render(scene,cam);ipRestore()}}
 requestAnimationFrame(loop);
 </script></body></html>
