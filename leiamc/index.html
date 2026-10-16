@@ -40,8 +40,7 @@
   h1 { font: 700 46px var(--display); letter-spacing: 7px; margin: 0 0 4px; text-shadow: 0 0 24px rgba(79,209,98,.35); }
   .tag { font: 500 13px var(--mono); letter-spacing: 3px; color: var(--ok); margin-bottom: 14px; text-transform: uppercase; }
   .brandlogo { height: 38px; max-width: 80vw; object-fit: contain; margin-bottom: 18px; opacity: .95; }
-  .runner { width: 150px; height: 70px; background: url(assets/dog_run1.png) center / contain no-repeat; animation: run 0.32s steps(1) infinite; margin-bottom: 10px; }
-  @keyframes run { 0% { background-image: url(assets/dog_run1.png); } 50% { background-image: url(assets/dog_run2.png); } }
+  .runner { width: min(60vw, 280px); height: auto; margin-bottom: 10px; filter: drop-shadow(0 8px 14px rgba(0,0,0,.5)); user-select: none; -webkit-user-drag: none; }
   .sad { height: 130px; margin-bottom: 8px; filter: drop-shadow(0 4px 10px rgba(0,0,0,.6)); }
   #overlay { background: rgba(8,10,9,.45); backdrop-filter: blur(7px) saturate(1.1); -webkit-backdrop-filter: blur(7px) saturate(1.1); }
   .pause-card { width: min(520px, 92vw); max-height: 94vh; overflow: auto; box-sizing: border-box; padding: 26px 28px 22px; cursor: default;
@@ -279,7 +278,7 @@
 </div>
 
 <div id="loading" class="screen">
-  <div class="runner" aria-hidden="true"></div>
+  <img class="runner" src="assets/leia-run_v2.webp" alt="" width="480" height="251" aria-hidden="true">
   <h1>THE NETWORK</h1>
   <div class="tag">LeiaNET Edition</div>
   <div id="loading-text">Cargando…</div>

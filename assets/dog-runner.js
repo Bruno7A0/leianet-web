@@ -11,15 +11,15 @@
     var scripts = document.getElementsByTagName('script');
     for (var i=0;i<scripts.length;i++){
       if (scripts[i].src && scripts[i].src.indexOf('dog-runner.js') !== -1){
-        return scripts[i].src.replace('dog-runner.js','');
+        return scripts[i].src.replace(/dog-runner.js.*$/,'');
       }
     }
     return 'assets/';
   })();
 
-  /* sprite sheet de la perra corriendo (40 cuadros de 228x119, fondo transparente) */
-  var IMG_SHEET = ASSET_PATH + 'dog_run_sheet.webp';
-  var RUN_N = 40, RUN_FW = 228, RUN_FH = 119, RUN_FRAME_MS = 84, JUMP_FRAME = 2;
+  /* sprite sheet de la perra corriendo (40 cuadros de 200x104, fondo transparente) */
+  var IMG_SHEET = ASSET_PATH + 'dog_run_sheet_v2.webp';
+  var RUN_N = 40, RUN_FW = 200, RUN_FH = 104, RUN_FRAME_MS = 84, JUMP_FRAME = 2;
   var SND_JUMP = ASSET_PATH + 'saltar.mp3';
   var SND_MUSIC = ASSET_PATH + 'musica.mp3';
 
