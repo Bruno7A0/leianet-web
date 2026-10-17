@@ -553,6 +553,10 @@ const FORM={'4-4-2':[[0,0],[.2,-.7],[.2,-.25],[.2,.25],[.2,.7],[.45,-.7],[.45,-.
 '3-5-2':[[0,0],[.2,-.5],[.17,0],[.2,.5],[.4,-.85],[.4,-.35],[.34,0],[.4,.35],[.4,.85],[.72,-.25],[.72,.25]]};
 const DF=[{th:.9,prs:1,err:2.2,kp:.55,st:.6,sp:.92,mk:0},{th:.6,prs:2,err:1.4,kp:.68,st:1.3,sp:.97,mk:1},{th:.35,prs:3,err:.8,kp:.82,st:2.4,sp:1,mk:1},{th:.25,prs:3,err:.6,kp:.9,st:3.2,sp:1,mk:1}];
 const cfg={},pl=[],S={st:'menu',sc:[0,0],half:1,clk:0,o:null,lt:0,pos:-1,sel:9,lock:0,chg:0,tm:0,ko:0,ex:0,dt:.016,pz:false,pwrCd:[0,0],ts:1,pw:null,sub:.016};let R=[[],[]],bx=0,bz=0;
+/* cambio automático de jugador: antes bastaba que otro estuviera 0.9m más cerca de la pelota (proyectada 0.5s) y no había espera → saltaba de jugador casi cada vez que la pelota se movía.
+   Ahora: tiene que estar claramente más cerca (≥2m o 30% de la distancia actual) y después de cada cambio automático se bloquea AUTO_LOCK segundos. */
+const AUTO_LOCK=1;
+const autoSw=(c,n)=>{const dc=hy(c.x-bx,c.z-bz),dn=hy(n.x-bx,n.z-bz);return dn+Math.max(2.2,.3*dc)<dc};
 const RN=['ARQ','DEF','MED','DEL'];
 function mkAt(i,d){const r=i?(d<.3?1:d<.6?2:3):0,B=[{sh:.5,ps:.85,tk:.7,sp:.82},{sh:.6,ps:.95,tk:1.18,sp:.97},{sh:.78,ps:1.18,tk:1,sp:1},{sh:.95,ps:.92,tk:.78,sp:1.04}][r],j=()=>(rd()-.5)*.08;return{r,sh:B.sh+j(),ps:B.ps+j(),tk:B.tk+j(),sp:B.sp+j()*.5}}
 function build(){pl.forEach(p=>{scene.remove(p.m);if(p.bs)scene.remove(p.bs)});pl.length=0;const F=FORM[cfg.form];
@@ -609,7 +613,7 @@ function pads(){const t=performance.now();if(t-PF.pt<8)return PF.ps;PF.pt=t;retu
 function readDev(d,ps){let x=0,z=0;const c={};if(d==='kb'||d==='any'){x=(keys.KeyD||keys.ArrowRight?1:0)-(keys.KeyA||keys.ArrowLeft?1:0);z=(keys.KeyS||keys.ArrowDown?1:0)-(keys.KeyW||keys.ArrowUp?1:0);if(TJ.on){x=TJ.x;z=TJ.z}for(const a in BIND.k){const k=BIND.k[a];c[a]=!!(keys[k]||keys[k.replace('Left','Right')])}}
 if(d!=='kb'){const g=ps[d==='g1'?1:0];if(g){const ax=g.axes[0]||0,az=g.axes[1]||0;if(hy(ax,az)>.22){x=ax;z=az}const gc={};for(const a in BIND.g){const b=g.buttons[BIND.g[a]];if(b&&(b.pressed||b.value>.5))gc[a]=true}const nt=performance.now();if(gc.clr){if(!CT[d])CT[d]=nt;if(nt-CT[d]<70)gc.clr=false}else CT[d]=0;for(const a in gc)if(gc[a])c[a]=true}}
 const m=hy(x,z);if(m>1){x/=m;z/=m}return{x,z,c}}
-function poll(){const ps=pads(),ds=[S.p2?dev[0]:'any',dev[1]];const fr=[null,null];ds.forEach((d,k)=>{if(k&&!S.p2)return;fr[k]=readDev(d,ps)});
+function poll(){const ps=pads(),ds=[S.p2?dev[0]:'any',dev[1]];/* online: mi lado usa teclado + táctil + mando juntos (antes el local solo leía teclado y el visitante solo el mando) */if(Net.on)ds[Net.side]='any';const fr=[null,null];ds.forEach((d,k)=>{if(k&&!S.p2)return;fr[k]=readDev(d,ps)});
 const st=ps.some(g=>g.buttons[9]&&g.buttons[9].pressed);if(st&&!P9){if(S.st==='menu')start();else if(S.st!=='end')togglePause()}P9=st;
 if(listen&&listen.t==='g')for(const g of ps){const i=g.buttons.findIndex(b=>b.pressed);if(i>=0&&i!==9){BIND.g[listen.a]=i;listen=null;showCtl();break}}return fr}
 function applyFrames(fr){fr.forEach((r,k)=>{if(!r)return;const I=IN[k];I.inp.x=r.x;I.inp.z=r.z;for(const a in BIND.k){const v=!!r.c[a];I.E[a]=v&&!I.prev[a];I.U[a]=!v&&I.prev[a];I.cur[a]=v;I.prev[a]=v}});useIn(0)}
@@ -656,9 +660,12 @@ function pkUpdate(dt){const q=S.pk,k=q.k;q.tm-=dt;
 if(k.t===0||S.p2){useIn(k.t);q.tx=clamp(q.tx+inp.x*dt*1.4,-1.35,1.35);q.ty=clamp(q.ty-inp.z*dt*1.1,0,1.3);if(q.tm<1.4&&(E.shoot||E.pass))q.ch=1;if(q.ch&&(cur.shoot||cur.pass))q.pw=Math.min(1,q.pw+dt*1.1);S.chg=q.pw;if((q.ch&&(U.shoot||U.pass))||q.tm<-8)pkShoot()}
 else{S.chg=0;if(q.tm<=0){q.tx=(rd()<.5?-1:1)*(.5+rd()*.45);q.ty=.15+rd()*.8;q.pw=.6+rd()*.35;pkShoot()}}}
 function pkShoot(){const q=S.pk,k=q.k,gk=q.gk,dr=q.dr;S.shots[k.t]++;let tx=q.tx,ty=q.ty;const pw=Math.max(.3,q.pw);S.chg=0;if(pw>.93){ty+=.7;tx+=(rd()-.5)}tx+=(rd()-.5)*.12;ty+=(rd()-.5)*.12;
-const gx=dr*L,tz=dr*tx*GW,y=clamp(ty,0,1.5)*GH,dx=gx-ball.x,dz=tz-ball.z,d=hy(dx,dz),sp=19+pw*17,t=d/sp,sd=Math.sign(tz)||1;let dzG;
-if(gk.t===0||S.p2){useIn(gk.t);dzG=dr*(inp.x>.3?1:inp.x<-.3?-1:0)*(GW*.75)}else dzG=(rd()<.1?0:(rd()<[.3,.42,.55,.7][cfg.diff]?sd:-sd))*(GW*.75);
-q.gz=dzG;gk.dv=.9;gk.dsg=Math.sign(dzG-gk.z)||0;gk.ok=1;gk.sh2=1;S.rcv=null;
+const gx=dr*L,tz=dr*tx*GW,y=clamp(ty,0,1.5)*GH,dx=gx-ball.x,dz=tz-ball.z,d=hy(dx,dz),sp=19+pw*17,t=d/sp,sd=Math.sign(tz)||1;let dzG,beat=0;
+if(gk.t===0||S.p2){useIn(gk.t);dzG=dr*(inp.x>.3?1:inp.x<-.3?-1:0)*(GW*.75)}else{/* TIRO LIBRE: antes el arquero adivinaba el lado casi siempre (hasta 70%) y si adivinaba atajaba SÍ o SÍ (el palo está a 5.8 y él cubre 6.2).
+   Ahora, si adivina el lado, un tiro bien colocado (cerca del palo + altura + algo de fuerza) lo gana igual (llega corto). Tiros al medio los ataja. Penales: igual que antes. */
+ const fc=q.fk&&Math.abs(tx)<.35,rg=fc?0:rd()<(q.fk?0:.1)?0:(rd()<(q.fk?[.65,.72,.78,.85]:[.3,.42,.55,.7])[cfg.diff]?sd:-sd);dzG=rg*(GW*.75);
+ if(q.fk&&rg===sd&&!fc){const cq=.5*clamp((Math.abs(tx)-.55)/.6,0,1)+.5*clamp((ty-.45)/.6,0,1),ps=clamp(.95-1.1*cq-.2*pw+.06*cfg.diff,.08,.92);if(rd()>=ps)beat=1}}
+q.gz=dzG;gk.dv=.9;gk.dsg=Math.sign(dzG-gk.z)||0;gk.ok=1;gk.sh2=1;if(beat){gk.ok=0;q.gz=dzG*.45}S.rcv=null;
 {let vy=(y-BR+10*t*t)/t;if(q.fk&&q.wl){const tw=9.15/sp;vy=Math.min(15,Math.max(vy,(2-BR+10*tw*tw)/tw))}kick(k,dx,dz,sp,vy,(rd()-.5)*.6)};S.st='play';S.sp=null;S.pkc=2.4}
 const ret=$('ret');function updRet(){const q=S.pk;if(S.st==='pk'&&q&&(q.k.t===0||S.p2)){cam.updateMatrixWorld();const v=new T.Vector3(q.dr*L,q.ty*GH,q.dr*q.tx*GW).project(cam);ret.hidden=false;ret.style.left=(v.x+1)/2*innerWidth+'px';ret.style.top=(1-v.y)/2*innerHeight+'px'}else ret.hidden=true}
 function humanOld(p,dt,D){const m=hy(inp.x,inp.z),dr=p.t?-1:1,gx=dr*L,can=S.o===p||(!S.o&&hy(ball.x-p.x,ball.z-p.z)<2.2&&ball.y<2&&p.cd<=0),dx=m>.25?inp.x/m:0,dz=m>.25?inp.z/m:0;
@@ -779,9 +786,9 @@ function update(dt){S.dt=dt;if(S.st==='play'){S.pwrCd[0]-=dt;S.pwrCd[1]-=dt;if(S
 for(const p of pl){p.ph+=hy(p.vx,p.vz)*dt*1.5;p.tc-=dt;p.cd-=dt;p.stun-=dt;p.sh-=dt;p.k-=dt;p.cel-=dt;p.th-=dt;if(p.dv>0)p.dv-=dt;if(p.jp>0)p.jp-=dt;if(p.sl>0)p.sl-=dt;if(p.sl>.45&&!p.sa){p.sa=1;sfx('slide')}if(p.sl<=0)p.sa=0}
 bx=clamp(ball.x+ball.vx*.5,-L,L);bz=clamp(ball.z+ball.vz*.5,-W,W);
 R=[0,1].map(t=>pl.filter(p=>p.t===t&&!p.gk&&!p.off).sort((a,b)=>hy(a.x-bx,a.z-bz)-hy(b.x-bx,b.z-bz)));S.lock-=dt;
-if(S.o&&S.o.t===0&&!S.o.gk)S.sel=pl.indexOf(S.o);else if(S.lock<=0&&S.st==='play'){const c=pl[S.sel],n=R[0][0];if(n!==c&&(c.gk||c.off||hy(n.x-bx,n.z-bz)+.9<hy(c.x-bx,c.z-bz)))S.sel=pl.indexOf(n)}
+if(S.o&&S.o.t===0&&!S.o.gk)S.sel=pl.indexOf(S.o);else if(S.lock<=0&&S.st==='play'){const c=pl[S.sel],n=R[0][0];if(n!==c&&(c.gk||c.off||autoSw(c,n)))S.sel=pl.indexOf(n),S.lock=AUTO_LOCK}
 if(E.sw&&S.st==='play'&&!(S.o&&S.o.t===0)){const c=R[0].find(q=>pl.indexOf(q)!==S.sel);if(c){S.sel=pl.indexOf(c);S.lock=1.2}}
-if(S.p2){useIn(1);if(S.o&&S.o.t===1&&!S.o.gk)S.sel1=pl.indexOf(S.o);else if(S.lock1<=0&&S.st==='play'){const c=pl[S.sel1],n=R[1][0];if(n!==c&&(c.gk||c.off||hy(n.x-bx,n.z-bz)+.9<hy(c.x-bx,c.z-bz)))S.sel1=pl.indexOf(n)}S.lock1-=dt;if(E.sw&&S.st==='play'&&!(S.o&&S.o.t===1)){const c=R[1].find(q=>pl.indexOf(q)!==S.sel1);if(c){S.sel1=pl.indexOf(c);S.lock1=1.2}}useIn(0)}
+if(S.p2){useIn(1);if(S.o&&S.o.t===1&&!S.o.gk)S.sel1=pl.indexOf(S.o);else if(S.lock1<=0&&S.st==='play'){const c=pl[S.sel1],n=R[1][0];if(n!==c&&(c.gk||c.off||autoSw(c,n)))S.sel1=pl.indexOf(n),S.lock1=AUTO_LOCK}S.lock1-=dt;if(E.sw&&S.st==='play'&&!(S.o&&S.o.t===1)){const c=R[1].find(q=>pl.indexOf(q)!==S.sel1);if(c){S.sel1=pl.indexOf(c);S.lock1=1.2}}useIn(0)}
 pl.forEach((p,i)=>{if(p.off){p.vx=p.vz=0;return}p.hum=(i===S.sel||(S.p2&&i===S.sel1))&&!p.gk;if(p.t===0||S.p2)useIn(p.t);let tg=null;
 if(S.st==='ko'||S.st==='half'||S.st==='end'){const h=home(p,1);tg=p===S.o?[p.x,p.z,0]:[h[0],h[1],0]}
 else if(S.st==='goal'){const sc=S.scorer;if(p===sc)tg=[S.cx,S.cz,1];else if(p.t===S.gt&&!p.gk)tg=[sc.x,sc.z,0];else{const h=home(p);tg=[h[0],h[1],0]}}
@@ -961,9 +968,9 @@ const unpackF=p=>{const b=p>>>16,c={};for(let i=0;i<12;i++)if(b&(1<<i))c[ACT[i]]
    (antes decidía con la ventaja de los inputs del rival, que depende del delay AJENO: el lazo oscilaba y se quedaba alto). */
 const Net={on:false,side:0,delay:4,tick:0,seed:1,q:[new Map(),new Map()],hs:new Map(),tx:null,dc:null,sent:0,maxR:0,ring:new Int32Array(64),minD:2,maxD:20,
 win:0,minL:99,stall:0,lb:0,leadT:0,
-fb:99,fbT:0,fbP:0,hold:0,calm:0,skip:0,pen:0,penT:0,rtt:0,dcRx:0,
+fb:99,fbT:0,fbP:0,hold:0,calm:0,skip:0,pen:0,penT:0,rtt:0,dcRx:0,pace:1,wait:false,od:0,
 connect(tx,side,sd){this.tx=tx;this.side=side;this.seed=sd;this.on=true;tx.onmsg=m=>this.recv(m)},
-reset(){this.tick=0;this.q=[new Map(),new Map()];this.hs.clear();this.ring.fill(0);for(let i=0;i<this.delay;i++){this.q[0].set(i,NEUTRAL());this.q[1].set(i,NEUTRAL())}this.sent=this.delay-1;this.maxR=this.delay-1;this.win=0;this.minL=99;this.stall=0;this.lb=0;this.leadT=0;this.fb=99;this.fbT=0;this.fbP=0;this.hold=0;this.calm=0;this.skip=0;this.pen=0;this.penT=0},
+reset(){this.tick=0;this.q=[new Map(),new Map()];this.hs.clear();this.ring.fill(0);for(let i=0;i<this.delay;i++){this.q[0].set(i,NEUTRAL());this.q[1].set(i,NEUTRAL())}this.sent=this.delay-1;this.maxR=this.delay-1;this.win=0;this.minL=99;this.stall=0;this.lb=0;this.leadT=0;this.fb=99;this.fbT=0;this.fbP=0;this.hold=0;this.calm=0;this.skip=0;this.pen=0;this.penT=0;this.pace=1;this.od=0},
 setDelay(d){this.delay=d<this.minD?this.minD:d>this.maxD?this.maxD:d},
 /* JSON heredado (BCTransport de pruebas con 2 pestañas) */
 recv(m){if(m.t==='in'){this.q[1-this.side].set(m.n,m.f);if(m.n>this.maxR)this.maxR=m.n}else if(m.t==='h'&&this.hs.has(m.n)&&this.hs.get(m.n)!==m.v){console.warn('DESYNC en tick',m.n);window.onDesync&&window.onDesync(m.n)}},
@@ -972,21 +979,30 @@ recvBin(ab){if(!ab||ab.byteLength<3)return;const v=new DataView(ab),t=v.getUint8
  if(t===1){if(!this.on||n<10)return;const k=v.getUint8(5);if(k<1||k>4||n!==6+4*k)return;const top=v.getUint32(1,true);if(top-this.tick>120)return;const R=1-this.side,Q=this.q[R];
   for(let i=0;i<k;i++){const tk=top-i;if(tk<this.tick||Q.has(tk))continue;Q.set(tk,unpackF(v.getInt32(6+4*i,true)))}if(top>this.maxR)this.maxR=top}
  else if(t===2){if(!this.on||n!==13)return;const hn=v.getUint32(1,true),hv=v.getFloat64(5,true);if(this.hs.has(hn)&&this.hs.get(hn)!==hv){console.warn('DESYNC en tick',hn);window.onDesync&&window.onDesync(hn)}}
- else if(t===3){if(this.on&&n===3)this.onLead(v.getUint8(1),v.getUint8(2))}
+ else if(t===3){if(this.on&&(n===3||n===4)){this.od=n===4?v.getUint8(3):0;this.onLead(v.getUint8(1),v.getUint8(2))}}
  else if(t===4){if(n===9&&this.dc&&this.dc.readyState==='open'){v.setUint8(0,5);try{this.dc.send(ab)}catch(e){}}}
  else if(t===5){if(n===9){const d=performance.now()-v.getFloat64(1,true);if(d>=0&&d<5e3){this.rtt=this.rtt?this.rtt*.7+d*.3:d;this.dcRx=performance.now()}}}},
 pingDC(){const dc=this.dc;if(!dc||dc.readyState!=='open')return;const b=new ArrayBuffer(9),v=new DataView(b);v.setUint8(0,4);v.setFloat64(1,performance.now(),true);try{dc.send(b)}catch(e){}},
 /* salida: SIEMPRE por el relé (TCP, confiable) y además por P2P si está abierto (UDP, sin cola). Mismo contenido: no hay conflicto */
 out(b){this.tx.bin(b);const dc=this.dc;if(dc&&dc.readyState==='open'&&dc.bufferedAmount<16384)try{dc.send(b)}catch(e){}},
 sendIn(n){const k=n<3?n+1:4,b=new ArrayBuffer(6+4*k),v=new DataView(b);v.setUint8(0,1);v.setUint32(1,n,true);v.setUint8(5,k);for(let i=0;i<k;i++)v.setInt32(6+4*i,this.ring[(n-i)&63],true);this.out(b)},
-sendLead(L,fl){const b=new ArrayBuffer(3),v=new DataView(b);v.setUint8(0,3);v.setUint8(1,L<0?0:L>255?255:L);v.setUint8(2,fl);this.out(b)},
+sendLead(L,fl){const b=new ArrayBuffer(4),v=new DataView(b);v.setUint8(0,3);v.setUint8(1,L<0?0:L>255?255:L);v.setUint8(2,fl);v.setUint8(3,this.delay);this.out(b)},
 /* el rival me dice cuánta ventaja tienen MIS inputs allá. ≤0 = al borde de frenarse → subo rápido y me "acuerdo" (pen): cuantos más picos
    recientes, más tiempo me quedo arriba y más lento bajo; sin problemas bajo de a 1 tick cada ~0.5s hasta dejar ~2 ticks de colchón. */
 onLead(r,fl){const t=performance.now();this.fbT=t;this.fb=r;if(t-this.fbP<90)return;this.fbP=t;if(this.skip>0){this.skip--;return}
  if(this.pen>0&&t-this.penT>25000){this.pen--;this.penT=t}
+ const od=this.od||this.delay; /* delay del rival (0 = cliente viejo: no se balancea) */
  if(r<=0){this.setDelay(this.delay+((fl&1)?2:1));if(this.pen<4)this.pen++;this.penT=t;this.hold=8+8*this.pen;this.calm=0;this.skip=1}
- else if(r>=3){if(this.hold>0){this.hold--;return}if(++this.calm>=2+this.pen){this.setDelay(this.delay-(r>=7&&!this.pen?2:1));this.calm=0;this.skip=1}}
+ else if(r<=2&&this.delay<od-1){this.setDelay(this.delay+1);this.calm=0;this.skip=1} /* reparto parejo: el rival carga más delay que yo, le saco peso */
+ else if(r>=8){this.setDelay(this.delay-Math.min(6,(r-3)>>1));this.calm=0;this.hold=0;this.skip=1}
+ else if(r>=3){if(this.hold>0){this.hold--;return}if(this.delay<od-1)return;if(++this.calm>=2+this.pen){this.setDelay(this.delay-(r>=7&&!this.pen?2:1));this.calm=0;this.skip=1}}
  else{this.calm=0;if(this.hold>0)this.hold--}},
+/* ritmo del reloj: si MI colchón de inputs del rival sobra (L alto) y el rival NO tiene colchón sobrante de los míos (fb bajo), el desfase de relojes
+   (ej. uno cargó el partido más tarde) quedaba "pegado" para siempre: el lado atrasado se quedaba con delay máximo (330ms) y el otro con el mínimo.
+   Acelero un poco el reloj (hasta +20%) hasta consumir el sobrante: el desfase se cierra y onLead puede bajar el delay. */
+pacing(L){const t=performance.now(),od=this.od||this.delay,fresh=t-this.fbT<1500;
+ const go=fresh&&((this.delay-od>=3&&L>=3)||(L>=5&&L>=this.fb+3&&this.fb<=3));
+ if(go)this.pace=Math.min(1.2,1+.03*Math.max(L-2,this.delay-od-1));else if(this.pace>1&&!(fresh&&L>=3&&this.delay-od>=2))this.pace=1},
 tag(){return this.dc&&performance.now()-this.dcRx<2000?' · P2P '+Math.round(this.rtt)+'ms':(this.tx&&this.tx.bin?' · relé':'')},
 step(loc){if(!this.on)return loc;const tg=this.tick+this.delay,bin=!!this.tx.bin;
  if(this.sent<tg){const p=packF(loc[this.side]),f=unpackF(p);while(this.sent<tg){const n=++this.sent;this.q[this.side].set(n,f);if(bin){this.ring[n&63]=p;this.sendIn(n)}else this.tx.send({t:'in',n,f})}}
@@ -995,7 +1011,7 @@ step(loc){if(!this.on)return loc;const tg=this.tick+this.delay,bin=!!this.tx.bin
   /* sin feedback del rival (relé viejo / sin LEAD): regla de emergencia, +1 cada 350ms */
   if(this.stall>=4){const t=performance.now();if(t-this.fbT>700&&t-this.lb>350){this.lb=t;this.setDelay(this.delay+1)}}return null}
  this.stall=0;
- if(bin){const L=this.maxR-this.tick;if(L<this.minL)this.minL=L;if(++this.win>=15){this.sendLead(this.minL,0);this.win=0;this.minL=99;this.leadT=performance.now()}}
+ if(bin){const L=this.maxR-this.tick;if(L<this.minL)this.minL=L;if(++this.win>=15){this.sendLead(this.minL,0);this.pacing(this.minL);this.win=0;this.minL=99;this.leadT=performance.now()}}
  if(this.tick%60===0){const v=Math.round((ball.x+ball.z*3+S.clk)*1e3);this.hs.set(this.tick,v);if(bin){const hb=new ArrayBuffer(13),hv=new DataView(hb);hv.setUint8(0,2);hv.setUint32(1,this.tick,true);hv.setFloat64(5,v,true);this.out(hb)}else this.tx.send({t:'h',n:this.tick,v})}
  this.q[0].delete(this.tick);this.q[1].delete(this.tick);this.tick++;return[a,b]}};
 function BCTransport(name){const bc=new BroadcastChannel(name||'futbol3d'),t={send:m=>bc.postMessage(m),onmsg:null};bc.onmessage=e=>t.onmsg&&t.onmsg(e.data);return t}
@@ -1034,6 +1050,7 @@ function olMsg(m){switch(m.t){
  case 'err':olErr(m.msg);break;
  case 'chat':OL.chat.push(m);OL.chat=OL.chat.slice(-40);olChat();break;
  case 'start':olStart(m);break;
+ case 'go':clearTimeout(OL.goT);Net.wait=false;break;
  case 'oppleft':if(OL.inGame&&S.st!=='end')olExit('Tu rival abandonó el partido');break;
  case 'rtc':rtcSignal(m);break;
  case 'in':case 'h':if(OL.inGame)Net.recv(m);break}}
@@ -1068,8 +1085,11 @@ $('rsend').onclick=olSay;$('rsay').addEventListener('keydown',e=>{if(e.key==='En
 function olStart(m){if(!OL.room||!Array.isArray(m.teams))return;OL.inGame=true;OL.desync=0;
  m.teams.forEach((tm,t)=>{const i=Number.isInteger(tm.i)&&TEAMS[tm.i]?tm.i:t;$('tm_'+t).value=i;fillK(t);if(tm.k)['c1_','c2_','sh_','so_','pt_'].forEach((n,j)=>$(n+t).value=tm.k[j]);pvK(t)});
  $('form').value=['4-4-2','4-3-3','3-5-2'].includes(m.form)?m.form:'4-4-2';$('diff').value=m.diff;$('mode').value='2';
- Net.delay=(m.delay|0)||5;Net.connect({send:olSend,bin:olSendBin,onmsg:null},m.side|0,m.seed|0);lb.hidden=true;start()}
-function olExit(note){OL.inGame=false;Net.on=false;Net.tx=null;invClear();S.invA=0;S.pz=false;S.st='menu';$('pause').hidden=true;$('sb').textContent='';$('pwrb').textContent='';$('rd').hidden=true;$('pw').classList.remove('on');$('gb').classList.remove('on');$('msg').style.opacity=0;HL='';
+ Net.delay=(m.delay|0)||5;Net.connect({send:olSend,bin:olSendBin,onmsg:null},m.side|0,m.seed|0);lb.hidden=true;start();
+ /* barrera de arranque: cada uno tarda distinto en cargar el partido; si uno empieza antes, el desfase de relojes se pagaba con delay para siempre.
+    Aviso 'ld' al terminar de cargar y los dos arrancan con 'go' del servidor (si no llega en 5s, arranca igual: servidor viejo) */
+ Net.wait=true;clearTimeout(OL.goT);OL.goT=setTimeout(()=>{Net.wait=false},5000);olSend({t:'ld'})}
+function olExit(note){clearTimeout(OL.goT);Net.wait=false;OL.inGame=false;Net.on=false;Net.tx=null;invClear();S.invA=0;S.pz=false;S.st='menu';$('pause').hidden=true;$('sb').textContent='';$('pwrb').textContent='';$('rd').hidden=true;$('pw').classList.remove('on');$('gb').classList.remove('on');$('msg').style.opacity=0;HL='';
  $('menu').hidden=true;lb.hidden=false;if(OL.room){olView('lbC');renderRoom()}else olView(OL.ws?'lbB':'lbA');if(note)olErr(note)}
 function olQuit(){olSend({t:'quit'});olExit()}
 window.onDesync=()=>{if(OL.desync)return;OL.desync=1;msg('⚠ Desincronización detectada (ideal: mismo navegador en ambos)',6000)};
@@ -1181,8 +1201,8 @@ for(let i=0;i<pl.length;i++){const p=pl[i],s=IP.pp[i];sv.push(p.x,p.z,p.f);const
 let df=p.f-s[2];if(df>Math.PI)df-=2*Math.PI;else if(df<-Math.PI)df+=2*Math.PI;if(Math.abs(df)<1.2)p.f=s[2]+df*a}
 const b=IP.b,dx=ball.x-b[0],dy=ball.y-b[1],dz=ball.z-b[2];sv.push(ball.x,ball.y,ball.z);if(dx*dx+dy*dy+dz*dz<100){ball.x=b[0]+dx*a;ball.y=b[1]+dy*a;ball.z=b[2]+dz*a}IPS=sv}
 function ipRestore(){if(!IPS)return;const sv=IPS;IPS=null;for(let i=0;i<pl.length;i++){const p=pl[i];p.x=sv[i*3];p.z=sv[i*3+1];p.f=sv[i*3+2]}const k=pl.length*3;ball.x=sv[k];ball.y=sv[k+1];ball.z=sv[k+2]}
-function loop(now){requestAnimationFrame(loop);const fd=Math.min(.05,(now-last)/1000);RDT=fd;last=now;TS+=(1-TS)*Math.min(1,1.3*fd);acc=Math.min(Net.on?.4:.25,acc+fd*TS);
-const MAXS=Net.on?(acc>STEP*6?6:2):5;for(let n=0;acc>=STEP&&n<MAXS;n++){const fr=poll();if(S.st!=='menu'&&!S.pz){const f=Net.step(fr);if(!f)break;applyFrames(f);ipSnap();update(STEP)}acc-=STEP}
+function loop(now){requestAnimationFrame(loop);const fd=Math.min(.05,(now-last)/1000);RDT=fd;last=now;TS+=(1-TS)*Math.min(1,1.3*fd);if(Net.on&&Net.wait)acc=0;else acc=Math.min(Net.on?.4:.25,acc+fd*TS*(Net.on?Net.pace:1));
+const MAXS=Net.on?(acc>STEP*6?6:2):5;for(let n=0;acc>=STEP&&n<MAXS;n++){const fr=poll();if(S.st!=='menu'&&!S.pz){if(Net.on&&Net.wait)break;const f=Net.step(fr);if(!f)break;applyFrames(f);ipSnap();update(STEP)}acc-=STEP}
 RA+=fd;if(now-LR>=PF.rmin-4){LR=now;const rdt=Math.min(.1,RA);RA=0;RDT=rdt;pfMon(rdt);ipApply(acc/STEP);if(S.st!=='menu'&&!S.pz){anim();hud()}camUpd(rdt);if(SHK>.01){cam.position.x+=(Math.random()-.5)*SHK;cam.position.y+=(Math.random()-.5)*SHK*.6;SHK*=Math.exp(-8*rdt)}else SHK=0;updRet();wxUpd(rdt);if(COMP&&PF.q>=4)COMP.render(rdt);else ren.render(scene,cam);ipRestore()}}
 requestAnimationFrame(loop);
 /* caché offline/instantánea (assets inmutables + three.js); solo si se sirve por http(s) */
