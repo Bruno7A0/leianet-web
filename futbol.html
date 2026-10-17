@@ -392,10 +392,10 @@ const cv=document.createElement('canvas');cv.width=2048;cv.height=256;
 const AD_LOGO=AB+'assets/logo.17d64591.webp',AD_DOG=AB+'assets/dog.0e97e268.webp';window.AD={cv,im:{},nt:0,last:-1e9,tx:[]};
 const FNT="'Chakra Petch',system-ui,sans-serif";
 AD.draw=function(n){const x=cv.getContext('2d'),PW=512,H=162;x.setTransform(1,0,0,256/H,0,0);x.globalAlpha=1;x.clearRect(0,0,2048,H);
-const lg=AD.im.logo,dg=AD.im.dog;
+const lg=AD.im.logo,dg=AD.im.dog,fr=((((n/70)|0)%40)+40)%40;
 for(let i=0;i<4;i++){const ox=i*PW,g=x.createLinearGradient(0,0,0,H);g.addColorStop(0,'#0b1740');g.addColorStop(1,'#1f3f9a');x.fillStyle=g;x.fillRect(ox,0,PW,H);
 x.save();x.beginPath();x.rect(ox,0,PW,H);x.clip();
-if(lg&&!AD.nt){x.globalAlpha=.95;x.drawImage(lg,ox+14,(H-86)/2,484,86);x.globalAlpha=1}else{x.font="900 56px 'Chakra Petch',system-ui,sans-serif";x.textAlign='center';x.fillStyle='#fff';x.fillText('LEIANETWORK',ox+PW/2,H/2+18,PW-24)}
+if(lg&&!AD.nt){x.globalAlpha=.95;if(dg)x.drawImage(lg,ox+10,(H-51)/2,292,51);else x.drawImage(lg,ox+14,(H-86)/2,484,86);x.globalAlpha=1;/* la perra corriendo junto al logo */if(dg)x.drawImage(dg,fr*168,0,168,87,ox+PW-208,(H-104)/2,200,104)}else{x.font="900 56px 'Chakra Petch',system-ui,sans-serif";x.textAlign='center';x.fillStyle='#fff';x.fillText('LEIANETWORK',ox+PW/2,H/2+18,PW-24)}
 x.restore();x.fillStyle='rgba(255,255,255,.3)';x.fillRect(ox+PW-2,0,2,H)}
 for(const t of AD.tx)t.needsUpdate=true};
 AD.chk=function(){try{cv.getContext('2d').getImageData(0,0,1,1);AD.nt=0}catch(e){AD.nt=1}};
@@ -420,7 +420,7 @@ for(let i=0;i<=SEG;i++){uv[i*4]=i/SEG;uv[i*4+1]=1;uv[i*4+2]=i/SEG;uv[i*4+3]=0}
 for(let i=0;i<SEG;i++){const a=2*i;ix.push(a,a+1,a+2,a+1,a+3,a+2)}
 g.setAttribute('position',pa);g.setAttribute('uv',new T.BufferAttribute(uv,2));g.setIndex(ix);
 const m=new T.Mesh(g,AD.mt[j%NT]);m.frustumCulled=false;m.visible=false;scene.add(m);AD.dg.push({m,pa})}
-window.dogUpd=n=>{const dg=AD.im.dog;if(!dg)return;const iv=[1e9,110,83,66,50][PF.q];
+window.dogUpd=n=>{const dg=AD.im.dog;if(!dg)return;const iv=[1e9,110,83,66,50][PF.q];if(PF.q>=1&&!AD.nt&&n-(AD.sl||0)>=100){AD.sl=n;AD.draw(n)}
 if(AD.lf<0||n-AD.lf>=iv){AD.lf=n;for(let k=0;k<NT;k++){const f=((((n/70)|0)+k*5)%40+40)%40,x=AD.dc[k].getContext('2d');x.clearRect(0,0,168,87);x.drawImage(dg,f*168,0,168,87,0,0,168,87);AD.dt[k].needsUpdate=true}}
 const ND=DN[PF.q],S=P/ND,u0=n*.0105,o={x:0,z:0};
 for(let j=0;j<DM;j++){const D=AD.dg[j];if(j>=ND){D.m.visible=false;continue}D.m.visible=true;const u=u0+j*S,a=D.pa.array;
