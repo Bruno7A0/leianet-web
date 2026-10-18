@@ -272,11 +272,12 @@ html.pf-ultra #sunfx{background:repeating-conic-gradient(from 188deg at 82% -6%,
 #lt{position:fixed;inset:0;pointer-events:none;z-index:3;opacity:0;background:#dfe9ff}
 @media (prefers-reduced-motion:reduce){html.pf-ultra #sunfx{animation:none}}
 #sov{position:fixed;top:64px;left:50%;transform:translateX(-50%);z-index:6;background:rgba(10,14,28,.85);color:#fff;border:1px solid rgba(255,255,255,.18);border-radius:10px;padding:6px 14px;font:600 13px/1.2 'Chakra Petch',system-ui,sans-serif;white-space:nowrap;pointer-events:none}#sov b{color:#f2c230;margin-right:10px}#sov em{font-style:normal;font-size:16px;margin:0 10px}#sov span{letter-spacing:1px}
+#spv{position:fixed;top:40px;right:12px;z-index:7;display:flex;align-items:center;gap:10px;background:rgba(10,14,28,.85);color:#fff;border:1px solid rgba(255,255,255,.18);border-radius:10px;padding:5px 6px 5px 12px;font:600 12px/1.2 'Chakra Petch',system-ui,sans-serif;max-width:calc(100vw - 24px)}#spv[hidden]{display:none}#spv span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}#spv button{padding:4px 10px;font-size:12px;border-radius:8px;cursor:pointer;flex:none}.touch #spv{top:90px}
 </style><style>#ld{position:fixed;inset:0;z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;background:radial-gradient(120% 90% at 50% 30%,#10203f 0%,#070b14 70%);color:#e8edf7;font-family:'Chakra Petch',system-ui,sans-serif;transition:opacity .5s ease}#ld.off{opacity:0;pointer-events:none}#ld img{width:min(70vw,420px);height:auto;filter:drop-shadow(0 10px 18px rgba(0,0,0,.5))}#ld b{font-size:clamp(20px,4vw,30px);letter-spacing:.18em;font-weight:700}#ld small{opacity:.65;letter-spacing:.12em;font-size:12px;text-transform:uppercase}#ld i{display:block;width:min(60vw,260px);height:4px;border-radius:4px;background:rgba(255,255,255,.12);overflow:hidden}#ld i:after{content:"";display:block;height:100%;width:40%;border-radius:4px;background:#f2c230;animation:ldbar 1.1s ease-in-out infinite}@keyframes ldbar{0%{margin-left:-40%}100%{margin-left:100%}}</style></head><body><div id="ld"><img src="assets/leia-run_v2.webp" alt="" width="480" height="251"><b>FÚTBOL 3D</b><i></i><small>Cargando…</small></div><script>(function(){var t0=Date.now(),el=document.getElementById('ld'),done=0;function hide(){if(done)return;done=1;setTimeout(function(){el.classList.add('off');setTimeout(function(){el.remove()},600)},Math.max(0,900-(Date.now()-t0)))}if(document.readyState==='complete')hide();else addEventListener('load',hide);setTimeout(hide,9000)})()</script>
 <canvas id="c"></canvas><div id="sunfx"></div><div id="lt"></div>
 <div id="hud"><div id="sb"></div><div id="msg"></div></div><div id="gb"><div class="gbi"><small></small><b></b><span></span></div></div><div id="fl"></div><canvas id="rd" width="240" height="152" hidden></canvas><div id="sta"><i></i></div><div id="pw"><i></i></div><div id="pwrb"></div><div id="net"></div><div id="vg"></div><div id="hlp"><b>H</b> · Controles<div class="hf">WASD mover · Shift sprint · Q cambiar · Espacio pase (mantener=fuerza) · E disparo (B normal = por arriba (más carga = más alto y fuerte) · doble toque = raso, ↑↓ apunta)/entrada · Alt hueco · F centro · R elevado · Z barrida (única forma de hacer falta) · V contener · G (o LB) + disparo/pase = alto · X despeje · Esc pausa</div></div>
 <div id="tc" hidden><div id="jz"><div id="jb"><div id="jk"></div></div></div><div class="tb" data-a="shoot">TIRO</div><div class="tb" data-a="pass">PASE</div><div class="tb" data-a="slide">BARRIDA</div><div class="tb" data-a="spr">SPRINT</div><div class="tb" data-a="hi">ALTO</div><div class="tb" data-a="thr">HUECO</div><div class="tb" data-a="cross">CENTRO</div><div class="tb" data-a="lob">ELEV</div><div class="tb" data-a="clr">DESP</div><div class="tb" data-a="jk">CONT</div><div class="tb" data-a="sw">CAMBIAR</div><div class="tb" data-a="pause">❚❚</div></div><div id="rot">📱↻<br>Girá el teléfono<br>para jugar en horizontal</div>
-<div id="sov" hidden></div><div id="ret" hidden></div><div id="menu" class="ov"><div class="card"><h1>⚽ FÚTBOL 3D</h1><div class="sub">Edición Temporada 2026 · Elegí equipos y jugá</div>
+<div id="sov" hidden></div><div id="spv" hidden><span id="spt"></span><button id="spx">✖ Salir</button></div><div id="ret" hidden></div><div id="menu" class="ov"><div class="card"><h1>⚽ FÚTBOL 3D</h1><div class="sub">Edición Temporada 2026 · Elegí equipos y jugá</div>
 <label>Modo<select id="mode"><option value="1">1 jugador (vs CPU)</option><option value="2">2 jugadores</option></select></label>
 <label>J1 (Equipo 1) usa<select id="d0"><option value="kb">Teclado / Táctil</option><option value="g0">Mando 1</option><option value="g1">Mando 2</option></select></label>
 <label>J2 (Equipo 2) usa<select id="d1"><option value="g0">Mando 1</option><option value="g1">Mando 2</option><option value="kb">Teclado</option></select></label>
@@ -571,7 +572,8 @@ let AC,crowdG,MST;
 function aud(){if(AC){AC.resume();return}AC=new(window.AudioContext||window.webkitAudioContext)();MST=AC.createDynamicsCompressor();MST.threshold.value=-14;MST.knee.value=20;MST.ratio.value=5;MST.attack.value=.004;MST.release.value=.2;{const mg=AC.createGain();mg.gain.value=.9;MST.connect(mg);mg.connect(AC.destination)}const b=AC.createBuffer(1,AC.sampleRate*2,AC.sampleRate),d=b.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;
 const n=AC.createBufferSource();n.buffer=b;n.loop=true;const f=AC.createBiquadFilter();f.type='bandpass';f.frequency.value=700;f.Q.value=.5;crowdG=AC.createGain();crowdG.gain.value=.035;n.connect(f);f.connect(crowdG);crowdG.connect(MST);n.start()}
 function tone(a,b,d,ty,v){if(!AC)return;const o=AC.createOscillator(),g=AC.createGain(),t=AC.currentTime;o.type=ty;o.frequency.setValueAtTime(a,t);o.frequency.exponentialRampToValueAtTime(b,t+d);g.gain.setValueAtTime(v,t);g.gain.exponentialRampToValueAtTime(.001,t+d);o.connect(g);g.connect(MST);o.start();o.stop(t+d)}
-function sfx(k,v){if(k==='k'){if(v>28&&S.shot>0)SHK=Math.max(SHK,Math.min(.5,v/90));if(!AC)return;const t=AC.currentTime,r=.88+Math.random()*.24,vl=Math.min(.5,v/40);tone(200*r,55,.13,'triangle',vl);tone(95*r,45,.09,'sine',vl*.8);aNoise(t,.06,'lowpass',1800,250,Math.min(.35,v/45),1);if(v>20)aNoise(t,.05,'highpass',2500,4000,.05,1)}
+var FFW=0;
+function sfx(k,v){if(FFW)return;if(k==='k'){if(v>28&&S.shot>0)SHK=Math.max(SHK,Math.min(.5,v/90));if(!AC)return;const t=AC.currentTime,r=.88+Math.random()*.24,vl=Math.min(.5,v/40);tone(200*r,55,.13,'triangle',vl);tone(95*r,45,.09,'sine',vl*.8);aNoise(t,.06,'lowpass',1800,250,Math.min(.35,v/45),1);if(v>20)aNoise(t,.05,'highpass',2500,4000,.05,1)}
 else if(k==='slide'&&AC)aNoise(AC.currentTime,.45,'bandpass',2800,400,.3,.8);
 else if(k==='tkl'&&AC){const t=AC.currentTime;tone(120,50,.14,'triangle',.3);aNoise(t,.08,'lowpass',900,200,.25,1)}
 else if(k==='post'&&AC){const t=AC.currentTime;[1,2.76,5.4].forEach((m,i)=>tone(620*m,500*m,.35/(i+1),'sine',.16/(i+1)));aNoise(t,.04,'highpass',3000,5000,.08,1);SHK=Math.max(SHK,.25);setTimeout(()=>sfx('ooh'),80)}
@@ -613,7 +615,7 @@ function pads(){const t=performance.now();if(t-PF.pt<8)return PF.ps;PF.pt=t;retu
 function readDev(d,ps){let x=0,z=0;const c={};if(d==='kb'||d==='any'){x=(keys.KeyD||keys.ArrowRight?1:0)-(keys.KeyA||keys.ArrowLeft?1:0);z=(keys.KeyS||keys.ArrowDown?1:0)-(keys.KeyW||keys.ArrowUp?1:0);if(TJ.on){x=TJ.x;z=TJ.z}for(const a in BIND.k){const k=BIND.k[a];c[a]=!!(keys[k]||keys[k.replace('Left','Right')])}}
 if(d!=='kb'){const g=ps[d==='g1'?1:0];if(g){const ax=g.axes[0]||0,az=g.axes[1]||0;if(hy(ax,az)>.22){x=ax;z=az}const gc={};for(const a in BIND.g){const b=g.buttons[BIND.g[a]];if(b&&(b.pressed||b.value>.5))gc[a]=true}const nt=performance.now();if(gc.clr){if(!CT[d])CT[d]=nt;if(nt-CT[d]<70)gc.clr=false}else CT[d]=0;for(const a in gc)if(gc[a])c[a]=true}}
 const m=hy(x,z);if(m>1){x/=m;z/=m}return{x,z,c}}
-function poll(){const ps=pads(),ds=[S.p2?dev[0]:'any',dev[1]];/* online: mi lado usa teclado + táctil + mando juntos (antes el local solo leía teclado y el visitante solo el mando) */if(Net.on)ds[Net.side]='any';const fr=[null,null];ds.forEach((d,k)=>{if(k&&!S.p2)return;fr[k]=readDev(d,ps)});
+function poll(){if(Net.spec)return[null,null];const ps=pads(),ds=[S.p2?dev[0]:'any',dev[1]];/* online: mi lado usa teclado + táctil + mando juntos (antes el local solo leía teclado y el visitante solo el mando) */if(Net.on)ds[Net.side]='any';const fr=[null,null];ds.forEach((d,k)=>{if(k&&!S.p2)return;fr[k]=readDev(d,ps)});
 const st=ps.some(g=>g.buttons[9]&&g.buttons[9].pressed);if(st&&!P9){if(S.st==='menu')start();else if(S.st!=='end')togglePause()}P9=st;
 if(listen&&listen.t==='g')for(const g of ps){const i=g.buttons.findIndex(b=>b.pressed);if(i>=0&&i!==9){BIND.g[listen.a]=i;listen=null;showCtl();break}}return fr}
 function applyFrames(fr){fr.forEach((r,k)=>{if(!r)return;const I=IN[k];I.inp.x=r.x;I.inp.z=r.z;for(const a in BIND.k){const v=!!r.c[a];I.E[a]=v&&!I.prev[a];I.U[a]=!v&&I.prev[a];I.cur[a]=v;I.prev[a]=v}});useIn(0)}
@@ -923,9 +925,9 @@ h=`<div class="tm">${kt(k0)}<span class="tn">${ab3(0)}</span></div><div class="s
 if(h!==HL){HL=h;$('sb').innerHTML=h}
 const sp=pl[S.sel],v=sp?sp.st:1;{const pr=$('pwrb'),q=x=>Math.min(99,Math.round(x*80)),tx=sp&&sp.at?'#'+(sp.i+1)+' '+RN[sp.at.r]+' · TIRO '+q(sp.at.sh)+' · PASE '+q(sp.at.ps)+' · ENTR '+q(sp.at.tk):'';if(pr.textContent!==tx)pr.textContent=tx}stE.classList.toggle('on',v<.97);stE.firstChild.style.width=Math.max(0,v)*100+'%';if(++PF.hf>=PF.rf){PF.hf=0;radar()}}
 function stRow(a,b,c){return`<div class="sr"><b>${a}</b><span>${b}</span><b>${c}</b></div>`}
-function ov(t,res){$('diff2').value=cfg.diff;$('pt').textContent=t;$('res').hidden=!res;if(S.pt){const tot=S.pt[0]+S.pt[1],p0=tot>.5?Math.round(S.pt[0]/tot*100):50;$('stats').innerHTML=`<div class="sh"><span style="${tcs(0)}">${cfg.nm[0][0]}</span><em>${S.sc[0]} – ${S.sc[1]}</em><span style="${tcs(1)}">${cfg.nm[1][0]}</span></div>`+stRow(p0+'%','Posesión',(100-p0)+'%')+stRow(S.shots[0],'Remates',S.shots[1])+stRow(S.fo[0],'Faltas',S.fo[1])}$('rst').hidden=!!Net.on;$('diff2').parentNode.hidden=!!Net.on;$('qt').textContent=Net.on?'Salir a la sala':'Finalizar (menú)';$('pause').hidden=false}
+function ov(t,res){$('diff2').value=cfg.diff;$('pt').textContent=t;$('res').hidden=!res;if(S.pt){const tot=S.pt[0]+S.pt[1],p0=tot>.5?Math.round(S.pt[0]/tot*100):50;$('stats').innerHTML=`<div class="sh"><span style="${tcs(0)}">${cfg.nm[0][0]}</span><em>${S.sc[0]} – ${S.sc[1]}</em><span style="${tcs(1)}">${cfg.nm[1][0]}</span></div>`+stRow(p0+'%','Posesión',(100-p0)+'%')+stRow(S.shots[0],'Remates',S.shots[1])+stRow(S.fo[0],'Faltas',S.fo[1])}$('rst').hidden=!!Net.on;$('diff2').parentNode.hidden=!!Net.on;$('qt').textContent=Net.spec?'Dejar de espectear':Net.on?'Salir a la sala':'Finalizar (menú)';$('pause').hidden=false}
 function togglePause(){if(S.st==='menu'||S.st==='end')return;if(Net.on){if($('pause').hidden)ov('Pausa (online: el partido sigue)',true);else $('pause').hidden=true;return}S.pz=!S.pz;if(S.pz)ov('Pausa',true);else $('pause').hidden=true}
-$('diff2').onchange=e=>{cfg.diff=+e.target.value;$('diff').value=e.target.value};$('res').onclick=togglePause;$('rst').onclick=()=>{$('pause').hidden=true;start()};$('qt').onclick=()=>{if(OL.inGame){olQuit();return}$('pause').hidden=true;S.pz=false;S.st='menu';$('menu').hidden=false;$('sb').textContent='';$('pwrb').textContent='';$('rd').hidden=true;$('pw').classList.remove('on')};
+$('diff2').onchange=e=>{cfg.diff=+e.target.value;$('diff').value=e.target.value};$('res').onclick=togglePause;$('rst').onclick=()=>{$('pause').hidden=true;start()};$('qt').onclick=()=>{if(OL.spec){olSend({t:'sleave'});olExit();return}if(OL.inGame){olQuit();return}$('pause').hidden=true;S.pz=false;S.st='menu';$('menu').hidden=false;$('sb').textContent='';$('pwrb').textContent='';$('rd').hidden=true;$('pw').classList.remove('on')};
 
 function goFS(){try{navigator.wakeLock&&navigator.wakeLock.request('screen').catch(()=>{})}catch(e){}try{if(TOUCH&&!document.fullscreenElement&&document.documentElement.requestFullscreen)document.documentElement.requestFullscreen().then(()=>{try{screen.orientation.lock('landscape').catch(()=>{})}catch(e){}}).catch(()=>{})}catch(e){}}
 function start(){aud();sndInit();goFS();cfg.kit=[kitOf(0),kitOf(1)];cfg.nm=[0,1].map(t=>{const x=TEAMS[+$('tm_'+t).value];return[x[1]?x[0]:'Equipo '+(t+1),x[1]||'EQ'+(t+1)]});cfg.form=$('form').value;cfg.diff=+$('diff').value;
@@ -946,7 +948,7 @@ function pfSet(q,auto,quiet){q=Math.max(0,Math.min(4,q|0));const ch=q!==PF.q;PF.
 function pfMon(d){PF.t+=d;if(PF.cool>0){PF.cool-=d;return}PF.sum+=d;if(++PF.n>=90){const a=PF.sum/PF.n;PF.sum=0;PF.n=0;PF.fps=Math.round(1/a);if(PF.auto&&PF.t>3){if(PF.q>0){if(a>.027)pfSet(PF.q-1,true)}else if(a>.05&&PF.ex<1.5){PF.ex+=.5;PF.cool=3;rs()}}}}
 $('pf').onchange=$('pf2').onchange=e=>{const v=e.target.value;if(v==='auto'){_lss('f3d_perf','auto');pfSet(PF.cap,true,true)}else{_lss('f3d_perf',v);pfSet(+v,false,true)}};
 pfSync();
-setInterval(()=>{const e=$('net');if(S.st==='menu'||S.st==='end'){e.textContent='';return}let t=PF.fps+' FPS';if(Net.on){t+=' · RED '+Math.round(Net.delay*16.7)+'ms'+Net.tag();e.className=(Net.stall||0)>20?'bad':Net.delay>8?'warn':''}else e.className=PF.fps<35?'warn':'';e.textContent=t},500);
+setInterval(()=>{const e=$('net');if(S.st==='menu'||S.st==='end'){e.textContent='';return}let t=PF.fps+' FPS';if(Net.spec){t+=' · 👁 ESPECTANDO'+(SP.lag>0?' · '+(SP.lag/60).toFixed(1)+'s detrás':'');e.className=''}else if(Net.on){t+=' · RED '+Math.round(Net.delay*16.7)+'ms'+Net.tag()+(OL.sp>0?' · 👁 '+OL.sp:'');e.className=(Net.stall||0)>20?'bad':Net.delay>8?'warn':''}else e.className=PF.fps<35?'warn':'';e.textContent=t},500);
 $('play').onclick=start;buildCrowd();
 document.addEventListener('visibilitychange',()=>{if(document.hidden&&S.st!=='menu'&&S.st!=='end'&&!S.pz)togglePause()});
 /* touch */
@@ -961,7 +963,7 @@ const on=e=>{e.preventDefault();if(a==='pause'){if(S.st!=='menu'&&S.st!=='end')t
 const off=e=>{if(a==='pause'||e.pointerId!==id)return;id=null;keys[BIND.k[a]]=0;el.classList.remove('on')};
 el.addEventListener('pointerdown',on);el.addEventListener('pointerup',off);el.addEventListener('pointercancel',off)});
 document.addEventListener('contextmenu',e=>{if(TOUCH)e.preventDefault()});
-let shown=null;setInterval(()=>{const v=TOUCH&&S.st!=='menu'&&!(S.pz&&0);if(v!==shown){shown=v;tc.hidden=!v;if(!v)je()}},200)}
+let shown=null;setInterval(()=>{const v=TOUCH&&S.st!=='menu'&&!Net.spec&&!(S.pz&&0);if(v!==shown){shown=v;tc.hidden=!v;if(!v)je()}},200)}
 document.addEventListener('click',e=>{if(e.target.closest&&e.target.closest('button')){aud();sfx('ui')}},true);addEventListener('keydown',e=>{if(e.code==='KeyH'&&!listen&&!(e.target&&e.target.tagName==='INPUT'))$('hlp').classList.toggle('open')});
 /* ===== BASE ONLINE (lockstep determinista) =====
 La simulación solo depende de: semilla del RNG + frames de input {x,z,c} por equipo + tick fijo de 60Hz.
@@ -1018,7 +1020,7 @@ pacing(L){const t=performance.now(),od=this.od||this.delay,fresh=t-this.fbT<1500
  const go=fresh&&((this.delay-od>=3&&L>=3)||(L>=5&&L>=this.fb+3&&this.fb<=3));
  if(go)this.pace=Math.min(1.2,1+.03*Math.max(L-2,this.delay-od-1));else if(this.pace>1&&!(fresh&&L>=3&&this.delay-od>=2))this.pace=1},
 tag(){return this.dc&&performance.now()-this.dcRx<2000?' · P2P '+Math.round(this.rtt)+'ms':(this.tx&&this.tx.bin?' · relé':'')},
-step(loc){if(!this.on)return loc;const tg=this.tick+this.delay,bin=!!this.tx.bin;
+step(loc){if(this.spec)return specStep();if(!this.on)return loc;const tg=this.tick+this.delay,bin=!!this.tx.bin;
  if(this.sent<tg){const p=packF(loc[this.side]),f=unpackF(p);while(this.sent<tg){const n=++this.sent;this.q[this.side].set(n,f);if(bin){this.ring[n&63]=p;this.sendIn(n)}else this.tx.send({t:'in',n,f})}}
  const a=this.q[0].get(this.tick),b=this.q[1].get(this.tick);
  if(!a||!b){this.stall++;if(this.stall===1||this.stall%8===0){const t=performance.now();if(bin&&t-this.leadT>110){this.leadT=t;this.sendLead(0,1)}}
@@ -1050,12 +1052,12 @@ function olConnect(){const nk=$('nick').value.trim(),raw=$('srv').value.trim();l
  lsSet('f3d_srv',raw);const url=normSrv(raw);if(location.protocol==='https:'&&/^ws:\/\//i.test(url)){olErr('Esta página es https: el servidor tiene que ser wss:// (ver README)');return}let ws;try{ws=new WebSocket(url)}catch(e){olErr('Dirección inválida');return}
  ws.binaryType='arraybuffer';OL.ws=ws;$('lbst').textContent='Conectando…';
  ws.onopen=()=>{olSend({t:'hello',name:nk});olSend({t:'list'});olView('lbB');olErr('')};
- ws.onmessage=e=>{if(typeof e.data!=='string'){if(OL.inGame)Net.recvBin(e.data);return}let m;try{m=JSON.parse(e.data)}catch(_){return}olMsg(m)};
+ ws.onmessage=e=>{if(typeof e.data!=='string'){if(OL.inGame)Net.recvBin(e.data);else if(OL.spec)specRecv(e.data);return}let m;try{m=JSON.parse(e.data)}catch(_){return}olMsg(m)};
  ws.onerror=()=>{if(OL.ws===ws)olErr('No se pudo conectar a '+url)};
  ws.onclose=()=>{if(OL.ws!==ws)return;OL.ws=null;olDown()}}
-function olDown(){const was=OL.inGame,e=$('lberr').textContent;if(was)olExit();olResetRoom();if(!lb.hidden||was){lb.hidden=false;$('menu').hidden=true;olView('lbA');$('lbst').textContent='Desconectado';olErr(was?'Se cortó la conexión con el servidor':(e||'Conexión cerrada'))}}
+function olDown(){const was=OL.inGame||!!OL.spec,e=$('lberr').textContent;if(was)olExit();olResetRoom();if(!lb.hidden||was){lb.hidden=false;$('menu').hidden=true;olView('lbA');$('lbst').textContent='Desconectado';olErr(was?'Se cortó la conexión con el servidor':(e||'Conexión cerrada'))}}
 function olRestoreTeams(){const a=$('px').parentNode;[0,1].forEach(t=>a.parentNode.insertBefore($('tm'+t),a));OL.mv=-1}
-function olResetRoom(){rtcClose();olRestoreTeams();OL.room=null;OL.me=-1;OL.chat=[]}
+function olResetRoom(){OL.sp=0;rtcClose();olRestoreTeams();OL.room=null;OL.me=-1;OL.chat=[]}
 function olMsg(m){switch(m.t){
  case 'welcome':if(Array.isArray(m.ice))OL.ice=m.ice;if(m.online!=null)$('lbst').textContent='Conectado · '+m.online+' online';break;
  case 'rooms':olRooms(m);break;
@@ -1067,10 +1069,15 @@ function olMsg(m){switch(m.t){
  case 'go':clearTimeout(OL.goT);Net.wait=false;break;
  case 'oppleft':if(OL.inGame&&S.st!=='end')olExit('Tu rival abandonó el partido');break;
  case 'rtc':rtcSignal(m);break;
+ case 'sstart':olSpecStart(m);break;
+ case 'sleft':if(OL.spec)olExit(m.reason||'');break;
+ case 'spn':OL.sp=m.n|0;SP.n=OL.sp;break;
  case 'in':case 'h':if(OL.inGame)Net.recv(m);break}}
 function olRooms(m){$('lbst').textContent='Conectado · '+m.online+' online';
- $('rl').innerHTML=m.rooms.length?m.rooms.map(r=>{const full=r.n>=2||r.playing;return `<div class="slot"><div><b>${r.lock?'🔒 ':''}${esc(r.name)}</b><small>${esc(r.host)} · ${esc(TEAMS[r.club]?TEAMS[r.club][0]:'')} · ${r.playing?'jugando':r.n+'/2'} · #${r.id}</small></div><button data-j="${r.id}" data-l="${r.lock?1:0}" ${full?'disabled':''}>${full?'Llena':'Unirse'}</button></div>`}).join(''):'<div class="sub" style="margin:10px 0">No hay salas todavía. ¡Creá la primera!</div>'}
-$('rl').onclick=e=>{const b=e.target.closest('button[data-j]');if(!b||b.disabled)return;let pass='';if(b.dataset.l==='1'){pass=prompt('Contraseña de la sala:');if(pass===null)return}olSend({t:'join',id:b.dataset.j,pass})};
+ $('rl').innerHTML=m.rooms.length?m.rooms.map(r=>{const full=r.n>=2||r.playing,cn=i=>TEAMS[i]?TEAMS[i][0]:'';
+  const info=r.playing&&r.vs?`${esc(r.vs[0])} (${esc(cn(r.vs[2]))}) vs ${esc(r.vs[1])} (${esc(cn(r.vs[3]))})`:`${esc(r.host)} · ${esc(cn(r.club))}`;
+  return `<div class="slot"><div><b>${r.lock?'🔒 ':''}${esc(r.name)}</b><small>${info} · ${r.playing?'🔴 jugando'+(r.sp?' · 👁 '+r.sp:''):r.n+'/2'} · #${r.id}</small></div>${r.playing?`<button data-s="${r.id}" data-l="${r.lock?1:0}">👁 Ver</button>`:`<button data-j="${r.id}" data-l="${r.lock?1:0}" ${full?'disabled':''}>${full?'Llena':'Unirse'}</button>`}</div>`}).join(''):'<div class="sub" style="margin:10px 0">No hay salas todavía. ¡Creá la primera!</div>'}
+$('rl').onclick=e=>{const sb=e.target.closest('button[data-s]');if(sb){let pass='';if(sb.dataset.l==='1'){pass=prompt('Contraseña de la sala:');if(pass===null)return}olSend({t:'spec',id:sb.dataset.s,pass});return}const b=e.target.closest('button[data-j]');if(!b||b.disabled)return;let pass='';if(b.dataset.l==='1'){pass=prompt('Contraseña de la sala:');if(pass===null)return}olSend({t:'join',id:b.dataset.j,pass})};
 $('mk').onclick=()=>olSend({t:'create',name:$('rname').value,pass:$('rpass').value});
 $('lbref').onclick=()=>olSend({t:'list'});
 $('lbdis').onclick=()=>{if(OL.ws)OL.ws.close()};
@@ -1103,9 +1110,47 @@ function olStart(m){if(!OL.room||!Array.isArray(m.teams))return;OL.inGame=true;O
  /* barrera de arranque: cada uno tarda distinto en cargar el partido; si uno empieza antes, el desfase de relojes se pagaba con delay para siempre.
     Aviso 'ld' al terminar de cargar y los dos arrancan con 'go' del servidor (si no llega en 5s, arranca igual: servidor viejo) */
  Net.wait=true;clearTimeout(OL.goT);OL.goT=setTimeout(()=>{Net.wait=false},5000);olSend({t:'ld'})}
-function olExit(note){clearTimeout(OL.goT);Net.wait=false;OL.inGame=false;Net.on=false;Net.tx=null;invClear();S.invA=0;S.pz=false;S.st='menu';$('pause').hidden=true;$('sb').textContent='';$('pwrb').textContent='';$('rd').hidden=true;$('pw').classList.remove('on');$('gb').classList.remove('on');$('msg').style.opacity=0;HL='';
- $('menu').hidden=true;lb.hidden=false;if(OL.room){olView('lbC');renderRoom()}else olView(OL.ws?'lbB':'lbA');if(note)olErr(note)}
+function olExit(note){const wasSpec=specReset();clearTimeout(OL.goT);Net.wait=false;OL.inGame=false;Net.on=false;Net.tx=null;invClear();S.invA=0;S.pz=false;S.st='menu';$('pause').hidden=true;$('sb').textContent='';$('pwrb').textContent='';$('rd').hidden=true;$('pw').classList.remove('on');$('gb').classList.remove('on');$('msg').style.opacity=0;HL='';
+ $('menu').hidden=true;lb.hidden=false;if(OL.room){olView('lbC');renderRoom()}else olView(OL.ws?'lbB':'lbA');if(note)olErr(note);if(wasSpec)olSend({t:'list'})}
 function olQuit(){olSend({t:'quit'});olExit()}
+/* ===== ESPECTADOR =====
+Como la simulación es determinista, un espectador no necesita el estado: recibe del servidor la semilla, los equipos y los inputs de
+los DOS lados (el historial entero al entrar —aunque sea a mitad del partido— y después cada tick en vivo) y corre la misma simulación.
+Si entra tarde, adelanta a toda velocidad (sin sonido) hasta ponerse al día y después sigue ~0.4 s detrás del partido real. */
+const SP={h:[[],[]],have:[0,0],hs:new Map(),mine:new Map(),playing:false,ff:false,lag:0,n:0,names:['',''],desync:0,wt:0,ff0:0};
+const SPB=20; /* ticks de colchón antes de arrancar (0.33 s) */
+function specIn(s,i,v){const h=SP.h[s];if(h[i]!==undefined)return;h[i]=v;if(i===SP.have[s]){let k=i+1;while(h[k]!==undefined)k++;SP.have[s]=k}}
+function specHash(n,v){if(SP.mine.has(n)){if(SP.mine.get(n)!==v)specDesync(n);SP.mine.delete(n)}else SP.hs.set(n,v)}
+function specDesync(n){if(SP.desync)return;SP.desync=1;console.warn('DESYNC espectador en tick',n);msg('⚠ Desincronizado: tu navegador simula distinto (probá actualizar la página)',6000)}
+function specRecv(ab){if(!ab||ab.byteLength<3)return;const v=new DataView(ab),t=v.getUint8(0),n=ab.byteLength;
+ if(t===7){if(n<8)return;const s=v.getUint8(1)&1,a=v.getUint32(2,true),c=v.getUint16(6,true);if(n!==8+4*c)return;for(let i=0;i<c;i++)specIn(s,a+i,v.getInt32(8+4*i,true))}
+ else if(t===6){const s=v.getUint8(1)&1,pt=v.getUint8(2);
+  if(pt===1){if(n<9)return;const k=v.getUint8(7),top=v.getUint32(3,true);if(n!==8+4*k)return;for(let i=0;i<k;i++)if(top-i>=0)specIn(s,top-i,v.getInt32(8+4*i,true))}
+  else if(pt===2&&n===15&&s===0)specHash(v.getUint32(3,true),v.getFloat64(7,true))}
+ else if(t===8){const c=((n-1)/12)|0;for(let i=0;i<c;i++)specHash(v.getUint32(1+12*i,true),v.getFloat64(5+12*i,true))}}
+function specStep(){const av=Math.min(SP.have[0],SP.have[1]),tk=Net.tick,now=performance.now();
+ if(tk>=av){SP.playing=false;SP.wt=0;Net.stall++;acc=0;return null}
+ if(!SP.playing){if(av-tk>=SPB||(SP.wt&&now-SP.wt>1500))SP.playing=true;else{if(!SP.wt)SP.wt=now;Net.stall++;acc=0;return null}}
+ Net.stall=0;
+ if(tk%60===0){const v=Math.round((ball.x+ball.z*3+S.clk)*1e3);if(SP.hs.has(tk)){if(SP.hs.get(tk)!==v)specDesync(tk);SP.hs.delete(tk)}else SP.mine.set(tk,v)}
+ Net.tick++;return[unpackF(SP.h[0][tk]),unpackF(SP.h[1][tk])]}
+/* ajuste por cuadro: lejos del vivo → avance rápido; algo atrasado → reloj un poco más rápido */
+function specTune(){const lag=Math.min(SP.have[0],SP.have[1])-Net.tick;SP.lag=lag;
+ if(!SP.ff){if(lag>300){SP.ff=true;SP.ff0=Math.max(1,Net.tick+lag);FFW=1}}
+ else if(lag<=SPB*2){SP.ff=false;FFW=0;acc=0;$('msg').style.opacity=0;$('gb').classList.remove('on')}
+ Net.pace=lag>SPB+12?Math.min(1.6,1+(lag-SPB-12)/100):1}
+function specFF(){const t0=performance.now();while(performance.now()-t0<14){if(S.st==='menu'||S.pz)break;const f=Net.step(null);if(!f)break;applyFrames(f);ipSnap();update(STEP)}}
+function specReset(){const w=!!OL.spec;if(w){OL.spec=null;SP.ff=false;FFW=0;Net.spec=false;$('spv').hidden=true}return w}
+function olSpecStart(m){if(!Array.isArray(m.teams))return;if(OL.inGame||OL.spec)return;
+ SP.h=[[],[]];SP.have=[0,0];SP.hs.clear();SP.mine.clear();SP.playing=false;SP.ff=false;SP.lag=0;SP.desync=0;SP.wt=0;SP.names=Array.isArray(m.names)?m.names.map(x=>String(x)):['',''];
+ OL.spec=m;
+ m.teams.forEach((tm,t)=>{const i=Number.isInteger(tm.i)&&TEAMS[tm.i]?tm.i:t;$('tm_'+t).value=i;fillK(t);if(tm.k)['c1_','c2_','sh_','so_','pt_'].forEach((n,j)=>$(n+t).value=tm.k[j]);pvK(t)});
+ $('form').value=['4-4-2','4-3-3','3-5-2'].includes(m.form)?m.form:'4-4-2';$('diff').value=m.diff;$('mode').value='2';
+ Net.delay=(m.delay|0)||5;Net.connect({send(){},bin(){},onmsg:null},-1,m.seed|0);Net.spec=true;Net.wait=false;lb.hidden=true;start();$('spv').hidden=false;spvUpd()}
+function spvUpd(){const e=$('spt');if(!OL.spec||!e)return;const n=SP.names;
+ e.textContent=SP.ff?'⏩ Poniéndote al día… '+Math.min(99,Math.round(Net.tick/SP.ff0*100))+'%':'👁 ESPECTANDO · '+(n[0]||'?')+' vs '+(n[1]||'?')+(SP.n>1?' · '+SP.n+' viendo':'')}
+setInterval(spvUpd,250);$('spx').onclick=()=>{if(OL.spec){olSend({t:'sleave'});olExit()}};
+
 window.onDesync=()=>{if(OL.desync)return;OL.desync=1;msg('⚠ Desincronización detectada (ideal: mismo navegador en ambos)',6000)};
 setInterval(()=>{if(Net.on&&OL.inGame&&(Net.stall||0)>40)msg('⏳ Esperando al rival…',800)},500);
 /* ===== P2P: WebRTC DataChannel (sin orden, sin reintentos) =====
@@ -1216,7 +1261,7 @@ let df=p.f-s[2];if(df>Math.PI)df-=2*Math.PI;else if(df<-Math.PI)df+=2*Math.PI;if
 const b=IP.b,dx=ball.x-b[0],dy=ball.y-b[1],dz=ball.z-b[2];sv.push(ball.x,ball.y,ball.z);if(dx*dx+dy*dy+dz*dz<100){ball.x=b[0]+dx*a;ball.y=b[1]+dy*a;ball.z=b[2]+dz*a}IPS=sv}
 function ipRestore(){if(!IPS)return;const sv=IPS;IPS=null;for(let i=0;i<pl.length;i++){const p=pl[i];p.x=sv[i*3];p.z=sv[i*3+1];p.f=sv[i*3+2]}const k=pl.length*3;ball.x=sv[k];ball.y=sv[k+1];ball.z=sv[k+2]}
 function loop(now){requestAnimationFrame(loop);const fd=Math.min(.05,(now-last)/1000);RDT=fd;last=now;TS+=(1-TS)*Math.min(1,1.3*fd);if(Net.on&&Net.wait)acc=0;else acc=Math.min(Net.on?.4:.25,acc+fd*TS*(Net.on?Net.pace:1));
-const MAXS=Net.on?(acc>STEP*6?6:2):5;for(let n=0;acc>=STEP&&n<MAXS;n++){const fr=poll();if(S.st!=='menu'&&!S.pz){if(Net.on&&Net.wait)break;const f=Net.step(fr);if(!f)break;applyFrames(f);ipSnap();update(STEP)}acc-=STEP}
+const MAXS=Net.on?(acc>STEP*6?6:2):5;if(Net.spec)specTune();if(Net.spec&&SP.ff){specFF();acc=0}else for(let n=0;acc>=STEP&&n<MAXS;n++){const fr=poll();if(S.st!=='menu'&&!S.pz){if(Net.on&&Net.wait)break;const f=Net.step(fr);if(!f)break;applyFrames(f);ipSnap();update(STEP)}acc-=STEP}
 RA+=fd;if(now-LR>=PF.rmin-4){LR=now;const rdt=Math.min(.1,RA);RA=0;RDT=rdt;pfMon(rdt);ipApply(acc/STEP);if(S.st!=='menu'&&!S.pz){anim();hud()}camUpd(rdt);if(SHK>.01){cam.position.x+=(Math.random()-.5)*SHK;cam.position.y+=(Math.random()-.5)*SHK*.6;SHK*=Math.exp(-8*rdt)}else SHK=0;updRet();wxUpd(rdt);if(COMP&&PF.q>=4)COMP.render(rdt);else ren.render(scene,cam);ipRestore()}}
 requestAnimationFrame(loop);
 /* caché offline/instantánea (assets inmutables + three.js); solo si se sirve por http(s) */
