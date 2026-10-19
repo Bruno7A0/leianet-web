@@ -1,8 +1,8 @@
 <!doctype html>
 <html lang="es">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>The Network · LeiaNET Edition</title>
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#0f0f11">
@@ -220,14 +220,14 @@
   #btn-wipe.arm { border-color: #e05050; box-shadow: 0 0 12px rgba(224,80,80,.35); }
   #error { display: none; position: fixed; inset: 0; padding: 40px; background: #300; font-size: 18px; }
 </style>
-</head>
+<style>canvas{touch-action:none}</style></head>
 <body>
 <canvas id="game"></canvas>
 <div id="crosshair"></div>
 <div id="hud"></div>
 <div id="blockname"></div>
 <div id="hurt"></div>
-<div id="toast"></div>
+<div id="toast" role="status" aria-live="polite"></div>
 <div id="splash">THE NETWORK<small>sobreviví</small></div>
 <div id="hearts"></div>
 <div id="food"></div>

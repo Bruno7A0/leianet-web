@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><script>(function(){var v=null,q=(location.search.match(/[?&]aero=([01])/)||[])[1];if(q!==undefined){v=q;try{localStorage.setItem('leianet-aero',q)}catch(e){}try{window.name=(window.name||'').replace(/(?:^|\|)leianet-aero:[^|]*/g,'')+'|leianet-aero:'+q}catch(e){}}else{try{v=localStorage.getItem('leianet-aero')}catch(e){}if(v===null){var m=(window.name||'').match(/(?:^|\|)leianet-aero:([^|]*)/);v=m?m[1]:null}}if(v==='1')document.documentElement.classList.add('aero')})()</script><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><meta http-equiv="Content-Security-Policy" content="object-src 'none'; base-uri 'self'; form-action 'self'"><script>(function(){var v=null,q=(location.search.match(/[?&]aero=([01])/)||[])[1];if(q!==undefined){v=q;try{localStorage.setItem('leianet-aero',q)}catch(e){}try{window.name=(window.name||'').replace(/(?:^|\|)leianet-aero:[^|]*/g,'')+'|leianet-aero:'+q}catch(e){}}else{try{v=localStorage.getItem('leianet-aero')}catch(e){}if(v===null){var m=(window.name||'').match(/(?:^|\|)leianet-aero:([^|]*)/);v=m?m[1]:null}}if(v==='1')document.documentElement.classList.add('aero')})()</script><meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script>
   // ---- adaptive performance tiers -----------------------------------------
   // Runs as early as possible so the right class lands on <html> before
@@ -235,10 +235,10 @@ h1.admin-h1{font-family:var(--display);font-weight:700;font-size:clamp(22px,4vw,
 </div>
 
 <div class="admin-card">
-<label>Token de acceso</label>
+<label for="token">Token de acceso</label>
 <input type="password" id="token" placeholder="tu NOVEDADES_TOKEN">
 
-<label>Tipo</label>
+<label for="tipo">Tipo</label>
 <select id="tipo">
   <option value="importante">Importante</option>
   <option value="anuncio">Anuncio</option>
@@ -252,13 +252,13 @@ h1.admin-h1{font-family:var(--display);font-weight:700;font-size:clamp(22px,4vw,
   <option value="nuevo">Nuevo</option>
 </select>
 
-<label>Fecha</label>
+<label for="fecha">Fecha</label>
 <input type="date" id="fecha">
 
-<label>Titulo</label>
+<label for="titulo">Titulo</label>
 <input type="text" id="titulo" placeholder="Estamos actualizando el hosting">
 
-<label>Imagen (opcional)</label>
+<label for="imagenInput">Imagen (opcional)</label>
 <input type="file" id="imagenInput" accept="image/png,image/jpeg,image/webp,image/gif">
 <div class="imagen-preview-wrap" id="imagenPreviewWrap">
   <img id="imagenPreview" alt="">
@@ -283,7 +283,7 @@ h1.admin-h1{font-family:var(--display);font-weight:700;font-size:clamp(22px,4vw,
 <h2 class="section-title">Crear encuesta</h2>
 <p class="hint" style="margin:-6px 0 14px">Usa el mismo token de arriba. Se muestra en Novedades. Siempre son 3 opciones.</p>
 
-<label>Pregunta</label>
+<label for="enc-pregunta">Pregunta</label>
 <input type="text" id="enc-pregunta" maxlength="140" placeholder="¿Qué mapa querés en el server de CS?">
 
 <label>Opciones</label>
@@ -291,13 +291,13 @@ h1.admin-h1{font-family:var(--display);font-weight:700;font-size:clamp(22px,4vw,
 <div class="opt-row"><span>2</span><input type="text" class="enc-op" maxlength="60" placeholder="Opción 2"></div>
 <div class="opt-row"><span>3</span><input type="text" class="enc-op" maxlength="60" placeholder="Opción 3"></div>
 
-<label>Tipo de voto</label>
+<label for="enc-multiple">Tipo de voto</label>
 <select id="enc-multiple">
   <option value="0">Una sola opción</option>
   <option value="1">Múltiple choice (se pueden elegir varias)</option>
 </select>
 
-<label>Duración</label>
+<label for="enc-duracion">Duración</label>
 <select id="enc-duracion" onchange="toggleDuracionCustom()">
   <option value="30">30 minutos</option>
   <option value="60">1 hora</option>

@@ -23,7 +23,7 @@
   var lastFetch = 0;
 
   /* ---------- utilidades ---------- */
-  function esc(s){ var d = document.createElement('div'); d.textContent = (s == null ? '' : String(s)); return d.innerHTML; }
+  function esc(s){ return (s == null ? '' : String(s)).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
   function now(){ return Date.now() + offset; }
   function delay(ms){ return new Promise(function(r){ setTimeout(r, ms); }); }
   function newId(){
@@ -147,7 +147,7 @@
     p.opciones.forEach(function(o){
       var on = s.sel.indexOf(o.id) !== -1;
       html += '<label class="poll-opt' + (on ? ' sel' : '') + '">' +
-        '<input type="' + (multi ? 'checkbox' : 'radio') + '" name="poll-' + p.id + '" value="' + o.id + '"' + (on ? ' checked' : '') + '>' +
+        '<input type="' + (multi ? 'checkbox' : 'radio') + '" name="poll-' + esc(p.id) + '" value="' + esc(o.id) + '"' + (on ? ' checked' : '') + '>' +
         '<span class="poll-mark' + (multi ? ' sq' : '') + '"></span>' +
         '<span class="poll-opt-text">' + esc(o.texto) + '</span></label>';
     });
@@ -161,12 +161,12 @@
 
   function card(p){
     var cerr = p.cerrada, ver = cerr || p.yaVoto;
-    return '<article class="poll-card' + (cerr ? ' is-closed' : '') + '" data-id="' + p.id + '">' +
+    return '<article class="poll-card' + (cerr ? ' is-closed' : '') + '" data-id="' + esc(p.id) + '">' +
       '<div class="poll-head"><span class="poll-badge">Encuesta</span>' +
       '<span class="poll-chip">' + (p.multiple ? 'Múltiple choice' : 'Una sola opción') + '</span>' +
       (cerr
         ? '<span class="poll-timer">Cerró el ' + new Date(p.cierra).toLocaleDateString('es-AR') + '</span>'
-        : '<span class="poll-timer" data-cierra="' + p.cierra + '">Cierra en ' + fmt(p.cierra - now()) + '</span>') +
+        : '<span class="poll-timer" data-cierra="' + esc(p.cierra) + '">Cierra en ' + fmt(p.cierra - now()) + '</span>') +
       '</div><h3 class="poll-q">' + esc(p.pregunta) + '</h3>' +
       (ver ? resultados(p) : formulario(p)) + '</article>';
   }
@@ -194,13 +194,13 @@
 
   function fila(p, i){
     var cerr = p.cerrada;
-    return '<button type="button" class="nv-row poll-row' + (cerr ? ' is-closed' : '') + '" data-id="' + p.id + '" style="--i:' + i + '">' +
+    return '<button type="button" class="nv-row poll-row' + (cerr ? ' is-closed' : '') + '" data-id="' + esc(p.id) + '" style="--i:' + i + '">' +
       '<span class="novedad-icono">' + (cerr ? '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>' : '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 21V10M12 21V4M19 21v-7"/></svg>') + '</span>' +
       '<span class="nv-row-main">' +
         '<span class="novedad-header"><span class="novedad-badge">Encuesta</span>' +
         (cerr
           ? '<span class="novedad-fecha">Cerrada</span>'
-          : '<span class="novedad-fecha" data-cierra="' + p.cierra + '">Cierra en ' + fmt(p.cierra - now()) + '</span>') +
+          : '<span class="novedad-fecha" data-cierra="' + esc(p.cierra) + '">Cierra en ' + fmt(p.cierra - now()) + '</span>') +
         '</span>' +
         '<span class="novedad-titulo">' + esc(p.pregunta) + '</span>' +
       '</span>' +

@@ -1,7 +1,8 @@
 /* ===== LeiaNET · modo Dark Fantasy (activar escribiendo "darkfantasy") =====
    Paleta: #201a32 · #4e3c5d · #896991 · #e5a4c7 · #f5c2d9 (ciruela nocturno → malva → rosa pálido). Sin naranjas ni rojos.
    Cielo violeta con Vía Láctea, montañas dentadas, acantilado con torres-hongo, niebla, motas mágicas y un eclipse. */
-@font-face{font-family:"Highcrest";font-style:normal;font-weight:400 900;font-display:swap;src:url(fonts/highcrest.ttf) format("truetype")}
+@font-face{font-family:"Cinzel";font-style:normal;font-weight:400 600;font-display:swap;src:url(fonts/cinzel-latin-600-normal.woff2) format("woff2")}
+@font-face{font-family:"Cinzel";font-style:normal;font-weight:700 900;font-display:swap;src:url(fonts/cinzel-latin-700-normal.woff2) format("woff2")}
 html.darkfantasy{
  --df-void:#120f1d;--df-char:#1a1629;--df-night:#0f172a;--df-stone:#4e3c5d;--df-stone2:#6b5585;--df-moss:#3b4231;--df-wine:#4e3c5d;
  --df-blood:#896991;--df-gold:#e5a4c7;--df-magic:#f5c2d9;--df-bone:#eadbe6;--df-bone-dim:#b49cb0;
@@ -10,7 +11,7 @@ html.darkfantasy{
  --text:#eadbe6;--text-dim:#c4afc0;--text-mute:#9b8699;
  --accent:#e5a4c7;--accent-soft:rgba(229,164,199,.14);--ok:#7da05a;
  --header-bg:rgba(10,7,16,.9);--radius:2px;
- --gothic:"Highcrest","Palatino Linotype",Georgia,serif;
+ --gothic:"Cinzel","Palatino Linotype",Georgia,serif;
  --ui:"Cinzel","Trajan Pro","Copperplate","Copperplate Gothic Light","Palatino Linotype",Georgia,serif;
  --display:var(--ui);
  --body:"Palatino Linotype","Book Antiqua",Palatino,Georgia,serif;

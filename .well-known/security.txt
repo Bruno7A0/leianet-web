@@ -1,0 +1,4 @@
+Contact: mailto:soporte@leianet.ar
+Expires: 2027-10-18T00:00:00.000Z
+Preferred-Languages: es, en
+Canonical: https://leianet.ar/.well-known/security.txt

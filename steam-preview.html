@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><script>(function(){var v=null,q=(location.search.match(/[?&]aero=([01])/)||[])[1];if(q!==undefined){v=q;try{localStorage.setItem('leianet-aero',q)}catch(e){}try{window.name=(window.name||'').replace(/(?:^|\|)leianet-aero:[^|]*/g,'')+'|leianet-aero:'+q}catch(e){}}else{try{v=localStorage.getItem('leianet-aero')}catch(e){}if(v===null){var m=(window.name||'').match(/(?:^|\|)leianet-aero:([^|]*)/);v=m?m[1]:null}}if(v==='1')document.documentElement.classList.add('aero')})()</script>
+<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><meta http-equiv="Content-Security-Policy" content="object-src 'none'; base-uri 'self'; form-action 'self'"><script>(function(){var v=null,q=(location.search.match(/[?&]aero=([01])/)||[])[1];if(q!==undefined){v=q;try{localStorage.setItem('leianet-aero',q)}catch(e){}try{window.name=(window.name||'').replace(/(?:^|\|)leianet-aero:[^|]*/g,'')+'|leianet-aero:'+q}catch(e){}}else{try{v=localStorage.getItem('leianet-aero')}catch(e){}if(v===null){var m=(window.name||'').match(/(?:^|\|)leianet-aero:([^|]*)/);v=m?m[1]:null}}if(v==='1')document.documentElement.classList.add('aero')})()</script>
 <!-- Google tag (gtag.js) -->
 <script src="assets/consent.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"><meta name="theme-color" content="#0f0f11"><meta name="color-scheme" content="dark"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="LeiaNET">
@@ -331,7 +331,7 @@ footer{text-align:center;padding:26px 16px;font-family:var(--mono);font-size:11p
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}body{opacity:1}.game-card{opacity:1!important}}
 </style>
 <link rel="preload" href="assets/fonts/chakra-petch-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="assets/fonts/inter-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="assets/fonts/jetbrains-mono-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin><link rel="stylesheet" href="assets/leia-fx.css"><link rel="stylesheet" href="assets/leia-pages.css"><script>(function(){var r=document.documentElement;r.classList.add("fx-pre");setTimeout(function(){r.classList.remove("fx-pre")},4500)})()</script><link rel="stylesheet" href="assets/aero-mode.css"><script>(function(){try{var m=location.search.match(/[?&]retro=([01])/),v=m?m[1]:null;if(v===null){try{v=localStorage.getItem("leianet-retro")}catch(e){}}if(v===null){var w=(window.name||"").match(/(?:^|\|)leianet-retro:([^|]*)/);v=w?w[1]:null}if(v==="1")document.documentElement.classList.add("retrowave")}catch(e){}})()</script><link rel="stylesheet" href="assets/retrowave-mode.css"><script>(function(){try{var r=document.documentElement,L=function(k,p){var m=location.search.match(new RegExp("[?&]"+p+"=([01])")),v=m?m[1]:null;if(v===null){try{v=localStorage.getItem(k)}catch(e){}}if(v===null){var w=(window.name||"").match(new RegExp("(?:^|\\|)"+k+":([^|]*)"));v=w?w[1]:null}return v==="1"};if(L("leianet-matrix","matrix"))r.classList.add("matrix");else if(L("leianet-win95","win95"))r.classList.add("win95")}catch(e){}})()</script><link rel="stylesheet" href="assets/matrix-mode.css"><link rel="stylesheet" href="assets/win95-mode.css"><link rel="stylesheet" href="assets/gameboy-mode.css"><link rel="stylesheet" href="assets/brutal-mode.css"><link rel="stylesheet" href="assets/darkfantasy-mode.css"><link rel="stylesheet" href="assets/leia-mobile.css?v=1">
-</head><body>
+<style>.skip-leia{position:absolute;left:12px;top:-60px;background:#ffd166;color:#1a1200;padding:10px 16px;border-radius:8px;font-weight:700;z-index:100001}.skip-leia:focus{top:12px}</style></head><body><a class="skip-leia" href="#main-content">Saltar al contenido</a>
 <div class="grid-overlay"></div>
 <div class="depth-veil"></div>
 <div class="nebula"><span></span><span></span><span></span></div>
@@ -344,7 +344,7 @@ footer{text-align:center;padding:26px 16px;font-family:var(--mono);font-size:11p
 <div class="grain"></div>
 <div class="cursor-glow" id="cursor-glow"></div>
 <header><a href="index.html" class="brand" aria-label="Ir al inicio"><img width="860" height="150" loading="eager" decoding="async" src="assets/logo_leianetwork.webp" alt="LeiaNETWORK"></a><div class="header-right"><nav id="main-nav"><a href="index.html#minecraft">Minecraft</a><a href="index.html#cs16">CS 1.6</a><a href="index.html#haxball">Haxball</a><a href="index.html#novedades">Novedades</a><a href="index.html#utilidades" class="active">Utilidades</a><a href="index.html#cafecito">Cafecito</a><a href="https://foro.leianet.ar">Foro</a><a href="index.html#faq">FAQ</a><a href="index.html#contact">Contacto</a></nav><button class="icon-btn perf-toggle" id="perf-toggle" aria-label="Alternar modo de rendimiento" title="Modo rendimiento"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h7l-1 8 10-12h-7l1-8Z"/></svg><span class="perf-tip" aria-hidden="true">ACTIVADO</span></button><button class="nav-toggle" id="nav-toggle" aria-label="Abrir menú" aria-expanded="false"><span></span><span></span><span></span></button></div></header><div class="nav-backdrop" id="nav-backdrop"></div>
-<main class="sub">
+<main id="main-content" class="sub">
 <section class="hero">
 <div class="eyebrow">◆ leianetwork · tus juegos en linux · fuente: protondb</div>
 <h1>Tus juegos en <span>Linux</span></h1>
@@ -384,7 +384,7 @@ footer{text-align:center;padding:26px 16px;font-family:var(--mono);font-size:11p
 <div class="game-list" id="gameList"></div>
 </div>
 </main>
-<footer><div class="fbrand"><img width="860" height="150" loading="lazy" decoding="async" src="assets/logo_leianetwork.webp" alt="LeiaNETWORK"><span>© 2026 LeiaNET</span></div><div class="fmeta">STEAM PREVIEW · datos de Steam Web API + ProtonDB · <b>leianet.ar</b></div></footer>
+<footer><div class="fbrand"><img width="860" height="150" loading="lazy" decoding="async" src="assets/logo_leianetwork.webp" alt="LeiaNETWORK"><span>© 2026 LeiaNET</span></div><div class="fmeta">STEAM PREVIEW · datos de Steam Web API + ProtonDB · <b>leianet.ar</b></div><nav class="flegal" aria-label="Información legal" style="display:flex;flex-wrap:wrap;gap:6px 18px;justify-content:center;margin-top:10px;font-size:13px"><a href="privacidad.html" style="color:inherit;text-decoration:underline;padding:4px 2px">Privacidad</a><a href="terminos.html" style="color:inherit;text-decoration:underline;padding:4px 2px">Términos de uso</a><button type="button" data-cookie-prefs style="background:none;border:0;color:inherit;font:inherit;text-decoration:underline;cursor:pointer;padding:4px 2px;min-height:24px">Preferencias de cookies</button></nav></footer>
 <script>
 const API_BASE = 'https://steam-api.leianet.ar';
 const PROTONDB_URL = './protondb-summary.json'; // subilo junto a este HTML
@@ -418,7 +418,7 @@ async function resolveToSteamId64(v){
 }
 
 function tierClass(tier){
-  return 'tier-' + (tier || 'unknown');
+  return 'tier-' + String(tier || 'unknown').replace(/[^a-z0-9_-]/gi, '');
 }
 function tierLabel(tier){
   const labels = {native:'NATIVO',platinum:'Platinum',gold:'Gold',silver:'Silver',bronze:'Bronze',borked:'Borked',pending:'Pocos reportes',unknown:'Sin datos'};
@@ -521,9 +521,11 @@ async function renderGames(games, map){
   await paintList(map);
 }
 
+/* Escape de datos remotos (nombres de juego de Steam/steam-api) antes de usarlos en innerHTML */
+const escH = v => String(v == null ? '' : v).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function populateSuggestions(games){
   const list = document.getElementById('gameSuggestions');
-  list.innerHTML = games.map(g => `<option value="${g.name.replace(/"/g,'&quot;')}" label="AppID ${g.appid}">`).join('');
+  list.innerHTML = games.map(g => `<option value="${escH(g.name)}" label="AppID ${escH(g.appid)}">`).join('');
 }
 
 function renderGameRows(rows, map){
@@ -533,18 +535,18 @@ function renderGameRows(rows, map){
   rows.forEach((r, i)=>{
     const g = r.g;
     const hours = Math.round(g.playtime_forever/60*10)/10;
-    const iconUrl = g.img_icon_url ? `https://media.steampowered.com/steamcommunity/public/images/apps/${g.appid}/${g.img_icon_url}.jpg` : '';
+    const iconUrl = (g.img_icon_url && /^[0-9a-f]+$/i.test(String(g.img_icon_url)) && /^\d+$/.test(String(g.appid))) ? `https://media.steampowered.com/steamcommunity/public/images/apps/${g.appid}/${g.img_icon_url}.jpg` : '';
     let metaText = `${hours} h jugadas`;
     if(sortMode === 'price' && !r.searchResult) metaText = r.price != null ? `$${r.price} USD actual` : 'precio no disponible';
     const info = map[String(g.appid)];
-    const errorFlag = (info && info.errors > 0) ? `<span class="error-flag">⚠ ${info.errors} reportes</span>` : '';
+    const errorFlag = (info && info.errors > 0) ? `<span class="error-flag">⚠ ${escH(info.errors)} reportes</span>` : '';
     const div = document.createElement('div');
     const glow = ['native','platinum','gold','borked'].includes(r.tier) ? ` tier-glow-${r.tier}` : '';
     div.className = 'game-card' + glow;
     div.style.animationDelay = (i*30)+'ms';
     div.innerHTML = `
       <img src="${iconUrl}" alt="" onerror="this.style.visibility='hidden'">
-      <div><div class="game-name">${g.name}</div><div class="game-hours">${metaText}${errorFlag}</div></div>
+      <div><div class="game-name">${escH(g.name)}</div><div class="game-hours">${metaText}${errorFlag}</div></div>
       <span class="tier-badge ${tierClass(r.tier)}">${tierLabel(r.tier)}</span>
     `;
     list.appendChild(div);
