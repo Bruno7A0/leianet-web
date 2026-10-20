@@ -1,3 +1,9 @@
+## 2026-10-20 · Sugerencias + ladrido pixel art
+- Nueva sección **Sugerencias** (index.html, entre FAQ y Contacto, con link en el menú): formulario público + lista de las ya revisadas con estado y respuesta. Se adapta a todos los temas.
+- Moderación en **admin.html**: las sugerencias nuevas quedan pendientes; las aprobás, les ponés estado (en revisión, planeada, en desarrollo, completada, rechazada) y respuesta.
+- Backend `sugerencias.js` (mismo anti-bot que encuestas: proof-of-work, honeypot, rate-limit, sin links). Endpoint `/api/sugerencias`.
+- Modo Pixel Art: el ladrido usa un sprite pixel art real (`assets/ladrido-sprite-pixel.webp`, también `ladrido-pixel.webp` animado) en vez de pixelar en vivo.
+
 # Changelog — bugs reales
 
 - **Pantalla en blanco si `load` tarda**: failsafe solo en JS (muestra la página 0,8 s después de DOMContentLoaded, o a los 3 s como tope). Se quitó el failsafe CSS por animación (podía causar pantalla negra).

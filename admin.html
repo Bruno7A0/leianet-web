@@ -225,9 +225,31 @@ h1.admin-h1{font-family:var(--display);font-weight:700;font-size:clamp(22px,4vw,
 .titulo-row{display:flex;align-items:center;justify-content:space-between;gap:10px}.titulo-row .section-title{margin:0}
 .titulo-row button{margin:0;padding:7px 12px;font-size:.78rem;background:var(--glass-fill);color:var(--text-dim);border:1px solid var(--glass-border);box-shadow:none;font-family:var(--body)}
 .hint{font-size:12px;color:var(--text-mute);font-family:var(--mono);margin-top:8px;line-height:1.5}
+/* --- sugerencias --- */
+.sg-tabs{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0 14px}
+.sg-tabs button{margin:0;padding:6px 12px;font-size:.78rem;background:var(--glass-fill);color:var(--text-dim);border:1px solid var(--glass-border);box-shadow:none;font-family:var(--body);border-radius:20px}
+.sg-tabs button.on{background:var(--text);color:#111113;border-color:var(--text)}
+.sg-item{border:1px solid var(--border-soft);border-left:3px solid #8f8f96;border-radius:12px;padding:14px 16px;margin-bottom:12px;background:rgba(0,0,0,.18)}
+.sg-item.pend{border-left-color:#d9a441}.sg-item.pub{border-left-color:#6bbf7b}
+.sg-head{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-family:var(--mono);font-size:11px;color:var(--text-mute);margin-bottom:6px}
+.sg-head .tag{padding:2px 8px;border-radius:20px;border:1px solid currentColor;letter-spacing:.05em;text-transform:uppercase;font-size:10.5px}
+.sg-head .tag.p{color:#d9a441}.sg-head .tag.v{color:#6bbf7b}
+.sg-t{font-family:var(--display);font-weight:600;font-size:15px;color:var(--text);margin:0 0 4px;overflow-wrap:anywhere}
+.sg-d{font-size:13.5px;color:var(--text-dim);line-height:1.55;white-space:pre-line;overflow-wrap:anywhere;margin:0 0 10px}
+.sg-ctl{display:grid;grid-template-columns:200px 1fr;gap:10px;align-items:start}
+.sg-ctl select,.sg-ctl textarea{width:100%;box-sizing:border-box;margin:0}
+.sg-ctl textarea{min-height:64px}
+.sg-acc{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;align-items:center}
+.sg-acc button{margin:0;padding:8px 14px;font-size:.78rem;box-shadow:none;font-family:var(--body);font-weight:600}
+.sg-acc .ok{background:rgba(107,191,123,.16);border:1px solid rgba(107,191,123,.5);color:#6bbf7b}
+.sg-acc .gu{background:var(--glass-fill);border:1px solid var(--glass-border);color:var(--text-dim)}
+.sg-acc .del{background:rgba(255,84,104,.14);border:1px solid rgba(255,84,104,.35);color:#ff5468}
+.sg-acc .ok:hover,.sg-acc .gu:hover,.sg-acc .del:hover{transform:none}
+.sg-acc .msg{font-family:var(--mono);font-size:11.5px;color:var(--text-mute)}
+@media (max-width:640px){.sg-ctl{grid-template-columns:1fr}}
 @media (max-width:640px){main.admin-main{padding:20px 14px 40px}.admin-card{padding:20px 18px 22px;border-radius:13px}}
 </style>
-<link rel="preload" href="assets/fonts/chakra-petch-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="assets/fonts/inter-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="assets/fonts/jetbrains-mono-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin><link rel="stylesheet" href="assets/leia-fx.css"><link rel="stylesheet" href="assets/leia-pages.css"><link rel="stylesheet" href="assets/aero-mode.css"><script>(function(){try{var m=location.search.match(/[?&]retro=([01])/),v=m?m[1]:null;if(v===null){try{v=localStorage.getItem("leianet-retro")}catch(e){}}if(v===null){var w=(window.name||"").match(/(?:^|\|)leianet-retro:([^|]*)/);v=w?w[1]:null}if(v==="1")document.documentElement.classList.add("retrowave")}catch(e){}})()</script><link rel="stylesheet" href="assets/retrowave-mode.css"><script>(function(){try{var r=document.documentElement,L=function(k,p){var m=location.search.match(new RegExp("[?&]"+p+"=([01])")),v=m?m[1]:null;if(v===null){try{v=localStorage.getItem(k)}catch(e){}}if(v===null){var w=(window.name||"").match(new RegExp("(?:^|\\|)"+k+":([^|]*)"));v=w?w[1]:null}return v==="1"};if(L("leianet-matrix","matrix"))r.classList.add("matrix");else if(L("leianet-win95","win95"))r.classList.add("win95")}catch(e){}})()</script><link rel="stylesheet" href="assets/matrix-mode.css"><link rel="stylesheet" href="assets/win95-mode.css"><link rel="stylesheet" href="assets/gameboy-mode.css"><link rel="stylesheet" href="assets/brutal-mode.css"><link rel="stylesheet" href="assets/darkfantasy-mode.css"></head><body><div class="grid-overlay"></div><div class="depth-veil"></div><div class="nebula"><span></span><span></span><span></span><span></span></div><div class="nebula-mono"><span></span></div><div class="starfield"><div class="stars-layer s1" id="stars-s1"></div><div class="stars-layer s2" id="stars-s2"></div><div class="stars-layer s3" id="stars-s3"></div><div id="sparkles"></div></div><div class="ambient"><span></span><span></span><span></span><span></span><span></span><span></span></div><div class="grain"></div><div class="cursor-glow" id="cursor-glow"></div><div class="scroll-progress"><div class="bar" id="scroll-progress-bar"></div></div><header><a href="index.html" class="brand" aria-label="Ir al sitio"><img width="860" height="150" loading="eager" decoding="async" src="assets/logo_leianetwork.webp" alt="LeiaNETWORK" style="height:38px"></a><div class="header-right"><a href="index.html" class="back-link">&larr; Volver al sitio</a><button class="icon-btn perf-toggle" id="perf-toggle" aria-label="Alternar modo de rendimiento" title="Modo rendimiento"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h7l-1 8 10-12h-7l1-8Z"/></svg><span class="perf-tip" aria-hidden="true">ACTIVADO</span></button></div></header>
+<link rel="preload" href="assets/fonts/chakra-petch-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="assets/fonts/inter-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="assets/fonts/jetbrains-mono-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin><link rel="stylesheet" href="assets/leia-fx.css"><link rel="stylesheet" href="assets/leia-pages.css"><link rel="stylesheet" href="assets/aero-mode.css"><script>(function(){try{var m=location.search.match(/[?&]retro=([01])/),v=m?m[1]:null;if(v===null){try{v=localStorage.getItem("leianet-retro")}catch(e){}}if(v===null){var w=(window.name||"").match(/(?:^|\|)leianet-retro:([^|]*)/);v=w?w[1]:null}if(v==="1")document.documentElement.classList.add("retrowave")}catch(e){}})()</script><link rel="stylesheet" href="assets/retrowave-mode.css"><script>(function(){try{var r=document.documentElement,L=function(k,p){var m=location.search.match(new RegExp("[?&]"+p+"=([01])")),v=m?m[1]:null;if(v===null){try{v=localStorage.getItem(k)}catch(e){}}if(v===null){var w=(window.name||"").match(new RegExp("(?:^|\\|)"+k+":([^|]*)"));v=w?w[1]:null}return v==="1"};if(L("leianet-matrix","matrix"))r.classList.add("matrix");else if(L("leianet-win95","win95"))r.classList.add("win95")}catch(e){}})()</script><link rel="stylesheet" href="assets/matrix-mode.css"><link rel="stylesheet" href="assets/win95-mode.css"><link rel="stylesheet" href="assets/gameboy-mode.css"><link rel="stylesheet" href="assets/brutal-mode.css"><link rel="stylesheet" href="assets/darkfantasy-mode.css"><link rel="stylesheet" href="assets/pixel-mode.css"></head><body><div class="grid-overlay"></div><div class="depth-veil"></div><div class="nebula"><span></span><span></span><span></span><span></span></div><div class="nebula-mono"><span></span></div><div class="starfield"><div class="stars-layer s1" id="stars-s1"></div><div class="stars-layer s2" id="stars-s2"></div><div class="stars-layer s3" id="stars-s3"></div><div id="sparkles"></div></div><div class="ambient"><span></span><span></span><span></span><span></span><span></span><span></span></div><div class="grain"></div><div class="cursor-glow" id="cursor-glow"></div><div class="scroll-progress"><div class="bar" id="scroll-progress-bar"></div></div><header><a href="index.html" class="brand" aria-label="Ir al sitio"><img width="860" height="150" loading="eager" decoding="async" src="assets/logo_leianetwork.webp" alt="LeiaNETWORK" style="height:38px"></a><div class="header-right"><a href="index.html" class="back-link">&larr; Volver al sitio</a><button class="icon-btn perf-toggle" id="perf-toggle" aria-label="Alternar modo de rendimiento" title="Modo rendimiento"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h7l-1 8 10-12h-7l1-8Z"/></svg><span class="perf-tip" aria-hidden="true">ACTIVADO</span></button></div></header>
 <main class="admin-main sub">
 <div class="admin-header-row">
   <h1 class="admin-h1">Publicar novedad</h1>
@@ -325,6 +347,13 @@ h1.admin-h1{font-family:var(--display);font-weight:700;font-size:clamp(22px,4vw,
 <div class="admin-card">
 <div class="titulo-row"><h2 class="section-title">Encuestas</h2><button type="button" onclick="cargarEncuestas()">Actualizar</button></div>
 <div id="listaEncuestas" style="margin-top:6px"><p class="hint">Ingresá el token para ver las encuestas.</p></div>
+</div>
+
+<div class="admin-card" id="sg-card">
+<div class="titulo-row"><h2 class="section-title">Sugerencias</h2><button type="button" onclick="cargarSugerencias()">Actualizar</button></div>
+<p class="hint" style="margin:-6px 0 8px">Lo que escribe la gente queda <b>pendiente</b> y no se ve en la web hasta que la apruebes. Elegí el estado, escribí una respuesta (opcional) y publicala.</p>
+<div class="sg-tabs" id="sg-tabs"></div>
+<div id="listaSug"><p class="hint">Ingresá el token para ver las sugerencias.</p></div>
 </div>
 
 <div class="admin-card">
@@ -885,6 +914,100 @@ h1.admin-h1{font-family:var(--display);font-weight:700;font-size:clamp(22px,4vw,
 
   document.getElementById('token').addEventListener('change', cargarEncuestas);
   cargarEncuestas();
+
+  // =================== SUGERENCIAS ===================
+  const API_SUG = window.LEIA_SUG_API || 'https://novedades.leianet.ar/api/sugerencias';
+  const SG_ESTADOS = { pendiente: 'Sin estado', revision: 'En revisión', planeada: 'Planeada', desarrollo: 'En desarrollo', completada: 'Completada', rechazada: 'Rechazada' };
+  let sgData = [], sgTab = 'pend';
+
+  function sgFecha(ms){ return new Date(ms).toLocaleString('es-AR', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }); }
+
+  function sgTabs(){
+    const n = { pend: sgData.filter((x) => !x.publica).length, pub: sgData.filter((x) => x.publica).length, todas: sgData.length };
+    document.getElementById('sg-tabs').innerHTML = [['pend', 'Pendientes'], ['pub', 'Publicadas'], ['todas', 'Todas']]
+      .map(([k, t]) => '<button type="button" data-t="' + k + '" class="' + (sgTab === k ? 'on' : '') + '">' + t + ' · ' + n[k] + '</button>').join('');
+  }
+  document.getElementById('sg-tabs').addEventListener('click', (e) => {
+    const b = e.target.closest('[data-t]'); if(!b) return; sgTab = b.dataset.t; pintarSugerencias();
+  });
+
+  function pintarSugerencias(){
+    sgTabs();
+    const cont = document.getElementById('listaSug');
+    const lista = sgData.filter((x) => sgTab === 'todas' || (sgTab === 'pub' ? x.publica : !x.publica));
+    if(!lista.length){ cont.innerHTML = '<p class="hint">' + (sgTab === 'pend' ? 'No hay sugerencias pendientes.' : 'No hay sugerencias acá todavía.') + '</p>'; return; }
+    cont.innerHTML = '';
+    lista.forEach((x) => {
+      const opts = Object.keys(SG_ESTADOS).filter((k) => k !== 'pendiente' || !x.publica)
+        .map((k) => '<option value="' + k + '"' + (k === x.estado ? ' selected' : '') + '>' + SG_ESTADOS[k] + '</option>').join('');
+      const div = document.createElement('div');
+      div.className = 'sg-item ' + (x.publica ? 'pub' : 'pend');
+      div.dataset.id = x.id;
+      div.innerHTML =
+        '<div class="sg-head"><span class="tag ' + (x.publica ? 'v' : 'p') + '">' + (x.publica ? 'Publicada' : 'Pendiente') + '</span>' +
+        '<span>' + escH(x.nombre || 'Anónimo') + '</span><span>·</span><span>' + sgFecha(x.creada) + '</span></div>' +
+        '<h3 class="sg-t">' + escH(x.titulo) + '</h3><p class="sg-d">' + escH(x.detalle) + '</p>' +
+        '<div class="sg-ctl"><select class="sg-estado" aria-label="Estado">' + opts + '</select>' +
+        '<textarea class="sg-resp" maxlength="400" placeholder="Respuesta de LeiaNET (opcional, se muestra en la web)">' + escH(x.respuesta) + '</textarea></div>' +
+        '<div class="sg-acc"></div>';
+      const acc = div.querySelector('.sg-acc');
+      const msg = document.createElement('span'); msg.className = 'msg';
+      const mk = (cls, txt, fn) => { const b = document.createElement('button'); b.type = 'button'; b.className = cls; b.textContent = txt; b.onclick = fn; acc.appendChild(b); return b; };
+      const cuerpo = () => ({ estado: div.querySelector('.sg-estado').value, respuesta: div.querySelector('.sg-resp').value });
+      if(!x.publica){
+        mk('ok', 'Aprobar y publicar', () => {
+          const c = cuerpo(); if(c.estado === 'pendiente') c.estado = 'revision';
+          sgPatch(x.id, Object.assign(c, { publica: true }), msg);
+        });
+        mk('gu', 'Rechazar y publicar', () => sgPatch(x.id, Object.assign(cuerpo(), { estado: 'rechazada', publica: true }), msg));
+        mk('gu', 'Guardar sin publicar', () => sgPatch(x.id, cuerpo(), msg));
+      }else{
+        mk('ok', 'Guardar cambios', () => sgPatch(x.id, cuerpo(), msg));
+        mk('gu', 'Ocultar de la web', () => sgPatch(x.id, { publica: false }, msg));
+      }
+      mk('del', 'Borrar', () => sgBorrar(x.id)).style.margin = '0';
+      acc.appendChild(msg);
+      cont.appendChild(div);
+    });
+  }
+
+  async function cargarSugerencias(){
+    const token = document.getElementById('token').value;
+    const cont = document.getElementById('listaSug');
+    if(!token){ sgData = []; sgTabs(); cont.innerHTML = '<p class="hint">Ingresá el token para ver las sugerencias.</p>'; return; }
+    try{
+      const res = await fetch(API_SUG + '/admin', { headers: { 'x-auth-token': token } });
+      const data = await res.json().catch(() => ({}));
+      if(!res.ok) throw new Error(data.error || 'No se pudo cargar');
+      const nuevo = data.sugerencias || [];
+      if(JSON.stringify(nuevo) === JSON.stringify(sgData) && cont.querySelector('.sg-item')) return; // sin cambios: no pisar lo que estás escribiendo
+      sgData = nuevo;
+      pintarSugerencias();
+    }catch(e){ cont.innerHTML = '<p class="hint err">' + escH(e.message) + '</p>'; }
+  }
+
+  async function sgPatch(id, body, msg){
+    const token = document.getElementById('token').value;
+    msg.textContent = 'Guardando…';
+    try{
+      const res = await fetch(API_SUG + '/' + id, { method: 'PATCH', headers: { 'Content-Type': 'application/json', 'x-auth-token': token }, body: JSON.stringify(body) });
+      const data = await res.json().catch(() => ({}));
+      if(!res.ok) throw new Error(data.error || 'Error al guardar');
+      const i = sgData.findIndex((x) => x.id === id); if(i >= 0) sgData[i] = data.sugerencia;
+      if(body.publica !== undefined) pintarSugerencias();
+      else { msg.textContent = 'Guardado ✓'; sgTabs(); }
+    }catch(e){ msg.textContent = 'Error: ' + e.message; }
+  }
+
+  async function sgBorrar(id){
+    const token = document.getElementById('token').value;
+    if(!confirm('¿Borrar esta sugerencia definitivamente?')) return;
+    const res = await fetch(API_SUG + '/' + id, { method: 'DELETE', headers: { 'x-auth-token': token } });
+    if(res.ok){ sgData = sgData.filter((x) => x.id !== id); pintarSugerencias(); } else alert('No se pudo borrar.');
+  }
+
+  document.getElementById('token').addEventListener('change', cargarSugerencias);
+  cargarSugerencias();
 </script>
 <script src="assets/vendor/gsap.min.js"></script><script src="assets/vendor/ScrollTrigger.min.js"></script><script src="assets/vendor/SplitText.min.js"></script><script src="assets/leia-fx.js"></script><script src="assets/aero-mode.js" defer></script><script src="assets/retrowave-mode.js" defer></script><script src="assets/theme-modes.js" defer></script><script id="leia-failsafe-js">(function(){function show(){if(document.body)document.body.classList.add("loaded")}setTimeout(show,3000);document.addEventListener("DOMContentLoaded",function(){setTimeout(show,800)})})();</script>
 </body></html>
