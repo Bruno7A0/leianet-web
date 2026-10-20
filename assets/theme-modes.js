@@ -242,7 +242,7 @@
   function w95Icons(){
     if(document.getElementById('w95-icons'))return;
     var d=document.createElement('div');d.id='w95-icons';
-    var L=[['Inicio','index.html','assets/favicon-48.png'],['Minecraft','index.html#minecraft','assets/logo_minecraft.webp'],['Counter-Strike 1.6','index.html#cs16','assets/logo_cs_transparent.webp'],['Utilidades','index.html#utilidades','assets/favicon-48.png'],['Foro','index.html#foro','assets/favicon-48.png']];
+    var L=[['Inicio','index.html','assets/favicon-48.png'],['Minecraft','index.html#minecraft','assets/logo_minecraft.webp'],['Counter-Strike 1.6','index.html#cs16','assets/logo_cs_transparent.webp'],['Utilidades','index.html#utilidades','assets/favicon-48.png']];
     d.innerHTML=L.map(function(i){return '<a class="w95-ico" href="'+i[1]+'"><i style="background-image:url('+i[2]+')"></i><span>'+i[0]+'</span></a>'}).join('');
     document.body.appendChild(d);
     d.addEventListener('click',function(e){var a=e.target.closest('.w95-ico');if(!a)return;e.preventDefault();

@@ -18,7 +18,7 @@ Base: `origin/main` @ 323b76a (incluye tu último `futbol.html`, commit 9fd379d)
 ## Pendiente (requiere al propietario)
 - **highcrest.ttf** ("Personal use only", © Letterara): RESUELTO. Eliminada y reemplazada por Cinzel (OFL) en `darkfantasy-mode.css`. Revisar visualmente el modo Dark Fantasy.
 - Revisar procedencia: portadas de juegos (valorant, lol, fortnite, rocket-league, roblox, uncharted), skins/capas/armaduras de Mojang/4J, audios `gol/whi/near.*.mp3` (sin créditos). `amb.*.mp3`: C2PA indica generación con Claude a pedido del usuario.
-- privacidad.html y terminos.html identifican al responsable solo como "LeiaNET" + soporte@leianet.ar (decisión del propietario de no publicar datos personales). Riesgo residual: la normativa de datos personales espera identificación del responsable; consultar con un abogado si el sitio crece. Puntos que quedaron sin detallar: retención de logs/votos, políticas del foro y servidores, jurisdicción.
+- privacidad.html y terminos.html identifican al responsable solo como "LeiaNET" + soporte@leianet.ar (decisión del propietario de no publicar datos personales). Riesgo residual: la normativa de datos personales espera identificación del responsable; consultar con un abogado si el sitio crece. Puntos que quedaron sin detallar: retención de logs/votos, políticas de los servidores, jurisdicción.
 - Cabeceras HTTP (CSP completa, HSTS, X-Frame-Options): GitHub Pages no permite; requiere Cloudflare u otro hosting.
 - Backends no auditables desde el repo (novedades, steam-api, futbol WS, api.leianet.ar, encuestas): rate limiting, CORS, logs, hashing de IP, auth del admin.
 - `futbol.html?server=`: un enlace armado puede conectar al jugador a un servidor ajeno.

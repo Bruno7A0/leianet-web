@@ -1,0 +1,234 @@
+/* ==========================================================================
+   Tracker de la Tienda de Fortnite — CSS puro, sin dependencias
+   Todo está prefijado con .fn- para no chocar con tu hoja de estilos.
+   ========================================================================== */
+
+:root {
+  /* --- Superficies y texto (si tu sitio ya define estos tokens, se heredan) --- */
+  --fn-bg-card:      var(--bg-elev, #18181b);
+  --fn-bg-media:     var(--bg-elev-2, #201f23);
+  --fn-bg-chip:      rgba(255, 255, 255, .06);
+  --fn-border:       var(--border, #2b2b30);
+  --fn-border-hover: rgba(255, 255, 255, .30);
+  --fn-text:         var(--text, #ededee);
+  --fn-text-dim:     var(--text-dim, #a9aaaf);
+  --fn-text-mute:    var(--text-mute, #706f74);
+  --fn-accent:       var(--accent, #c7c7cc);
+  --fn-radius:       var(--radius, 10px);
+  --fn-font-title:   var(--display, system-ui, sans-serif);
+  --fn-font-body:    var(--body, system-ui, sans-serif);
+  --fn-font-num:     var(--mono, ui-monospace, monospace);
+
+  /* --- Rarezas de Fortnite --- */
+  --fn-rareza-common:    #b1b1b1;  /* Común */
+  --fn-rareza-uncommon:  #60aa3a;  /* Poco común */
+  --fn-rareza-rare:      #49acf2;  /* Rara */
+  --fn-rareza-epic:      #b15be2;  /* Épica */
+  --fn-rareza-legendary: #d37841;  /* Legendaria */
+  --fn-rareza-mythic:    #f3c35d;  /* Mítica */
+  --fn-rareza-serie:     #3ec4c4;  /* Series (Marvel, DC, Icon, etc.) */
+
+  /* --- PaVos --- */
+  --fn-pavo: #7fb4ff;
+
+  /* --- Cuadrícula --- */
+  --fn-gap: 12px;
+  --fn-card-min: 150px;
+}
+
+@media (min-width: 640px)  { :root { --fn-card-min: 170px; --fn-gap: 14px; } }
+@media (min-width: 1024px) { :root { --fn-card-min: 190px; --fn-gap: 16px; } }
+
+/* ---------- Contenedor ---------- */
+.fn-shop {
+  font-family: var(--fn-font-body);
+  color: var(--fn-text);
+  max-width: 1180px;
+  margin-inline: auto;
+}
+.fn-shop *, .fn-shop *::before, .fn-shop *::after { box-sizing: border-box; }
+
+/* ---------- Encabezado ---------- */
+.fn-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px 24px;
+  padding-bottom: 20px;
+  margin-bottom: 8px;
+  border-bottom: 1px solid var(--fn-border);
+}
+.fn-head__title { margin: 0; font: 700 clamp(26px, 4vw, 38px)/1.1 var(--fn-font-title); }
+.fn-head__date  { margin: 6px 0 0; color: var(--fn-text-dim); font-size: 14px; text-transform: capitalize; }
+.fn-head__count {
+  font-family: var(--fn-font-num);
+  font-size: 13px;
+  color: var(--fn-text-dim);
+  border: 1px solid var(--fn-border);
+  background: var(--fn-bg-chip);
+  border-radius: 999px;
+  padding: 6px 14px;
+  white-space: nowrap;
+}
+.fn-head__count strong { color: var(--fn-text); font-weight: 700; }
+
+/* ---------- Secciones ---------- */
+.fn-section { padding-top: 36px; }
+.fn-section__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.fn-section__title {
+  margin: 0;
+  font: 700 clamp(22px, 3vw, 30px)/1.15 var(--fn-font-title);
+  overflow-wrap: anywhere;
+}
+.fn-section__count { font-family: var(--fn-font-num); font-size: 12px; color: var(--fn-text-mute); white-space: nowrap; }
+
+/* ---------- Cuadrícula ---------- */
+.fn-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(var(--fn-card-min), 1fr));
+  gap: var(--fn-gap);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* ---------- Tarjeta ---------- */
+.fn-card {
+  --fn-rareza: var(--fn-rareza-common);
+  display: flex;
+  flex-direction: column;
+  background: var(--fn-bg-card);
+  border: 1px solid var(--fn-border);
+  border-radius: var(--fn-radius);
+  overflow: hidden;
+  transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease;
+}
+.fn-card:hover,
+.fn-card:focus-within {
+  transform: translateY(-3px);
+  border-color: var(--fn-rareza);
+  box-shadow: 0 10px 24px -14px rgba(0, 0, 0, .7);
+}
+
+.fn-card[data-rareza="common"]    { --fn-rareza: var(--fn-rareza-common); }
+.fn-card[data-rareza="uncommon"]  { --fn-rareza: var(--fn-rareza-uncommon); }
+.fn-card[data-rareza="rare"]      { --fn-rareza: var(--fn-rareza-rare); }
+.fn-card[data-rareza="epic"]      { --fn-rareza: var(--fn-rareza-epic); }
+.fn-card[data-rareza="legendary"] { --fn-rareza: var(--fn-rareza-legendary); }
+.fn-card[data-rareza="mythic"]    { --fn-rareza: var(--fn-rareza-mythic); }
+.fn-card[data-rareza="serie"]     { --fn-rareza: var(--fn-rareza-serie); }
+
+.fn-card__media {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  display: grid;
+  place-items: center;
+  background: var(--fn-bg-media);
+  background: radial-gradient(circle at 50% 40%,
+              color-mix(in srgb, var(--fn-rareza) 26%, transparent), transparent 70%),
+              var(--fn-bg-media);
+  border-bottom: 2px solid var(--fn-rareza);
+}
+.fn-card__img { width: 100%; height: 100%; object-fit: contain; display: block; transition: transform .25s ease; }
+.fn-card:hover .fn-card__img { transform: scale(1.04); }
+.fn-card__img--vacio { width: 40%; height: 40%; opacity: .25; }
+
+.fn-card__badge {
+  position: absolute;
+  top: 8px; left: 8px;
+  font-size: 11px;
+  line-height: 1;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, .55);
+  color: #fff;
+}
+
+.fn-card__body { display: flex; flex-direction: column; gap: 2px; padding: 10px 12px 12px; flex: 1; }
+.fn-card__name {
+  margin: 0;
+  font: 600 15px/1.25 var(--fn-font-title);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.fn-card__type { margin: 0; font-size: 12.5px; color: var(--fn-text-mute); }
+
+.fn-card__foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: auto;
+  padding-top: 10px;
+}
+.fn-price { display: inline-flex; align-items: center; gap: 6px; font: 700 14px var(--fn-font-num); color: var(--fn-text); }
+.fn-price__icon {
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  display: inline-grid; place-items: center;
+  background: var(--fn-pavo);
+  color: #0b1220;
+  font: 800 10px/1 var(--fn-font-body);
+}
+.fn-price--gratis { color: var(--fn-text-dim); }
+
+.fn-rareza {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 11.5px;
+  color: var(--fn-text-dim);
+}
+.fn-rareza::before {
+  content: "";
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--fn-rareza);
+  flex-shrink: 0;
+}
+
+/* ---------- Estados ---------- */
+.fn-estado {
+  margin: 40px 0;
+  padding: 28px 20px;
+  text-align: center;
+  color: var(--fn-text-dim);
+  border: 1px dashed var(--fn-border);
+  border-radius: var(--fn-radius);
+}
+.fn-estado button {
+  margin-top: 12px;
+  font: 600 13px var(--fn-font-body);
+  color: var(--fn-text);
+  background: var(--fn-bg-chip);
+  border: 1px solid var(--fn-border);
+  border-radius: 8px;
+  padding: 9px 16px;
+  cursor: pointer;
+}
+.fn-estado button:hover { border-color: var(--fn-border-hover); }
+
+.fn-skeleton {
+  aspect-ratio: 3 / 4;
+  border-radius: var(--fn-radius);
+  background: linear-gradient(100deg, var(--fn-bg-card) 30%, var(--fn-bg-media) 50%, var(--fn-bg-card) 70%);
+  background-size: 200% 100%;
+  animation: fn-shimmer 1.3s ease-in-out infinite;
+}
+@keyframes fn-shimmer { from { background-position: 200% 0; } to { background-position: -200% 0; } }
+
+/* ---------- Accesibilidad ---------- */
+.fn-card:focus-visible, .fn-estado button:focus-visible { outline: 2px solid var(--fn-accent); outline-offset: 3px; }
+@media (prefers-reduced-motion: reduce) {
+  .fn-card, .fn-card__img { transition: none; }
+  .fn-card:hover { transform: none; }
+  .fn-card:hover .fn-card__img { transform: none; }
+  .fn-skeleton { animation: none; }
+}

@@ -1,8 +1,7 @@
-## 2026-10-20 · Sugerencias + ladrido pixel art
-- Nueva sección **Sugerencias** (index.html, entre FAQ y Contacto, con link en el menú): formulario público + lista de las ya revisadas con estado y respuesta. Se adapta a todos los temas.
-- Moderación en **admin.html**: las sugerencias nuevas quedan pendientes; las aprobás, les ponés estado (en revisión, planeada, en desarrollo, completada, rechazada) y respuesta.
-- Backend `sugerencias.js` (mismo anti-bot que encuestas: proof-of-work, honeypot, rate-limit, sin links). Endpoint `/api/sugerencias`.
-- Modo Pixel Art: el ladrido usa un sprite pixel art real (`assets/ladrido-sprite-pixel.webp`, también `ladrido-pixel.webp` animado) en vez de pixelar en vivo.
+## 2026-10-20 · Nueva utilidad + funciones restauradas sobre la UI anterior
+- Nueva utilidad **Tienda de Fortnite** (`fortnite.html`, `assets/fortnite-shop.css|js`): secciones de la tienda de hoy con precio en PaVos y rareza. Tarjeta en Utilidades (index y utilidades.html).
+- UI del inicio vuelta a la versión previa a `1cb620a` (sin el perro separador ni la división Utilidades/Juegos/Servidores/Web).
+- Restaurados sobre esa UI: estado de **Backends** en el hero, sección **Sugerencias** (+ moderación en `admin.html`), **modo Pixel Art** y ladrido pixel art (sprite y audio 8 bits).
 
 # Changelog — bugs reales
 

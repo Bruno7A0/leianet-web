@@ -12,6 +12,7 @@ LeiaNET surgió de la idea de administrar servidores propios de Minecraft y fue 
 - [Can I Run IT?](https://leianet.ar/canirun.html): elegí tu hardware y mirá qué juegos corre tu PC
 - [Minecraft Server](https://leianet.ar/minecraft-server.html): generador de servers de Minecraft (Vanilla, Paper, Purpur, Folia, Fabric, Forge, NeoForge), con server.properties, plugins/mods de Modrinth y un zip con script de instalación
 - [Editor de Skins](https://leianet.ar/skin-editor.html): editor de skins de Minecraft con lienzo 2D, vista 3D animada, capas, elytra y armaduras, carga por nick, link para compartir y exportación a PNG
+- [Tienda de Fortnite](https://leianet.ar/fortnite.html): la tienda de objetos de Fortnite de hoy, por secciones, con precio en PaVos y rareza de cada cosmético
 
 ## Servidores
 

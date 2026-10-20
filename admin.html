@@ -754,7 +754,7 @@ h1.admin-h1{font-family:var(--display);font-weight:700;font-size:clamp(22px,4vw,
     const token = document.getElementById('token').value;
     const estado = document.getElementById('estado');
     if(!token){ alert('Necesitas el token para borrar.'); return; }
-    if(!confirm('¿Borrar esta novedad?\nTambién se borra del foro y de Discord.')) return;
+    if(!confirm('¿Borrar esta novedad?\nTambién se borra de Discord.')) return;
     if(btn){ btn.disabled = true; btn.textContent = 'Borrando...'; }
     try{
       const res = await fetch(API_URL + '/' + encodeURIComponent(id), { method: 'DELETE', headers: { 'x-auth-token': token } });
@@ -762,9 +762,8 @@ h1.admin-h1{font-family:var(--display);font-weight:700;font-size:clamp(22px,4vw,
       try{ data = await res.json(); }catch(_){}
       if(!res.ok) throw new Error(data.error || ('el servidor respondio ' + res.status));
       const avisos = [];
-      if(data.foro === false) avisos.push('no se pudo borrar el tema del foro');
       if(data.discord === false) avisos.push('no se pudo borrar el mensaje de Discord');
-      estado.textContent = avisos.length ? 'Novedad borrada de la web, pero ' + avisos.join(' y ') + '.' : 'Novedad borrada (web, foro y Discord).';
+      estado.textContent = avisos.length ? 'Novedad borrada de la web, pero ' + avisos.join(' y ') + '.' : 'Novedad borrada (web y Discord).';
       estado.className = avisos.length ? 'err' : 'ok';
     }catch(e){
       alert('No se pudo borrar: ' + e.message);

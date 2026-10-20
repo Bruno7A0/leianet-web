@@ -477,9 +477,8 @@ section.game#cs16::after{background:rgba(255,42,42,.20)}
 html,body{overflow-x:clip}
 @media (max-width:600px){.hero h1 .br-d{display:none}.hero h1{font-size:clamp(28px,8.4vw,36px);line-height:1.12}}
 
-/* Foro: tarjeta explicativa a todo el ancho, filas en grilla */
 
-/* menú: que "CS 1.6" y el resto no se partan en dos líneas (ahora hay un enlace más: Foro) */
+/* menú: que "CS 1.6" y el resto no se partan en dos líneas */
 @media (min-width:981px){
   nav a{white-space:nowrap}
   #main-nav{gap:0}

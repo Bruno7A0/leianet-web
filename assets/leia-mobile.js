@@ -15,7 +15,7 @@
   var backdrop = document.getElementById('nav-backdrop');
   if(!toggle || !nav) return;
 
-  // ¿estamos en el inicio o en una página interna (utilidades, foro de skins, etc.)?
+  // ¿estamos en el inicio o en una página interna (utilidades, etc.)?
   var path = location.pathname;
   var isHome = /(^|\/)(index\.html)?$/.test(path) && !/404/.test(path);
   var isTool = /(canirun|iacompare|steam-preview|minecraft-server|fondos|skin-editor)(\.html)?$/.test(path);
@@ -41,20 +41,15 @@
     '#haxball':{e:'<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m12 8 3.5 2.5-1.3 4h-4.4l-1.3-4z"/></svg>',c:'#3f9a54'},
     '#novedades':{e:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 11 18-5v12L3 14z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg>',c:'#8a5cd6'},
     '#utilidades':{e:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 6.5a4 4 0 0 0-5.3 5.2L4 17a1.8 1.8 0 0 0 2.5 2.5l5.3-5.2a4 4 0 0 0 5.2-5.3l-2.6 2.6-2.2-.6-.6-2.2z"/></svg>',c:'#3b6fd8'},
-    'juegos.html':{e:'<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="7" width="20" height="11" rx="4"/><path d="M7 10v5M4.5 12.5h5"/><circle cx="16" cy="11" r="1"/><circle cx="18.5" cy="14" r="1"/></svg>',c:'#e0524d'},
-    'https://foro.leianet.ar':{e:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.7 7L3 20.5l1.6-5A8 8 0 1 1 21 12z"/></svg>',c:'#d6567e'},
     '#cafecito':{e:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h13v6a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5z"/><path d="M17 10h1.5a2.5 2.5 0 0 1 0 5H17M8 2v3M12 2v3"/></svg>',c:'#b8862e'},
     '#faq':{e:'<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 2.5-3 4.5M12 18h.01"/></svg>',c:'#5b6372'},
     '#sugerencias':{e:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.7.6 1.2 1.4 1.3 2.1h4.4c.1-.7.6-1.5 1.3-2.1A6 6 0 0 0 12 3z"/></svg>',c:'#d9a441'},
-    '#juegos':{e:'<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="7" width="20" height="11" rx="4"/><path d="M7 10v5M4.5 12.5h5"/><circle cx="16" cy="11" r="1"/><circle cx="18.5" cy="14" r="1"/></svg>',c:'#e0524d'},
-    '#servidores':{e:'<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="4" width="17" height="6.5" rx="2"/><rect x="3.5" y="13.5" width="17" height="6.5" rx="2"/></svg>',c:'#4d8a3a'},
-    '#web':{e:'<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg>',c:'#8a5cd6'},
-    '#contacto':{e:'<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>',c:'#3a8fc2'},
     '#contact':{e:'<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>',c:'#3a8fc2'}
   };
   var GROUPS = [
-    ['#utilidades','#juegos','#servidores'],
-    ['#web','#contacto']
+    ['#minecraft','#cs16','#haxball'],
+    ['#novedades','#utilidades','#cafecito'],
+    ['#faq','#sugerencias','#contact']
   ];
 
   function el(tag, cls, html){
