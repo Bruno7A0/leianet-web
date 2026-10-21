@@ -1,3 +1,6 @@
+## 2026-10-21 · Nueva utilidad: Precio en pesos
+- **Precio en pesos** (`precios-pesos.html`, `assets/precios-pesos.css|js`): precio en US$ + plataforma (Steam, Epic, PlayStation, Xbox, Nintendo, suscripciones) + método de pago (tarjeta en pesos, dólar MEP, cripto, blue) = total en pesos con IVA 21 %, percepción de Ganancias (solo servicios, no videojuegos) y otros impuestos editables. Compara métodos y marca el más barato. Cotizaciones en vivo de dolarapi.com con cache de 15 min en `sessionStorage` y referencia fija del 21/10/2026 si falla. Elecciones en `localStorage`. Tarjeta en Utilidades (index y utilidades.html), sitemap y llms.txt.
+
 ## 2026-10-20 · Nueva utilidad: Minecraft Seeds y calculadoras
 - **Minecraft Seeds y calculadoras** (`minecraft-seedmap.html`, `assets/minecraft-seedmap.css|js`, `assets/seedmap-worker.js`, `assets/seedmap.wasm`): mapa de seeds de Minecraft Java con arrastre y zoom (biomas en español, estructuras, strongholds, spawn y slime chunks; Overworld, Nether y End; 1.16.5 a 1.21.x) más calculadoras de coordenadas Overworld↔Nether y de stacks/shulkers. Generación con [cubiomes](https://github.com/Cubitect/cubiomes) (MIT, licencia en `assets/cubiomes-LICENSE.txt`) compilado a WebAssembly (`tools/seedmap/`), en un Web Worker. Sin API ni backend. Limitación: en 1.18+ algunas estructuras pueden aparecer sin generarse en el juego.
 

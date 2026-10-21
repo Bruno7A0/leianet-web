@@ -1,0 +1,56 @@
+/* ==========================================================================
+   Precio en pesos (estilo Steamcito) — CSS puro. Todo prefijado con .pp-
+   Usa los tokens de LeiaNET (--glass-*, --accent, --text...) y hereda los modos de tema.
+   ========================================================================== */
+.pp-app { font-family: var(--body, system-ui, sans-serif); color: var(--text, #ededee); max-width: 640px; margin-inline: auto; }
+.pp-app *, .pp-app *::before, .pp-app *::after { box-sizing: border-box; }
+.pp-card {
+  background: var(--glass-fill, var(--bg-elev, #18181b));
+  border: 1px solid var(--glass-border, var(--border, #2b2b30));
+  border-radius: 18px;
+  backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur);
+  box-shadow: var(--glass-shadow, none);
+  padding: 18px; margin-bottom: 14px;
+}
+html.low-perf .pp-card, html.perf-mid .pp-card { backdrop-filter: none !important; -webkit-backdrop-filter: none !important; background: var(--bg-elev, #18181b) !important; }
+.pp-lbl { display: block; font: 600 11.5px/1 var(--mono, ui-monospace, monospace); letter-spacing: .1em; text-transform: uppercase; color: var(--text-mute, #706f74); margin-bottom: 10px; }
+.pp-sec { margin-top: 18px; }
+.pp-input { display: flex; align-items: center; gap: 10px; background: rgba(255,255,255,.05); border: 1px solid var(--glass-border, #2b2b30); border-radius: 14px; padding: 0 16px; transition: border-color .15s; }
+.pp-input:focus-within { border-color: var(--accent, #c7c7cc); }
+.pp-input span { font: 700 20px var(--display, system-ui); color: var(--text-dim, #a9aaaf); }
+.pp-input input { flex: 1; min-width: 0; width: 100%; background: none; border: 0; outline: 0; color: var(--text, #ededee); font: 700 32px var(--display, system-ui); padding: 13px 0; }
+.pp-input input::placeholder { color: var(--text-mute, #706f74); opacity: .6; }
+.pp-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.pp-quick { margin-top: 12px; }
+.pp-chip { background: rgba(255,255,255,.06); border: 1px solid var(--glass-border, #2b2b30); color: var(--text, #ededee); border-radius: 999px; padding: 10px 15px; font: 500 14px var(--body, system-ui); cursor: pointer; min-height: 40px; transition: background .15s, border-color .15s, color .15s; }
+.pp-chip--sm { padding: 7px 12px; min-height: 34px; font-size: 13px; font-family: var(--mono, ui-monospace, monospace); color: var(--text-dim, #a9aaaf); }
+.pp-chip:hover { border-color: var(--glass-border-hover, rgba(255,255,255,.3)); }
+.pp-chip.is-on { background: var(--accent, #c7c7cc); border-color: var(--accent, #c7c7cc); color: #0f0f11; font-weight: 700; }
+.pp-hint { margin: 12px 0 0; font-size: 13px; color: var(--text-dim, #a9aaaf); }
+.pp-res { text-align: center; padding-block: 24px; border-color: var(--accent, #c7c7cc); }
+.pp-res .pp-lbl { margin-bottom: 6px; }
+.pp-big { font: 700 clamp(40px, 12vw, 58px)/1.1 var(--display, system-ui); letter-spacing: -.02em; font-variant-numeric: tabular-nums; word-break: break-word; }
+.pp-eff { margin-top: 6px; font: 500 13px var(--mono, ui-monospace, monospace); color: var(--accent, #c7c7cc); }
+.pp-copy { margin-top: 14px; background: transparent; border: 1px solid var(--glass-border, #2b2b30); color: var(--text, #ededee); border-radius: 999px; padding: 8px 16px; font: 500 13px var(--body, system-ui); cursor: pointer; }
+.pp-copy[hidden] { display: none; }
+.pp-copy:hover { border-color: var(--accent, #c7c7cc); }
+.pp-row { display: flex; justify-content: space-between; gap: 14px; padding: 10px 0; border-bottom: 1px solid var(--glass-border, #2b2b30); font-size: 14px; font-variant-numeric: tabular-nums; }
+.pp-row span:first-child { color: var(--text-dim, #a9aaaf); }
+.pp-row span:last-child { text-align: right; white-space: nowrap; }
+.pp-row:last-child { border-bottom: 0; }
+.pp-row--tot { font-weight: 700; }
+.pp-row--tot span:first-child { color: var(--text, #ededee); }
+.pp-cmp__it { display: flex; justify-content: space-between; align-items: center; gap: 10px; width: 100%; text-align: left; background: rgba(255,255,255,.05); border: 1px solid var(--glass-border, #2b2b30); color: var(--text, #ededee); border-radius: 12px; padding: 12px 14px; margin-bottom: 8px; font: 500 14px var(--body, system-ui); cursor: pointer; }
+.pp-cmp__it:last-child { margin-bottom: 0; }
+.pp-cmp__it.is-on { border-color: var(--accent, #c7c7cc); }
+.pp-cmp__it b { font-variant-numeric: tabular-nums; }
+.pp-cmp__it em { font: 700 10px var(--mono, ui-monospace, monospace); font-style: normal; letter-spacing: .05em; background: var(--ok, #6bbf7b); color: #07210f; border-radius: 6px; padding: 3px 6px; margin-left: 8px; vertical-align: middle; }
+.pp-details summary { cursor: pointer; font-weight: 600; font-size: 14px; }
+.pp-status { margin: 12px 0 0; font-size: 12.5px; color: var(--text-mute, #706f74); line-height: 1.5; }
+.pp-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 14px; }
+.pp-field span { display: block; font-size: 12px; color: var(--text-dim, #a9aaaf); margin-bottom: 5px; }
+.pp-field input { width: 100%; background: rgba(255,255,255,.05); border: 1px solid var(--glass-border, #2b2b30); color: var(--text, #ededee); border-radius: 10px; padding: 10px 12px; font: 500 16px var(--mono, ui-monospace, monospace); }
+.pp-field input:focus { outline: 0; border-color: var(--accent, #c7c7cc); }
+.pp-reset { margin-top: 14px; background: none; border: 0; color: var(--accent, #c7c7cc); text-decoration: underline; text-underline-offset: 3px; font: 500 13px var(--body, system-ui); cursor: pointer; padding: 6px 0; }
+.pp-note { font-size: 12.5px; line-height: 1.6; color: var(--text-mute, #706f74); margin: 4px 4px 0; }
+@media (max-width: 480px) { .pp-card { padding: 15px; } .pp-grid { grid-template-columns: 1fr; } .pp-input input { font-size: 28px; } }

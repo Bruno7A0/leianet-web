@@ -17,6 +17,7 @@ LeiaNET surgió de la idea de administrar servidores propios de Minecraft y fue 
 - [Juegos gratis hoy](https://leianet.ar/juegos-gratis.html): juegos, DLC y extras gratis para reclamar hoy en Steam, Epic Games, GOG y más, con fecha de vencimiento, valor y filtro por plataforma
 - [Minecraft: seeds y calculadoras](https://leianet.ar/minecraft-seedmap.html): mapa de seeds de Minecraft Java (biomas, estructuras, strongholds, slime chunks) y calculadoras de coordenadas Overworld↔Nether, stacks y shulkers
 - [Conversor de sensibilidad](https://leianet.ar/sensibilidad.html): convierte tu sensibilidad y DPI entre Counter-Strike (1.6, CS:GO, CS2), Valorant, Apex Legends y Overwatch 2, con eDPI y cm por giro de 360°
+- [Precio en pesos](https://leianet.ar/precios-pesos.html): calcula cuánto sale en pesos un precio en dólares (Steam, Epic, PlayStation, Xbox, Nintendo, suscripciones) según el método de pago, con IVA, percepciones y cotizaciones en vivo
 - [Opciones de lanzamiento](https://leianet.ar/launch-options.html): generador de opciones de lanzamiento de Steam para Linux (GameMode, MangoHud, Gamescope, variables de Proton/DXVK y GPU dedicada) con el comando listo para copiar
 - [LeiaNET Fondos](https://leianet.ar/fondos.html): fondos de pantalla con la estética de LeiaNET para PC o celular
 - [Chuleta de comandos Linux](https://leianet.ar/chuleta-linux.html): más de 150 comandos de Linux, Git, SSH, Docker y gaming explicados en español, con buscador y marca de cuidado en los peligrosos
