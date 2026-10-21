@@ -1,7 +1,8 @@
 /* ============================================================
    LeiaNET — Página de mantenimiento (mantenimiento.html)
-   La perra corriendo (la misma de la pantalla de carga de THE NETWORK),
-   el cartel "Estamos en mantenimiento" y los 3 juegos.
+   Fondo espacial del inicio (assets/mantenimiento-fondo.css), logo
+   LeiaNETWORK, la perra corriendo (la misma de la pantalla de carga de
+   THE NETWORK), "Estamos en mantenimiento / Volvemos pronto" y los 3 juegos.
    ============================================================ */
 @font-face{font-family:'Inter';font-style:normal;font-weight:100 900;font-display:swap;src:url(fonts/inter-latin-wght-normal.woff2) format('woff2')}
 @font-face{font-family:'Chakra Petch';font-style:normal;font-weight:600;font-display:swap;src:url(fonts/chakra-petch-latin-600-normal.woff2) format('woff2')}
@@ -10,42 +11,36 @@
 
 *,*::before,*::after{box-sizing:border-box;}
 html,body{margin:0;min-height:100%;}
+html{scrollbar-color:var(--border,#2b2b30) var(--bg,#0f0f11);scrollbar-width:thin;}
 body{
   min-height:100vh;min-height:100dvh;
   display:flex;
   padding:28px 18px;
   text-align:center;
-  color:#ededee;
+  color:var(--text,#ededee);
   font-family:'Inter',system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased;
+  /* mismo fondo de base que el inicio */
   background:
-    radial-gradient(700px 360px at 12% -8%, rgba(110,140,255,.14), transparent 60%),
-    radial-gradient(620px 340px at 88% 108%, rgba(217,164,65,.12), transparent 60%),
-    #0f0f11;
-  background-attachment:fixed;
-}
-/* grilla sutil, mismo espíritu que el resto del sitio */
-body::before{
-  content:'';position:fixed;inset:0;pointer-events:none;
-  background-image:
-    linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
-  background-size:36px 36px;
-  -webkit-mask-image:radial-gradient(ellipse 100% 70% at 50% 30%, black 0%, transparent 75%);
-          mask-image:radial-gradient(ellipse 100% 70% at 50% 30%, black 0%, transparent 75%);
+    radial-gradient(1200px 600px at 15% -10%,rgba(217,164,65,.06),transparent 60%),
+    radial-gradient(900px 500px at 90% 0%,rgba(255,255,255,.03),transparent 55%),
+    var(--bg,#0f0f11);
 }
 
-/* margin:auto centra vertical sin cortar el tope cuando el contenido es más alto que la pantalla */
+/* margin:auto centra vertical sin cortar el tope cuando el contenido es más alto que la pantalla;
+   z-index:2 lo deja por encima de las capas del fondo (que son position:fixed) */
 .mnt-in{
-  position:relative;
+  position:relative;z-index:2;
   margin:auto;
   width:100%;max-width:920px;
   display:flex;flex-direction:column;align-items:center;
 }
 
-.mnt-tag{
-  font:500 13px 'JetBrains Mono',ui-monospace,monospace;
-  letter-spacing:3px;text-transform:uppercase;
-  color:#d9a441;margin-bottom:6px;
+.mnt-logo{
+  display:block;
+  width:min(78vw,400px);height:auto;
+  margin-bottom:14px;
+  user-select:none;-webkit-user-drag:none;
 }
 
 /* misma perra y mismo tamaño que la pantalla de carga de leiamc/ */
@@ -57,11 +52,17 @@ body::before{
 }
 
 h1{
-  margin:0 0 12px;
+  margin:0 0 8px;
   font:700 clamp(28px,6.4vw,54px)/1.05 'Chakra Petch',system-ui,sans-serif;
   letter-spacing:.04em;text-transform:uppercase;
   color:#ededee;
   text-shadow:0 0 30px rgba(199,199,204,.25);
+}
+.mnt-soon{
+  margin:0 0 10px;
+  font:600 clamp(16px,3.6vw,24px)/1.2 'Chakra Petch',system-ui,sans-serif;
+  letter-spacing:.14em;text-transform:uppercase;
+  color:#d9a441;
 }
 .mnt-sub{
   margin:0 0 26px;
@@ -78,7 +79,8 @@ h1{
   display:flex;flex-direction:column;align-items:stretch;
   padding:18px;
   text-align:left;
-  background:#18181b;
+  background:rgba(24,24,27,.82);
+  -webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);
   border:1px solid #2b2b30;border-radius:12px;
   transition:border-color .15s;
 }
@@ -113,12 +115,18 @@ h1{
 .mnt-btn:focus-visible{outline:2px solid #d9a441;outline-offset:3px;}
 .mnt-btn[disabled]{opacity:.6;cursor:progress;}
 
+/* modo rendimiento: sin desenfoque de fondo en las tarjetas */
+html.low-perf .mnt-game,html.perf-mid .mnt-game{
+  -webkit-backdrop-filter:none;backdrop-filter:none;background:#18181b;
+}
+
 @media (max-width:760px){
   .mnt-games{grid-template-columns:1fr;max-width:420px;}
   .mnt-sub{margin-bottom:20px;}
 }
-/* celulares en horizontal: perra más chica para que entre todo */
+/* celulares en horizontal: todo más chico para que entre */
 @media (max-height:520px){
+  .mnt-logo{width:min(40vw,220px);margin-bottom:8px;}
   .mnt-dog{width:min(30vw,170px);}
   .mnt-sub{margin-bottom:14px;}
 }
