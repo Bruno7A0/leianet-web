@@ -38,8 +38,8 @@ body{
 
 .mnt-logo{
   display:block;
-  width:min(78vw,400px);height:auto;
-  margin-bottom:14px;
+  width:min(56vw,230px);height:auto;
+  margin-bottom:12px;
   user-select:none;-webkit-user-drag:none;
 }
 
@@ -126,7 +126,7 @@ html.low-perf .mnt-game,html.perf-mid .mnt-game{
 }
 /* celulares en horizontal: todo más chico para que entre */
 @media (max-height:520px){
-  .mnt-logo{width:min(40vw,220px);margin-bottom:8px;}
+  .mnt-logo{width:min(28vw,150px);margin-bottom:8px;}
   .mnt-dog{width:min(30vw,170px);}
   .mnt-sub{margin-bottom:14px;}
 }
