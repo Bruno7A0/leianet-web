@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://leianet.ar/</loc>
-    <lastmod>2026-10-09</lastmod>
+    <lastmod>2026-10-20</lastmod>
   </url>
   <url>
     <loc>https://leianet.ar/canirun.html</loc>
@@ -33,11 +33,49 @@
     <lastmod>2026-10-20</lastmod>
   </url>
   <url>
+    <loc>https://leianet.ar/sensibilidad.html</loc>
+    <lastmod>2026-10-20</lastmod>
+  </url>
+  <url>
     <loc>https://leianet.ar/minecraft-server.html</loc>
     <lastmod>2026-10-09</lastmod>
   </url>
   <url>
     <loc>https://leianet.ar/skin-editor.html</loc>
     <lastmod>2026-10-09</lastmod>
+  </url>
+  <url>
+    <loc>https://leianet.ar/launch-options.html</loc>
+    <lastmod>2026-10-20</lastmod>
+  </url>
+  <url>
+    <loc>https://leianet.ar/chuleta-linux.html</loc>
+    <lastmod>2026-10-20</lastmod>
+  </url>
+  <url>
+    <loc>https://leianet.ar/minecraft-seedmap.html</loc>
+    <lastmod>2026-10-20</lastmod>
+  </url>
+  <url>
+    <loc>https://leianet.ar/compiler.html</loc>
+    <lastmod>2026-10-20</lastmod>
+  </url>
+  <url>
+    <loc>https://leianet.ar/utilidades.html</loc>
+  </url>
+  <url>
+    <loc>https://leianet.ar/juegos.html</loc>
+  </url>
+  <url>
+    <loc>https://leianet.ar/futbol.html</loc>
+  </url>
+  <url>
+    <loc>https://leianet.ar/privacidad.html</loc>
+  </url>
+  <url>
+    <loc>https://leianet.ar/terminos.html</loc>
+  </url>
+  <url>
+    <loc>https://leianet.ar/agosto-2026/</loc>
   </url>
 </urlset>

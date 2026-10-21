@@ -1,3 +1,13 @@
+## 2026-10-20 · Nueva utilidad: Minecraft Seeds y calculadoras
+- **Minecraft Seeds y calculadoras** (`minecraft-seedmap.html`, `assets/minecraft-seedmap.css|js`, `assets/seedmap-worker.js`, `assets/seedmap.wasm`): mapa de seeds de Minecraft Java con arrastre y zoom (biomas en español, estructuras, strongholds, spawn y slime chunks; Overworld, Nether y End; 1.16.5 a 1.21.x) más calculadoras de coordenadas Overworld↔Nether y de stacks/shulkers. Generación con [cubiomes](https://github.com/Cubitect/cubiomes) (MIT, licencia en `assets/cubiomes-LICENSE.txt`) compilado a WebAssembly (`tools/seedmap/`), en un Web Worker. Sin API ni backend. Limitación: en 1.18+ algunas estructuras pueden aparecer sin generarse en el juego.
+
+## 2026-10-20 · Nuevas utilidades: Opciones de lanzamiento y Chuleta de comandos Linux
+- **Opciones de lanzamiento** (`launch-options.html`, `assets/launch-options.css|js`): generador de la línea de lanzamiento de Steam para Linux (GameMode, MangoHud, Gamescope, variables de Proton/DXVK, GPU dedicada, presets).
+- **Chuleta de comandos Linux** (`chuleta-linux.html`, `assets/chuleta-linux.css|js`): más de 150 comandos con buscador, filtros, copia con un toque y marca ⚠ en los peligrosos.
+
+## 2026-10-20 · Nueva utilidad: Conversor de sensibilidad
+- **Conversor de sensibilidad** (`sensibilidad.html`, `assets/sensibilidad.css|js`): pasás juego (CS 1.6/CS:GO/CS2, Valorant, Apex, Overwatch 2), sensibilidad y DPI y devuelve la equivalente en los otros juegos con su eDPI y los cm por giro de 360°. Opción de DPI destino distinto, redondeo a los decimales de cada juego (con la diferencia a la vista), botón copiar y último valor guardado en `localStorage`. Solo matemática en el navegador: sin API ni backend. Tarjeta en Utilidades (index y utilidades.html), sitemap y llms.txt.
+
 ## 2026-10-20 · Nueva utilidad: Juegos gratis hoy
 - **Juegos gratis hoy** (`juegos-gratis.html`, `assets/juegos-gratis.css|js`): giveaways activos de GamerPower (Steam, Epic, GOG, Ubisoft, itch.io, consolas, móvil) en listas: terminan pronto, juegos completos, DLC y extras, acceso anticipado. Muestra valor, vencimiento y filtros por plataforma y nombre; descarta vencidos y links que no sean https. Cache de 10 min en `sessionStorage`. Tarjeta en Utilidades (index y utilidades.html), sitemap y llms.txt.
 

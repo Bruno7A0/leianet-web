@@ -1,0 +1,33 @@
+/* Seedmap y calculadoras de Minecraft — CSS puro. Prefijo .sm-; usa los tokens de LeiaNET. */
+#sm-app { max-width: 1180px; margin-inline: auto; font-family: var(--body, system-ui, sans-serif); color: var(--text, #ededee); display: flex; flex-direction: column; gap: 18px; }
+.sm-card { background: var(--glass-fill, var(--bg-elev, #18181b)); border: 1px solid var(--glass-border, var(--border, #2b2b30)); border-radius: 16px; padding: 16px; backdrop-filter: var(--glass-blur-sm); -webkit-backdrop-filter: var(--glass-blur-sm); box-shadow: var(--glass-shadow-sm); }
+html.low-perf .sm-card, html.perf-mid .sm-card { backdrop-filter: none; background: var(--bg-elev, #18181b); }
+.sm-bar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 10px; }
+.sm-in { background: var(--bg-elev-2, #201f23); color: var(--text, #ededee); border: 1px solid var(--border, #2b2b30); border-radius: 10px; padding: 9px 11px; font: 13px var(--mono, monospace); min-width: 0; }
+.sm-in:focus-visible, .sm-btn:focus-visible, .sm-tab:focus-visible, .sm-chip:focus-visible { outline: 2px solid var(--accent, #c7c7cc); outline-offset: 2px; }
+.sm-seed { flex: 1 1 200px; } .sm-num { width: 96px; }
+.sm-btn { background: var(--bg-elev-2, #201f23); color: var(--text, #ededee); border: 1px solid var(--border, #2b2b30); border-radius: 10px; padding: 9px 13px; font: 600 12.5px var(--mono, monospace); cursor: pointer; }
+.sm-btn:hover { border-color: var(--glass-border-hover, #666); }
+.sm-pri { background: var(--accent, #c7c7cc); color: #111; border-color: transparent; }
+.sm-sq { width: 38px; padding: 9px 0; font-size: 16px; }
+.sm-tabs { display: flex; gap: 4px; margin-left: auto; }
+.sm-tab { background: transparent; color: var(--text-dim, #a9aaaf); border: 1px solid var(--border, #2b2b30); border-radius: 20px; padding: 7px 13px; font: 600 12px var(--mono, monospace); cursor: pointer; }
+.sm-tab.on { color: var(--text, #ededee); border-color: var(--accent, #c7c7cc); background: var(--accent-soft, rgba(199,199,204,.12)); }
+.sm-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+.sm-chip { display: inline-flex; align-items: center; gap: 6px; background: var(--bg-elev-2, #201f23); color: var(--text, #ededee); border: 1px solid var(--border, #2b2b30); border-radius: 20px; padding: 5px 10px; font: 12px var(--body, sans-serif); cursor: pointer; }
+.sm-chip.off { opacity: .45; }
+.sm-dot { width: 10px; height: 10px; border-radius: 50%; border: 1px solid rgba(0,0,0,.6); }
+.sm-wrap { position: relative; height: clamp(340px, 62vh, 620px); border-radius: 12px; overflow: hidden; border: 1px solid var(--border, #2b2b30); background: #101014; }
+.sm-canvas { display: block; width: 100%; height: 100%; touch-action: none; cursor: grab; image-rendering: pixelated; }
+.sm-canvas:active { cursor: grabbing; }
+.sm-msg { position: absolute; left: 10px; top: 10px; background: rgba(0,0,0,.72); color: #fff; font: 12px var(--mono, monospace); padding: 6px 10px; border-radius: 8px; pointer-events: none; max-width: calc(100% - 20px); }
+.sm-status { margin-top: 8px; font: 12px var(--mono, monospace); color: var(--text-dim, #a9aaaf); min-height: 1.4em; overflow-wrap: anywhere; }
+.sm-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 18px; }
+.sm-h { font-family: var(--display, sans-serif); font-size: 17px; margin: 0 0 4px; }
+.sm-h4 { font-family: var(--display, sans-serif); font-size: 14px; margin: 18px 0 8px; color: var(--text-dim, #a9aaaf); }
+.sm-p { font-size: 13px; color: var(--text-dim, #a9aaaf); margin: 0 0 12px; line-height: 1.5; }
+.sm-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; }
+.sm-lbl { display: flex; flex-direction: column; gap: 4px; flex: 1 1 90px; font: 11px var(--mono, monospace); color: var(--text-mute, #706f74); }
+.sm-lbl .sm-in { width: 100%; box-sizing: border-box; }
+.sm-out { font: 13px/1.5 var(--mono, monospace); color: var(--text, #ededee); background: rgba(255,255,255,.04); border-radius: 10px; padding: 10px 12px; margin-bottom: 10px; overflow-wrap: anywhere; }
+@media (max-width: 640px) { .sm-tabs { margin-left: 0; width: 100%; } .sm-grid { grid-template-columns: 1fr; } }

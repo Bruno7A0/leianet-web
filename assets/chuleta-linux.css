@@ -1,0 +1,148 @@
+/* ==========================================================================
+   Chuleta de comandos Linux — CSS puro, sin dependencias.
+   Todo está prefijado con .cl- para no chocar con el resto del sitio.
+   Usa solo los tokens de LeiaNET (--bg-elev, --border, --glass-*, --accent...),
+   así hereda la estética de la página y de los modos de tema.
+   ========================================================================== */
+
+:root {
+  --cl-bg-card:   var(--bg-elev, #18181b);
+  --cl-bg-code:   rgba(0, 0, 0, .32);
+  --cl-bg-chip:   rgba(255, 255, 255, .06);
+  --cl-border:    var(--border, #2b2b30);
+  --cl-text:      var(--text, #ededee);
+  --cl-text-dim:  var(--text-dim, #a9aaaf);
+  --cl-text-mute: var(--text-mute, #706f74);
+  --cl-accent:    var(--accent, #c7c7cc);
+  --cl-ok:        var(--ok, #6bbf7b);
+  --cl-warn:      #d9a441;
+  --cl-bad:       #f0994d;
+  --cl-radius:    16px;
+}
+
+/* ---------- Contenedor ---------- */
+.cl-app { font-family: var(--body, system-ui, sans-serif); color: var(--cl-text); max-width: 1180px; margin-inline: auto; }
+.cl-app *, .cl-app *::before, .cl-app *::after { box-sizing: border-box; }
+
+/* ---------- Encabezado ---------- */
+.cl-head {
+  display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between;
+  gap: 12px 24px; padding-bottom: 18px; border-bottom: 1px solid var(--cl-border);
+}
+.cl-head__title { margin: 0; font: 700 clamp(24px, 3.6vw, 34px)/1.1 var(--display, system-ui, sans-serif); }
+.cl-head__sub   { margin: 6px 0 0; color: var(--cl-text-dim); font-size: 14px; }
+.cl-pill {
+  font-family: var(--mono, ui-monospace, monospace); font-size: 13px; color: var(--cl-text-dim);
+  border: 1px solid var(--cl-border); background: var(--cl-bg-chip);
+  border-radius: 999px; padding: 6px 14px; white-space: nowrap; margin: 0;
+}
+.cl-pill strong { color: var(--cl-text); font-weight: 700; }
+
+/* ---------- Botones y chips ---------- */
+.cl-btn, .cl-chip {
+  font: 600 13px var(--body, system-ui, sans-serif); color: var(--cl-text);
+  background: var(--cl-bg-chip); border: 1px solid var(--cl-border); border-radius: 999px;
+  padding: 8px 15px; cursor: pointer; min-height: 36px;
+  transition: border-color .18s ease, background .18s ease, color .18s ease;
+}
+.cl-btn:hover, .cl-chip:hover { border-color: var(--glass-border-hover, rgba(255,255,255,.3)); }
+.cl-btn:focus-visible, .cl-chip:focus-visible { outline: 2px solid var(--cl-accent); outline-offset: 2px; }
+.cl-chip { font-family: var(--mono, ui-monospace, monospace); font-size: 12px; padding: 7px 13px; }
+.cl-chip small { color: var(--cl-text-mute); margin-left: 5px; font-size: 11px; }
+.cl-chip[aria-pressed="true"] { color: var(--cl-accent); border-color: var(--cl-accent); background: var(--accent-soft, rgba(199,199,204,.12)); }
+.cl-btn--ok { color: var(--cl-ok); border-color: var(--cl-ok); }
+.cl-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+
+/* ---------- Barra de herramientas ---------- */
+.cl-toolbar {
+  display: flex; flex-wrap: wrap; align-items: flex-end; gap: 14px 22px; margin-top: 20px; padding: 14px 18px;
+  background: var(--glass-fill, var(--cl-bg-card)); border: 1px solid var(--glass-border, var(--cl-border));
+  border-radius: var(--cl-radius); backdrop-filter: var(--glass-blur-sm); -webkit-backdrop-filter: var(--glass-blur-sm);
+  box-shadow: var(--glass-shadow-sm);
+}
+.cl-field { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.cl-field--grow { flex: 1 1 240px; }
+.cl-label {
+  font-family: var(--mono, ui-monospace, monospace); font-size: 10.5px; font-weight: 700;
+  letter-spacing: .08em; text-transform: uppercase; color: var(--cl-text-mute);
+}
+.cl-input, .cl-select {
+  width: 100%; font: 400 14px var(--body, system-ui, sans-serif); color: var(--cl-text);
+  background: var(--cl-bg-card); border: 1px solid var(--cl-border); border-radius: 10px;
+  padding: 9px 12px; min-height: 40px;
+}
+.cl-input::placeholder { color: var(--cl-text-mute); }
+.cl-select { width: auto; min-width: 130px; cursor: pointer; }
+.cl-input:focus-visible, .cl-select:focus-visible { outline: 2px solid var(--cl-accent); outline-offset: 2px; }
+
+/* ---------- Bloque de código ---------- */
+.cl-code {
+  position: relative; display: flex; align-items: flex-start; gap: 10px;
+  background: var(--cl-bg-code); border: 1px solid var(--cl-border); border-radius: 10px; padding: 10px 10px 10px 14px;
+}
+.cl-code pre, .cl-code code {
+  margin: 0; flex: 1; min-width: 0; font: 500 13px/1.55 var(--mono, ui-monospace, monospace);
+  color: var(--cl-text); white-space: pre-wrap; overflow-wrap: anywhere; user-select: all;
+}
+.cl-copy {
+  flex-shrink: 0; font: 600 12px var(--body, system-ui, sans-serif); color: var(--cl-text-dim);
+  background: var(--cl-bg-chip); border: 1px solid var(--cl-border); border-radius: 8px;
+  padding: 6px 11px; min-height: 32px; cursor: pointer; transition: color .18s ease, border-color .18s ease;
+}
+.cl-copy:hover { color: var(--cl-text); border-color: var(--glass-border-hover, rgba(255,255,255,.3)); }
+.cl-copy:focus-visible { outline: 2px solid var(--cl-accent); outline-offset: 2px; }
+.cl-copy.is-ok { color: var(--cl-ok); border-color: var(--cl-ok); }
+
+/* ---------- Tarjeta de vidrio ---------- */
+.cl-panel {
+  background: var(--glass-fill, var(--cl-bg-card)); border: 1px solid var(--glass-border, var(--cl-border));
+  border-radius: var(--cl-radius); backdrop-filter: var(--glass-blur-sm); -webkit-backdrop-filter: var(--glass-blur-sm);
+  box-shadow: var(--glass-shadow-sm);
+}
+
+/* ---------- Aviso (toast) ---------- */
+.cl-toast {
+  position: fixed; left: 50%; bottom: calc(24px + env(safe-area-inset-bottom, 0px)); z-index: 90;
+  transform: translate(-50%, 20px); opacity: 0; pointer-events: none;
+  font: 600 13px var(--body, system-ui, sans-serif); color: var(--cl-text);
+  background: var(--cl-bg-card); border: 1px solid var(--cl-ok); border-radius: 999px; padding: 10px 18px;
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, .7); transition: opacity .2s ease, transform .2s ease;
+}
+.cl-toast.is-on { opacity: 1; transform: translate(-50%, 0); }
+
+.cl-estado {
+  margin: 40px 0; padding: 28px 20px; text-align: center; color: var(--cl-text-dim);
+  border: 1px dashed var(--cl-border); border-radius: var(--cl-radius);
+}
+.cl-estado[hidden], .cl-btn[hidden], .cl-chip[hidden] { display: none; }
+.cl-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+@media (prefers-reduced-motion: reduce) {
+  .cl-btn, .cl-chip, .cl-copy, .cl-toast { transition: none; }
+}
+
+/* ---------- Específico: chuleta de comandos ---------- */
+.cl-toolbar { align-items: flex-start; }
+.cl-search { position: relative; }
+.cl-search .cl-input { padding-right: 62px; }
+.cl-kbd {
+  position: absolute; right: 10px; bottom: 9px; font: 600 11px var(--mono, ui-monospace, monospace);
+  color: var(--cl-text-mute); border: 1px solid var(--cl-border); border-radius: 6px; padding: 2px 7px; pointer-events: none;
+}
+.cl-cats { margin-top: 14px; }
+.cl-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr)); gap: 14px; margin-top: 18px; }
+.cl-item { display: flex; flex-direction: column; gap: 10px; padding: 14px 14px 14px; min-width: 0; }
+.cl-item__top { display: flex; flex-wrap: wrap; gap: 6px 8px; align-items: center; }
+.cl-tag {
+  font: 700 10px/1 var(--mono, ui-monospace, monospace); letter-spacing: .06em; text-transform: uppercase;
+  color: var(--cl-text-dim); border: 1px solid var(--cl-border); border-radius: 6px; padding: 4px 7px;
+}
+.cl-tag--danger { color: #1a0f04; background: var(--cl-bad); border-color: transparent; }
+.cl-item__desc { margin: 0; font-size: 13.5px; line-height: 1.5; color: var(--cl-text); }
+.cl-item__nota { margin: 0; font-size: 12px; line-height: 1.5; color: var(--cl-text-dim); }
+.cl-item--danger .cl-code { border-color: var(--cl-bad); }
+.cl-item .cl-code { margin-top: auto; }
+.cl-code code { cursor: pointer; }
+.cl-more { margin: 22px 0 0; text-align: center; }
+mark.cl-hit { background: rgba(217, 164, 65, .35); color: inherit; border-radius: 3px; padding: 0 1px; }
+.cl-chips[hidden] { display: none; }
