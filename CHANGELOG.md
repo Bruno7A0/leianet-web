@@ -1,3 +1,9 @@
+## 2026-10-20 · Nueva utilidad: Juegos gratis hoy
+- **Juegos gratis hoy** (`juegos-gratis.html`, `assets/juegos-gratis.css|js`): giveaways activos de GamerPower (Steam, Epic, GOG, Ubisoft, itch.io, consolas, móvil) en listas: terminan pronto, juegos completos, DLC y extras, acceso anticipado. Muestra valor, vencimiento y filtros por plataforma y nombre; descarta vencidos y links que no sean https. Cache de 10 min en `sessionStorage`. Tarjeta en Utilidades (index y utilidades.html), sitemap y llms.txt.
+
+## 2026-10-20 · Nueva utilidad: Steam Descuentos
+- **Steam Descuentos** (`steam-descuentos.html`, `assets/steam-descuentos.css|js`): listas con las mejores ofertas de Steam (gratis por tiempo limitado, mejores ofertas, mayores descuentos, más populares, joyas por menos de US$ 10 y grandes lanzamientos), filtros por descuento mínimo, precio máximo y nombre. Datos de CheapShark (precios en USD), cache de 15 min en `sessionStorage`. Tarjeta en Utilidades (index y utilidades.html), sitemap y llms.txt.
+
 ## 2026-10-20 · Nueva utilidad + funciones restauradas sobre la UI anterior
 - Nueva utilidad **Tienda de Fortnite** (`fortnite.html`, `assets/fortnite-shop.css|js`): secciones de la tienda de hoy con precio en PaVos y rareza. Tarjeta en Utilidades (index y utilidades.html).
 - UI del inicio vuelta a la versión previa a `1cb620a` (sin el perro separador ni la división Utilidades/Juegos/Servidores/Web).

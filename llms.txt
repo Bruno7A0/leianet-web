@@ -13,6 +13,8 @@ LeiaNET surgió de la idea de administrar servidores propios de Minecraft y fue 
 - [Minecraft Server](https://leianet.ar/minecraft-server.html): generador de servers de Minecraft (Vanilla, Paper, Purpur, Folia, Fabric, Forge, NeoForge), con server.properties, plugins/mods de Modrinth y un zip con script de instalación
 - [Editor de Skins](https://leianet.ar/skin-editor.html): editor de skins de Minecraft con lienzo 2D, vista 3D animada, capas, elytra y armaduras, carga por nick, link para compartir y exportación a PNG
 - [Tienda de Fortnite](https://leianet.ar/fortnite.html): la tienda de objetos de Fortnite de hoy, por secciones, con precio en PaVos y rareza de cada cosmético
+- [Steam Descuentos](https://leianet.ar/steam-descuentos.html): las mejores ofertas de Steam en listas (gratis por tiempo limitado, mayores descuentos, más populares, joyas baratas y grandes lanzamientos), con filtros por descuento, precio y nombre
+- [Juegos gratis hoy](https://leianet.ar/juegos-gratis.html): juegos, DLC y extras gratis para reclamar hoy en Steam, Epic Games, GOG y más, con fecha de vencimiento, valor y filtro por plataforma
 
 ## Servidores
 
