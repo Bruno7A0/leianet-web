@@ -1,0 +1,124 @@
+/* ============================================================
+   LeiaNET — Página de mantenimiento (mantenimiento.html)
+   La perra corriendo (la misma de la pantalla de carga de THE NETWORK),
+   el cartel "Estamos en mantenimiento" y los 3 juegos.
+   ============================================================ */
+@font-face{font-family:'Inter';font-style:normal;font-weight:100 900;font-display:swap;src:url(fonts/inter-latin-wght-normal.woff2) format('woff2')}
+@font-face{font-family:'Chakra Petch';font-style:normal;font-weight:600;font-display:swap;src:url(fonts/chakra-petch-latin-600-normal.woff2) format('woff2')}
+@font-face{font-family:'Chakra Petch';font-style:normal;font-weight:700;font-display:swap;src:url(fonts/chakra-petch-latin-700-normal.woff2) format('woff2')}
+@font-face{font-family:'JetBrains Mono';font-style:normal;font-weight:100 800;font-display:swap;src:url(fonts/jetbrains-mono-latin-wght-normal.woff2) format('woff2')}
+
+*,*::before,*::after{box-sizing:border-box;}
+html,body{margin:0;min-height:100%;}
+body{
+  min-height:100vh;min-height:100dvh;
+  display:flex;
+  padding:28px 18px;
+  text-align:center;
+  color:#ededee;
+  font-family:'Inter',system-ui,sans-serif;
+  background:
+    radial-gradient(700px 360px at 12% -8%, rgba(110,140,255,.14), transparent 60%),
+    radial-gradient(620px 340px at 88% 108%, rgba(217,164,65,.12), transparent 60%),
+    #0f0f11;
+  background-attachment:fixed;
+}
+/* grilla sutil, mismo espíritu que el resto del sitio */
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;
+  background-image:
+    linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
+  background-size:36px 36px;
+  -webkit-mask-image:radial-gradient(ellipse 100% 70% at 50% 30%, black 0%, transparent 75%);
+          mask-image:radial-gradient(ellipse 100% 70% at 50% 30%, black 0%, transparent 75%);
+}
+
+/* margin:auto centra vertical sin cortar el tope cuando el contenido es más alto que la pantalla */
+.mnt-in{
+  position:relative;
+  margin:auto;
+  width:100%;max-width:920px;
+  display:flex;flex-direction:column;align-items:center;
+}
+
+.mnt-tag{
+  font:500 13px 'JetBrains Mono',ui-monospace,monospace;
+  letter-spacing:3px;text-transform:uppercase;
+  color:#d9a441;margin-bottom:6px;
+}
+
+/* misma perra y mismo tamaño que la pantalla de carga de leiamc/ */
+.mnt-dog{
+  width:min(64vw,300px);height:auto;
+  margin-bottom:10px;
+  filter:drop-shadow(0 8px 14px rgba(0,0,0,.5));
+  user-select:none;-webkit-user-drag:none;pointer-events:none;
+}
+
+h1{
+  margin:0 0 12px;
+  font:700 clamp(28px,6.4vw,54px)/1.05 'Chakra Petch',system-ui,sans-serif;
+  letter-spacing:.04em;text-transform:uppercase;
+  color:#ededee;
+  text-shadow:0 0 30px rgba(199,199,204,.25);
+}
+.mnt-sub{
+  margin:0 0 26px;
+  font:500 clamp(12px,2.6vw,14px)/1.5 'JetBrains Mono',ui-monospace,monospace;
+  letter-spacing:.06em;text-transform:uppercase;
+  color:#a9aaaf;
+}
+
+.mnt-games{
+  width:100%;
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;
+}
+.mnt-game{
+  display:flex;flex-direction:column;align-items:stretch;
+  padding:18px;
+  text-align:left;
+  background:#18181b;
+  border:1px solid #2b2b30;border-radius:12px;
+  transition:border-color .15s;
+}
+.mnt-game:hover{border-color:#44444b;}
+.mnt-kind{
+  font:500 11px 'JetBrains Mono',ui-monospace,monospace;
+  letter-spacing:.08em;text-transform:uppercase;
+  color:#706f74;margin-bottom:6px;
+}
+.mnt-name{
+  margin:0 0 8px;
+  font:700 19px/1.2 'Chakra Petch',system-ui,sans-serif;
+  color:#ededee;
+}
+.mnt-desc{
+  margin:0 0 16px;flex:1 1 auto;
+  font-size:13px;line-height:1.5;color:#a9aaaf;
+}
+
+.mnt-btn{
+  display:block;width:100%;margin:0;
+  text-align:center;text-decoration:none;
+  font:600 12.5px 'Chakra Petch',system-ui,sans-serif;
+  letter-spacing:.04em;text-transform:uppercase;
+  padding:11px 20px;border-radius:8px;
+  border:1px solid #c7c7cc;background:#c7c7cc;color:#111113;
+  cursor:pointer;
+  transition:background .15s,transform .1s;
+}
+.mnt-btn:hover{background:#e0e0e4;}
+.mnt-btn:active{transform:translateY(1px);}
+.mnt-btn:focus-visible{outline:2px solid #d9a441;outline-offset:3px;}
+.mnt-btn[disabled]{opacity:.6;cursor:progress;}
+
+@media (max-width:760px){
+  .mnt-games{grid-template-columns:1fr;max-width:420px;}
+  .mnt-sub{margin-bottom:20px;}
+}
+/* celulares en horizontal: perra más chica para que entre todo */
+@media (max-height:520px){
+  .mnt-dog{width:min(30vw,170px);}
+  .mnt-sub{margin-bottom:14px;}
+}
