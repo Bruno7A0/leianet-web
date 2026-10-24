@@ -1,0 +1,342 @@
+From e476912073d854c498397ebfbf843390857790bf Mon Sep 17 00:00:00 2001
+From: Claude <noreply@anthropic.com>
+Date: Sat, 24 Oct 2026 05:26:48 +0000
+Subject: [PATCH] Mantenimiento: chat del admin a la izquierda (lee del
+ servicio de novedades)
+
+Muestra las novedades de tipo 'mantenimiento' como chat, con refresco
+automatico cada 30s. Se publican desde admin.html como siempre.
+
+Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01EQr7qdZNMZew5yU9KKoZXf
+---
+ admin.html                   |   1 -
+ assets/mantenimiento-chat.js | 119 +++++++++++++++++++++++++++++++++++
+ assets/mantenimiento.css     |  80 ++++++++++++++++++++++-
+ mantenimiento.html           |  61 +++++++++++-------
+ 4 files changed, 234 insertions(+), 27 deletions(-)
+ create mode 100644 assets/mantenimiento-chat.js
+
+diff --git a/admin.html b/admin.html
+index 38c5167..de55836 100644
+--- a/admin.html
++++ b/admin.html
+@@ -1,5 +1,4 @@
+ <!DOCTYPE html><html lang="es"><head>
+-<!-- MANTENIMIENTO --><meta http-equiv="refresh" content="0;url=mantenimiento.html"><script>location.replace("mantenimiento.html")</script>
+ <meta charset="UTF-8"><meta http-equiv="Content-Security-Policy" content="object-src 'none'; base-uri 'self'; form-action 'self'"><script>(function(){var v=null,q=(location.search.match(/[?&]aero=([01])/)||[])[1];if(q!==undefined){v=q;try{localStorage.setItem('leianet-aero',q)}catch(e){}try{window.name=(window.name||'').replace(/(?:^|\|)leianet-aero:[^|]*/g,'')+'|leianet-aero:'+q}catch(e){}}else{try{v=localStorage.getItem('leianet-aero')}catch(e){}if(v===null){var m=(window.name||'').match(/(?:^|\|)leianet-aero:([^|]*)/);v=m?m[1]:null}}if(v==='1')document.documentElement.classList.add('aero')})()</script><meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <script>
+   // ---- adaptive performance tiers -----------------------------------------
+diff --git a/assets/mantenimiento-chat.js b/assets/mantenimiento-chat.js
+new file mode 100644
+index 0000000..f9c01a6
+--- /dev/null
++++ b/assets/mantenimiento-chat.js
+@@ -0,0 +1,119 @@
++/* ============================================================
++   LeiaNET — Chat del admin (mantenimiento.html)
++   Lee del MISMO servicio que Novedades (novedades.leianet.ar/api/novedades).
++   Los mensajes se suben desde admin.html con tipo "Mantenimiento":
++   aparecen acá como chat, y además siguen siendo novedades normales.
++   ============================================================ */
++(function(){
++  "use strict";
++
++  var API = 'https://novedades.leianet.ar/api/novedades';
++  var TIPO = 'mantenimiento';   // tipo de novedad que se muestra en el chat
++  var MAX = 30;                 // cuántos mensajes mostrar
++  var POLL_MS = 30000;          // refresco automático
++
++  var box = document.getElementById('mnt-chat-msgs');
++  if (!box) return;
++  var status = document.getElementById('mnt-chat-status');
++
++  var lastSig = null;
++  var timer = 0;
++
++  function esc(s){
++    return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){
++      return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
++    });
++  }
++
++  // Mismo formato limitado que las novedades: **negrita**, ~~tachado~~, __subrayado__, *cursiva*, [texto](https://link)
++  function fmt(t){
++    t = t.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
++    t = t.replace(/~~(.+?)~~/g, '<s>$1</s>');
++    t = t.replace(/__(.+?)__/g, '<u>$1</u>');
++    t = t.replace(/(^|[^*])\*(?!\*)(.+?)\*(?!\*)/g, '$1<em>$2</em>');
++    return t;
++  }
++  function formatear(texto){
++    var seguro = esc(texto);
++    var links = [];
++    seguro = seguro.replace(/\[(.+?)\]\((https?:\/\/[^\s)]+)\)/g, function(_, label, url){
++      links.push('<a href="' + url + '" target="_blank" rel="noopener noreferrer">' + fmt(label) + '</a>');
++      return '\u0001' + (links.length - 1) + '\u0001';
++    });
++    seguro = fmt(seguro).replace(/\n/g, '<br>');
++    return seguro.replace(/\u0001(\d+)\u0001/g, function(_, i){ return links[+i]; });
++  }
++
++  function fechaCorta(f){
++    if (!f) return '';
++    var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(f));
++    return m ? (m[3] + '/' + m[2] + '/' + m[1]) : String(f);
++  }
++
++  function imagenSegura(u){
++    return typeof u === 'string' && /^https:\/\//i.test(u) ? u : '';
++  }
++
++  function setStatus(txt, err){
++    if (!status) return;
++    status.textContent = txt;
++    status.className = 'mnt-chat-status' + (err ? ' err' : '');
++  }
++
++  function render(lista){
++    var msgs = (Array.isArray(lista) ? lista : [])
++      .filter(function(n){ return n && String(n.tipo).toLowerCase() === TIPO; })
++      .slice(0, MAX)
++      .reverse(); // el backend manda la más nueva primero: acá la más nueva queda abajo
++
++    var sig = msgs.map(function(n){ return n.id; }).join('|');
++    if (sig === lastSig) return;
++    var primero = lastSig === null;
++    lastSig = sig;
++
++    if (!msgs.length){
++      box.innerHTML = '<div class="mnt-chat-empty">Todavía no hay mensajes del admin.</div>';
++      return;
++    }
++
++    // si el usuario ya estaba leyendo abajo, lo dejamos pegado al último mensaje
++    var pegado = primero || box.scrollHeight - box.scrollTop - box.clientHeight < 40;
++
++    box.innerHTML = msgs.map(function(n){
++      var img = imagenSegura(n.imagen);
++      return '<div class="mnt-msg">' +
++        '<div class="mnt-msg-head"><span class="mnt-msg-who">Admin</span>' +
++        '<span class="mnt-msg-date">' + esc(fechaCorta(n.fecha)) + '</span></div>' +
++        (n.titulo ? '<div class="mnt-msg-title">' + esc(n.titulo) + '</div>' : '') +
++        (n.texto ? '<div class="mnt-msg-text">' + formatear(n.texto) + '</div>' : '') +
++        (img ? '<a href="' + esc(img) + '" target="_blank" rel="noopener noreferrer"><img class="mnt-msg-img" src="' + esc(img) + '" alt="" loading="lazy"></a>' : '') +
++        '</div>';
++    }).join('');
++
++    if (pegado) box.scrollTop = box.scrollHeight;
++  }
++
++  function cargar(){
++    fetch(API, { cache: 'no-store' })
++      .then(function(r){ if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
++      .then(function(data){ render(data); setStatus('En vivo · se actualiza solo'); })
++      .catch(function(){
++        setStatus('Sin conexión con el servidor', true);
++        if (lastSig === null) box.innerHTML = '<div class="mnt-chat-empty">No se pudo cargar el chat.</div>';
++      });
++  }
++
++  function start(){
++    cargar();
++    clearInterval(timer);
++    timer = setInterval(cargar, POLL_MS);
++  }
++
++  // no gastar red con la pestaña en segundo plano
++  document.addEventListener('visibilitychange', function(){
++    if (document.hidden) clearInterval(timer);
++    else start();
++  });
++
++  start();
++})();
+diff --git a/assets/mantenimiento.css b/assets/mantenimiento.css
+index 3a8365e..624e615 100644
+--- a/assets/mantenimiento.css
++++ b/assets/mantenimiento.css
+@@ -32,10 +32,81 @@ body{
+ .mnt-in{
+   position:relative;z-index:2;
+   margin:auto;
+-  width:100%;max-width:920px;
++  width:100%;max-width:1240px;
+   display:flex;flex-direction:column;align-items:center;
+ }
+ 
++/* ---- Layout: chat del admin a la izquierda + contenido de siempre ---- */
++.mnt-layout{
++  width:100%;
++  display:grid;grid-template-columns:300px minmax(0,1fr);gap:22px;
++  align-items:stretch;
++}
++.mnt-content{
++  min-width:0;
++  display:flex;flex-direction:column;align-items:center;justify-content:center;
++}
++
++/* ---- Chat del admin ---- */
++.mnt-chat{
++  display:flex;flex-direction:column;
++  min-height:360px;max-height:640px;
++  text-align:left;
++  background:rgba(24,24,27,.82);
++  -webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);
++  border:1px solid #2b2b30;border-radius:12px;
++  overflow:hidden;
++}
++.mnt-chat-head{
++  display:flex;align-items:center;gap:9px;
++  padding:13px 16px;
++  border-bottom:1px solid #2b2b30;
++}
++.mnt-chat-dot{
++  width:8px;height:8px;border-radius:50%;
++  background:#6bbf7b;box-shadow:0 0 8px rgba(107,191,123,.7);
++  flex:0 0 auto;
++}
++.mnt-chat-title{
++  margin:0;
++  font:700 15px/1.2 'Chakra Petch',system-ui,sans-serif;
++  letter-spacing:.06em;text-transform:uppercase;color:#ededee;
++}
++.mnt-chat-msgs{
++  flex:1 1 auto;min-height:0;
++  overflow-y:auto;overscroll-behavior:contain;
++  padding:14px;
++  display:flex;flex-direction:column;gap:10px;
++  scrollbar-width:thin;scrollbar-color:#3a3a40 transparent;
++}
++.mnt-msg{
++  padding:10px 12px;
++  background:rgba(255,255,255,.04);
++  border:1px solid #2b2b30;border-radius:4px 12px 12px 12px;
++  font-size:13px;line-height:1.5;color:#d4d4d8;
++  overflow-wrap:anywhere;
++}
++.mnt-msg-head{
++  display:flex;justify-content:space-between;align-items:baseline;gap:8px;
++  margin-bottom:4px;
++}
++.mnt-msg-who{
++  font:600 11px 'JetBrains Mono',ui-monospace,monospace;
++  letter-spacing:.08em;text-transform:uppercase;color:#d9a441;
++}
++.mnt-msg-date{font:500 10.5px 'JetBrains Mono',ui-monospace,monospace;color:#706f74;}
++.mnt-msg-title{font-weight:600;color:#ededee;margin-bottom:2px;}
++.mnt-msg-text a{color:#d9a441;}
++.mnt-msg-img{display:block;max-width:100%;height:auto;margin-top:8px;border-radius:8px;}
++.mnt-chat-empty{margin:auto;padding:20px 8px;text-align:center;font-size:13px;color:#706f74;}
++.mnt-chat-status{
++  padding:8px 16px;
++  border-top:1px solid #2b2b30;
++  font:500 10.5px 'JetBrains Mono',ui-monospace,monospace;
++  letter-spacing:.05em;text-transform:uppercase;color:#706f74;
++}
++.mnt-chat-status.err{color:#e07a7a;}
++
+ .mnt-logo{
+   display:block;
+   width:min(56vw,230px);height:auto;
+@@ -116,10 +187,15 @@ h1{
+ .mnt-btn[disabled]{opacity:.6;cursor:progress;}
+ 
+ /* modo rendimiento: sin desenfoque de fondo en las tarjetas */
+-html.low-perf .mnt-game,html.perf-mid .mnt-game{
++html.low-perf .mnt-game,html.perf-mid .mnt-game,html.low-perf .mnt-chat,html.perf-mid .mnt-chat{
+   -webkit-backdrop-filter:none;backdrop-filter:none;background:#18181b;
+ }
+ 
++/* tablet/celu: el chat pasa debajo de los juegos */
++@media (max-width:980px){
++  .mnt-layout{grid-template-columns:1fr;max-width:640px;}
++  .mnt-chat{order:2;min-height:240px;max-height:380px;}
++}
+ @media (max-width:760px){
+   .mnt-games{grid-template-columns:1fr;max-width:420px;}
+   .mnt-sub{margin-bottom:20px;}
+diff --git a/mantenimiento.html b/mantenimiento.html
+index 1fbc5cd..c36d8ee 100644
+--- a/mantenimiento.html
++++ b/mantenimiento.html
+@@ -11,9 +11,10 @@
+ <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16.png">
+ <link rel="apple-touch-icon" sizes="180x180" href="assets/favicon-180.png">
+ <link rel="stylesheet" href="assets/mantenimiento-fondo.css">
+-<link rel="stylesheet" href="assets/mantenimiento.css">
++<link rel="stylesheet" href="assets/mantenimiento.css?v=2">
+ <script src="assets/mantenimiento-fondo.js" defer></script>
+ <script src="assets/mantenimiento.js" defer></script>
++<script src="assets/mantenimiento-chat.js?v=2" defer></script>
+ </head>
+ <body>
+ <!-- Fondo espacial: mismas capas que el inicio -->
+@@ -29,29 +30,41 @@
+ <div class="grain"></div>
+ 
+ <main class="mnt-in">
+-  <img class="mnt-logo" src="assets/logo_leianetwork.webp" width="860" height="150" alt="LeiaNETWORK">
+-  <img class="mnt-dog" src="assets/leia-sleep.webp" alt="" width="682" height="366" aria-hidden="true">
+-  <h1>Estamos en mantenimiento</h1>
+-  <p class="mnt-soon">Volvemos pronto</p>
+-  <p class="mnt-sub">Por mientras, podés jugar a estos juegos</p>
+-  <div class="mnt-games">
+-    <div class="mnt-game">
+-      <div class="mnt-kind">Endless runner</div>
+-      <h2 class="mnt-name">LeiaRUN</h2>
+-      <p class="mnt-desc">Un Border Collie esquiva obstáculos espaciales. Salto con espacio, click o tap.</p>
+-      <button type="button" class="mnt-btn" id="mnt-play-run" data-assets="assets/">Jugar LeiaRUN</button>
+-    </div>
+-    <div class="mnt-game">
+-      <div class="mnt-kind">Sandbox 3D</div>
+-      <h2 class="mnt-name">THE NETWORK</h2>
+-      <p class="mnt-desc">Un juego tipo Minecraft en el navegador, edición LeiaNET.</p>
+-      <a class="mnt-btn" href="leiamc/index.html">Jugar THE NETWORK</a>
+-    </div>
+-    <div class="mnt-game">
+-      <div class="mnt-kind">Multijugador</div>
+-      <h2 class="mnt-name">Fútbol 3D</h2>
+-      <p class="mnt-desc">Fútbol en 3D con salas online. Armá partido con amigos o entrá a uno ya empezado.</p>
+-      <a class="mnt-btn" href="futbol.html">Jugar Fútbol 3D</a>
++  <div class="mnt-layout">
++    <aside class="mnt-chat" aria-label="Chat del admin">
++      <div class="mnt-chat-head">
++        <span class="mnt-chat-dot" aria-hidden="true"></span>
++        <h2 class="mnt-chat-title">Chat del admin</h2>
++      </div>
++      <div class="mnt-chat-msgs" id="mnt-chat-msgs" aria-live="polite"><div class="mnt-chat-empty">Cargando…</div></div>
++      <div class="mnt-chat-status" id="mnt-chat-status">Conectando…</div>
++    </aside>
++    <div class="mnt-content">
++      <img class="mnt-logo" src="assets/logo_leianetwork.webp" width="860" height="150" alt="LeiaNETWORK">
++      <img class="mnt-dog" src="assets/leia-sleep.webp" alt="" width="682" height="366" aria-hidden="true">
++      <h1>Estamos en mantenimiento</h1>
++      <p class="mnt-soon">Volvemos pronto</p>
++      <p class="mnt-sub">Por mientras, podés jugar a estos juegos</p>
++      <div class="mnt-games">
++        <div class="mnt-game">
++          <div class="mnt-kind">Endless runner</div>
++          <h2 class="mnt-name">LeiaRUN</h2>
++          <p class="mnt-desc">Un Border Collie esquiva obstáculos espaciales. Salto con espacio, click o tap.</p>
++          <button type="button" class="mnt-btn" id="mnt-play-run" data-assets="assets/">Jugar LeiaRUN</button>
++        </div>
++        <div class="mnt-game">
++          <div class="mnt-kind">Sandbox 3D</div>
++          <h2 class="mnt-name">THE NETWORK</h2>
++          <p class="mnt-desc">Un juego tipo Minecraft en el navegador, edición LeiaNET.</p>
++          <a class="mnt-btn" href="leiamc/index.html">Jugar THE NETWORK</a>
++        </div>
++        <div class="mnt-game">
++          <div class="mnt-kind">Multijugador</div>
++          <h2 class="mnt-name">Fútbol 3D</h2>
++          <p class="mnt-desc">Fútbol en 3D con salas online. Armá partido con amigos o entrá a uno ya empezado.</p>
++          <a class="mnt-btn" href="futbol.html">Jugar Fútbol 3D</a>
++        </div>
++      </div>
+     </div>
+   </div>
+ </main>
+-- 
+2.43.0
+
