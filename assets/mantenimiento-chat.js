@@ -1,5 +1,5 @@
 /* ============================================================
-   LeiaNET — Chat del admin (mantenimiento.html)
+   LeiaNET — Mensajes de LeiaNET (mantenimiento.html)
    Lee del MISMO servicio que Novedades (novedades.leianet.ar/api/novedades).
    Los mensajes se suben desde admin.html con tipo "Mantenimiento":
    aparecen acá como chat, y además siguen siendo novedades normales.
@@ -72,7 +72,7 @@
     lastSig = sig;
 
     if (!msgs.length){
-      box.innerHTML = '<div class="mnt-chat-empty">Todavía no hay mensajes del admin.</div>';
+      box.innerHTML = '<div class="mnt-chat-empty">Todavía no hay mensajes de LeiaNET.</div>';
       return;
     }
 
@@ -82,7 +82,7 @@
     box.innerHTML = msgs.map(function(n){
       var img = imagenSegura(n.imagen);
       return '<div class="mnt-msg">' +
-        '<div class="mnt-msg-head"><span class="mnt-msg-who">Admin</span>' +
+        '<div class="mnt-msg-head"><span class="mnt-msg-who">LeiaNET</span>' +
         '<span class="mnt-msg-date">' + esc(fechaCorta(n.fecha)) + '</span></div>' +
         (n.titulo ? '<div class="mnt-msg-title">' + esc(n.titulo) + '</div>' : '') +
         (n.texto ? '<div class="mnt-msg-text">' + formatear(n.texto) + '</div>' : '') +

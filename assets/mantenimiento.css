@@ -32,23 +32,27 @@ body{
 .mnt-in{
   position:relative;z-index:2;
   margin:auto;
-  width:100%;max-width:1240px;
+  width:100%;max-width:1760px;
   display:flex;flex-direction:column;align-items:center;
 }
 
 /* ---- Layout: chat del admin a la izquierda + contenido de siempre ---- */
 .mnt-layout{
   width:100%;
-  display:grid;grid-template-columns:300px minmax(0,1fr);gap:22px;
-  align-items:stretch;
+  /* columnas laterales iguales: el contenido queda centrado en la página y el chat contra la izquierda */
+  display:grid;grid-template-columns:minmax(250px,1fr) minmax(0,920px) minmax(250px,1fr);gap:22px;
+  align-items:center;
 }
 .mnt-content{
+  grid-column:2;grid-row:1;
   min-width:0;
   display:flex;flex-direction:column;align-items:center;justify-content:center;
 }
 
 /* ---- Chat del admin ---- */
 .mnt-chat{
+  grid-column:1;grid-row:1;
+  justify-self:start;width:100%;max-width:300px;
   display:flex;flex-direction:column;
   min-height:360px;max-height:640px;
   text-align:left;
@@ -192,9 +196,10 @@ html.low-perf .mnt-game,html.perf-mid .mnt-game,html.low-perf .mnt-chat,html.per
 }
 
 /* tablet/celu: el chat pasa debajo de los juegos */
-@media (max-width:980px){
+@media (max-width:1180px){
   .mnt-layout{grid-template-columns:1fr;max-width:640px;}
-  .mnt-chat{order:2;min-height:240px;max-height:380px;}
+  .mnt-content{grid-column:1;grid-row:1;}
+  .mnt-chat{grid-column:1;grid-row:2;justify-self:stretch;max-width:none;min-height:240px;max-height:380px;}
 }
 @media (max-width:760px){
   .mnt-games{grid-template-columns:1fr;max-width:420px;}
