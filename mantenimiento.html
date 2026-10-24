@@ -14,6 +14,7 @@
 <link rel="stylesheet" href="assets/mantenimiento.css">
 <script src="assets/mantenimiento-fondo.js" defer></script>
 <script src="assets/mantenimiento.js" defer></script>
+<script src="assets/mantenimiento-chat.js" defer></script>
 </head>
 <body>
 <!-- Fondo espacial: mismas capas que el inicio -->
@@ -29,29 +30,41 @@
 <div class="grain"></div>
 
 <main class="mnt-in">
-  <img class="mnt-logo" src="assets/logo_leianetwork.webp" width="860" height="150" alt="LeiaNETWORK">
-  <img class="mnt-dog" src="assets/leia-sleep.webp" alt="" width="682" height="366" aria-hidden="true">
-  <h1>Estamos en mantenimiento</h1>
-  <p class="mnt-soon">Volvemos pronto</p>
-  <p class="mnt-sub">Por mientras, podés jugar a estos juegos</p>
-  <div class="mnt-games">
-    <div class="mnt-game">
-      <div class="mnt-kind">Endless runner</div>
-      <h2 class="mnt-name">LeiaRUN</h2>
-      <p class="mnt-desc">Un Border Collie esquiva obstáculos espaciales. Salto con espacio, click o tap.</p>
-      <button type="button" class="mnt-btn" id="mnt-play-run" data-assets="assets/">Jugar LeiaRUN</button>
-    </div>
-    <div class="mnt-game">
-      <div class="mnt-kind">Sandbox 3D</div>
-      <h2 class="mnt-name">THE NETWORK</h2>
-      <p class="mnt-desc">Un juego tipo Minecraft en el navegador, edición LeiaNET.</p>
-      <a class="mnt-btn" href="leiamc/index.html">Jugar THE NETWORK</a>
-    </div>
-    <div class="mnt-game">
-      <div class="mnt-kind">Multijugador</div>
-      <h2 class="mnt-name">Fútbol 3D</h2>
-      <p class="mnt-desc">Fútbol en 3D con salas online. Armá partido con amigos o entrá a uno ya empezado.</p>
-      <a class="mnt-btn" href="futbol.html">Jugar Fútbol 3D</a>
+  <div class="mnt-layout">
+    <aside class="mnt-chat" aria-label="Chat del admin">
+      <div class="mnt-chat-head">
+        <span class="mnt-chat-dot" aria-hidden="true"></span>
+        <h2 class="mnt-chat-title">Chat del admin</h2>
+      </div>
+      <div class="mnt-chat-msgs" id="mnt-chat-msgs" aria-live="polite"><div class="mnt-chat-empty">Cargando…</div></div>
+      <div class="mnt-chat-status" id="mnt-chat-status">Conectando…</div>
+    </aside>
+    <div class="mnt-content">
+      <img class="mnt-logo" src="assets/logo_leianetwork.webp" width="860" height="150" alt="LeiaNETWORK">
+      <img class="mnt-dog" src="assets/leia-sleep.webp" alt="" width="682" height="366" aria-hidden="true">
+      <h1>Estamos en mantenimiento</h1>
+      <p class="mnt-soon">Volvemos pronto</p>
+      <p class="mnt-sub">Por mientras, podés jugar a estos juegos</p>
+      <div class="mnt-games">
+        <div class="mnt-game">
+          <div class="mnt-kind">Endless runner</div>
+          <h2 class="mnt-name">LeiaRUN</h2>
+          <p class="mnt-desc">Un Border Collie esquiva obstáculos espaciales. Salto con espacio, click o tap.</p>
+          <button type="button" class="mnt-btn" id="mnt-play-run" data-assets="assets/">Jugar LeiaRUN</button>
+        </div>
+        <div class="mnt-game">
+          <div class="mnt-kind">Sandbox 3D</div>
+          <h2 class="mnt-name">THE NETWORK</h2>
+          <p class="mnt-desc">Un juego tipo Minecraft en el navegador, edición LeiaNET.</p>
+          <a class="mnt-btn" href="leiamc/index.html">Jugar THE NETWORK</a>
+        </div>
+        <div class="mnt-game">
+          <div class="mnt-kind">Multijugador</div>
+          <h2 class="mnt-name">Fútbol 3D</h2>
+          <p class="mnt-desc">Fútbol en 3D con salas online. Armá partido con amigos o entrá a uno ya empezado.</p>
+          <a class="mnt-btn" href="futbol.html">Jugar Fútbol 3D</a>
+        </div>
+      </div>
     </div>
   </div>
 </main>

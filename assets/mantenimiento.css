@@ -32,9 +32,80 @@ body{
 .mnt-in{
   position:relative;z-index:2;
   margin:auto;
-  width:100%;max-width:920px;
+  width:100%;max-width:1240px;
   display:flex;flex-direction:column;align-items:center;
 }
+
+/* ---- Layout: chat del admin a la izquierda + contenido de siempre ---- */
+.mnt-layout{
+  width:100%;
+  display:grid;grid-template-columns:300px minmax(0,1fr);gap:22px;
+  align-items:stretch;
+}
+.mnt-content{
+  min-width:0;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+}
+
+/* ---- Chat del admin ---- */
+.mnt-chat{
+  display:flex;flex-direction:column;
+  min-height:360px;max-height:640px;
+  text-align:left;
+  background:rgba(24,24,27,.82);
+  -webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);
+  border:1px solid #2b2b30;border-radius:12px;
+  overflow:hidden;
+}
+.mnt-chat-head{
+  display:flex;align-items:center;gap:9px;
+  padding:13px 16px;
+  border-bottom:1px solid #2b2b30;
+}
+.mnt-chat-dot{
+  width:8px;height:8px;border-radius:50%;
+  background:#6bbf7b;box-shadow:0 0 8px rgba(107,191,123,.7);
+  flex:0 0 auto;
+}
+.mnt-chat-title{
+  margin:0;
+  font:700 15px/1.2 'Chakra Petch',system-ui,sans-serif;
+  letter-spacing:.06em;text-transform:uppercase;color:#ededee;
+}
+.mnt-chat-msgs{
+  flex:1 1 auto;min-height:0;
+  overflow-y:auto;overscroll-behavior:contain;
+  padding:14px;
+  display:flex;flex-direction:column;gap:10px;
+  scrollbar-width:thin;scrollbar-color:#3a3a40 transparent;
+}
+.mnt-msg{
+  padding:10px 12px;
+  background:rgba(255,255,255,.04);
+  border:1px solid #2b2b30;border-radius:4px 12px 12px 12px;
+  font-size:13px;line-height:1.5;color:#d4d4d8;
+  overflow-wrap:anywhere;
+}
+.mnt-msg-head{
+  display:flex;justify-content:space-between;align-items:baseline;gap:8px;
+  margin-bottom:4px;
+}
+.mnt-msg-who{
+  font:600 11px 'JetBrains Mono',ui-monospace,monospace;
+  letter-spacing:.08em;text-transform:uppercase;color:#d9a441;
+}
+.mnt-msg-date{font:500 10.5px 'JetBrains Mono',ui-monospace,monospace;color:#706f74;}
+.mnt-msg-title{font-weight:600;color:#ededee;margin-bottom:2px;}
+.mnt-msg-text a{color:#d9a441;}
+.mnt-msg-img{display:block;max-width:100%;height:auto;margin-top:8px;border-radius:8px;}
+.mnt-chat-empty{margin:auto;padding:20px 8px;text-align:center;font-size:13px;color:#706f74;}
+.mnt-chat-status{
+  padding:8px 16px;
+  border-top:1px solid #2b2b30;
+  font:500 10.5px 'JetBrains Mono',ui-monospace,monospace;
+  letter-spacing:.05em;text-transform:uppercase;color:#706f74;
+}
+.mnt-chat-status.err{color:#e07a7a;}
 
 .mnt-logo{
   display:block;
@@ -116,10 +187,15 @@ h1{
 .mnt-btn[disabled]{opacity:.6;cursor:progress;}
 
 /* modo rendimiento: sin desenfoque de fondo en las tarjetas */
-html.low-perf .mnt-game,html.perf-mid .mnt-game{
+html.low-perf .mnt-game,html.perf-mid .mnt-game,html.low-perf .mnt-chat,html.perf-mid .mnt-chat{
   -webkit-backdrop-filter:none;backdrop-filter:none;background:#18181b;
 }
 
+/* tablet/celu: el chat pasa debajo de los juegos */
+@media (max-width:980px){
+  .mnt-layout{grid-template-columns:1fr;max-width:640px;}
+  .mnt-chat{order:2;min-height:240px;max-height:380px;}
+}
 @media (max-width:760px){
   .mnt-games{grid-template-columns:1fr;max-width:420px;}
   .mnt-sub{margin-bottom:20px;}
