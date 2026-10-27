@@ -344,7 +344,7 @@ function frame(ts) {
   const ddt = dt;
   R.draw(s, G.paused || G.hold ? 1 : Math.min(1, G.acc / DT), ddt, {
     hud: !G.attract, hideResult: G.resShown, hint: G.hint > 0 ? Math.min(1, G.hint) : 0, pk: ku.pk, lk: ku.lk, rows: ku.rows,
-    badge: online ? 'ONLINE · ' + Math.round(G.lobby && G.lobby.rtt || 0) + ' ms · delay ' + G.net.delay + (G.net.desync ? ' · DESYNC' : '') : ''
+    badge: online ? (G.lobby && G.lobby.p2p ? 'DIRECTO · ' + Math.round(G.lobby.prtt || 0) : 'ONLINE · ' + Math.round(G.lobby && G.lobby.rtt || 0)) + ' ms · delay ' + G.net.delay + (G.net.desync ? ' · DESYNC' : '') : ''
   });
 }
 /* teclas dibujadas en pantalla (sin texto): filas de [teclas + ícono] */

@@ -1,0 +1,154 @@
+From 3a8931e104b1d5d5260b8a514c8988f005964338 Mon Sep 17 00:00:00 2001
+From: x <a@b.c>
+Date: Tue, 27 Oct 2026 01:14:50 +0000
+Subject: [PATCH] =?UTF-8?q?LeiaKOMBAT:=20conexi=C3=B3n=20directa=20WebRTC?=
+ =?UTF-8?q?=20y=20delay=20adaptativo=20m=C3=A1s=20r=C3=A1pido?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+---
+ assets/kombat/main.js |  2 +-
+ assets/kombat/net.js  | 74 ++++++++++++++++++++++++++++++++++++++-----
+ 2 files changed, 67 insertions(+), 9 deletions(-)
+
+diff --git a/assets/kombat/main.js b/assets/kombat/main.js
+index efc9956..2e0ec82 100644
+--- a/assets/kombat/main.js
++++ b/assets/kombat/main.js
+@@ -344,7 +344,7 @@ function frame(ts) {
+   const ddt = dt;
+   R.draw(s, G.paused || G.hold ? 1 : Math.min(1, G.acc / DT), ddt, {
+     hud: !G.attract, hideResult: G.resShown, hint: G.hint > 0 ? Math.min(1, G.hint) : 0, pk: ku.pk, lk: ku.lk, rows: ku.rows,
+-    badge: online ? 'ONLINE · ' + Math.round(G.lobby && G.lobby.rtt || 0) + ' ms · delay ' + G.net.delay + (G.net.desync ? ' · DESYNC' : '') : ''
++    badge: online ? (G.lobby && G.lobby.p2p ? 'DIRECTO · ' + Math.round(G.lobby.prtt || 0) : 'ONLINE · ' + Math.round(G.lobby && G.lobby.rtt || 0)) + ' ms · delay ' + G.net.delay + (G.net.desync ? ' · DESYNC' : '') : ''
+   });
+ }
+ /* teclas dibujadas en pantalla (sin texto): filas de [teclas + ícono] */
+diff --git a/assets/kombat/net.js b/assets/kombat/net.js
+index f3a0d1d..9f361a8 100644
+--- a/assets/kombat/net.js
++++ b/assets/kombat/net.js
+@@ -97,12 +97,12 @@ class Lockstep {
+     const now = performance.now();
+     if (a === undefined || b === undefined) {
+       this.stall++;
+-      if (this.stall >= 5 && now - this.lastBump > 350 && this.delay < this.maxD) { this.delay++; this.lastBump = now; this.calmSince = now; this.stalls++; }
++      if (this.stall >= 3 && now - this.lastBump > 200 && this.delay < this.maxD) { this.delay++; this.lastBump = now; this.calmSince = now; this.stalls++; }
+       if (now - this.lastRs > 250) { this.lastRs = now; this.rsReq++; this.tx.send({ t: 'rs', n: this.tick }); }   // ¿se perdió algo? pedir retransmisión
+       return null;
+     }
+     this.stall = 0; this.lastProgress = now;
+-    if (now - this.calmSince > 6000 && this.delay > this.minD) { this.delay--; this.calmSince = now; }
++    if (now - this.calmSince > 2500 && this.delay > this.minD) { this.delay--; this.calmSince = now; }
+     this.q[0].delete(this.tick); this.q[1].delete(this.tick);
+     this.done.set(this.tick, [a, b]); this.done.delete(this.tick - 240);
+     this.tick++;
+@@ -141,7 +141,7 @@ function BCTransport(name, me) {
+    Reconexión: si se corta el socket en plena partida, reintenta con el mismo `token` durante GRACE ms; el servidor
+    le guarda el lugar y el rival ve "reconectando". Si vuelve a tiempo, la partida sigue (el lockstep retransmite lo perdido). */
+ class Lobby {
+-  constructor() { this.ws = null; this.h = {}; this.online = 0; this.room = null; this.me = -1; this.rtt = 0; this.inGame = false; this.tx = null; this.token = ''; this.reconnecting = false; this.GRACE = 22000; }
++  constructor() { this.ws = null; this.h = {}; this.online = 0; this.room = null; this.me = -1; this.rtt = 0; this.inGame = false; this.tx = null; this.token = ''; this.reconnecting = false; this.GRACE = 22000; this.ice = []; this.pc = null; this.dc = null; this.p2p = false; this.prtt = 0; }
+   on(t, fn) { this.h[t] = fn; return this; }
+   emit(t, a, b) { const f = this.h[t]; if (f) f(a, b); }
+   get connected() { return !!this.ws && this.ws.readyState === 1; }
+@@ -187,12 +187,13 @@ class Lobby {
+     this._pt = setInterval(go, 3000); this.send({ t: 'ping', ts: performance.now() });
+   }
+   send(o) { if (this.connected) this.ws.send(JSON.stringify(o)); }
+-  close() { this.closing = true; clearTimeout(this._rt); this.reconnecting = false; this.inGame = false; if (this.ws) try { this.ws.close(); } catch (e) {} }
++  close() { this._p2pClose(); this.closing = true; clearTimeout(this._rt); this.reconnecting = false; this.inGame = false; if (this.ws) try { this.ws.close(); } catch (e) {} }
+   _msg(m) {
+     switch (m.t) {
+       case 'welcome':
+         this.online = m.online | 0;
+         if (m.token) this.token = m.token;
++        if (Array.isArray(m.ice)) this.ice = m.ice;
+         if (this.reconnecting) {
+           if (m.resumed) { this.reconnecting = false; this.emit('resumed'); }
+           else { this.reconnecting = false; this.closing = true; this.inGame = false; this.room = null; this.me = -1; try { this.ws.close(); } catch (e) {} this.emit('down', true); }   // el servidor ya no tenía mi lugar
+@@ -202,19 +203,76 @@ class Lobby {
+       case 'pong': { const d = performance.now() - m.ts; if (d >= 0 && d < 5000) this.rtt = this.rtt ? this.rtt * .6 + d * .4 : d; break; }
+       case 'rooms': this.online = m.online | 0; this.emit('rooms', m); break;
+       case 'room': this.room = m.room; this.me = m.me; this.emit('room', m); break;
+-      case 'left': this.room = null; this.me = -1; this.inGame = false; this.emit('left'); break;
++      case 'left': this.room = null; this.me = -1; this.inGame = false; this._p2pClose(); this.emit('left'); break;
+       case 'err': this.emit('err', m.msg); break;
+       case 'chat': this.emit('chat', m); break;
+       case 'start': this.inGame = true; this.emit('start', m); break;
+       case 'go': this.emit('go'); break;
+-      case 'oppleft': this.inGame = false; this.emit('oppleft'); break;
++      case 'oppleft': this.inGame = false; this._p2pClose(); this.emit('oppleft'); break;
+       case 'oppdown': this.emit('oppdown', m.grace | 0); break;
+       case 'oppback': this.emit('oppback'); break;
++      case 'sig': this._sig(m.d); break;
+       case 'in': case 'h': case 'rs': case 'sr': case 'snap': if (this.tx && this.tx.onmsg) this.tx.onmsg(m); break;
+     }
+   }
+-  /* transporte para el lockstep: manda por el mismo socket (si está caído, descarta: el lockstep retransmite al volver) */
+-  transport() { const l = this; const t = { onmsg: null, send(o) { if (l.connected && l.ws.bufferedAmount < 65536) l.ws.send(JSON.stringify(o)); } }; this.tx = t; return t; }
++  /* transporte para el lockstep: los inputs ('in') van directo al rival por WebRTC si el canal está abierto (sin pasar por
++     el servidor); todo lo demás y el respaldo van por el relé. Si el socket está caído, descarta: el lockstep retransmite. */
++  transport() {
++    const l = this;
++    const t = { onmsg: null, send(o) {
++      if (o.t === 'in' && l.dc && l.dc.readyState === 'open' && l.dc.bufferedAmount < 65536) { try { l.dc.send(JSON.stringify(o)); return; } catch (_) {} }
++      if (l.connected && l.ws.bufferedAmount < 65536) l.ws.send(JSON.stringify(o));
++    } };
++    this.tx = t; this._p2pStart(); return t;
++  }
++  /* ---- conexión directa (WebRTC DataChannel). El anfitrión (lado 0) ofrece; el invitado responde. Señalización por el relé. ---- */
++  _p2pClose() {
++    clearInterval(this._dp); this.p2p = false; this.prtt = 0;
++    const dc = this.dc, pc = this.pc; this.dc = null; this.pc = null; this._cand = null;
++    try { if (dc) dc.close(); } catch (_) {} try { if (pc) pc.close(); } catch (_) {}
++  }
++  _p2pStart() {
++    if (this.pc || typeof RTCPeerConnection === 'undefined') return;
++    let pc; try { pc = new RTCPeerConnection({ iceServers: this.ice || [] }); } catch (_) { return; }
++    this.pc = pc; const l = this;
++    pc.onicecandidate = e => { if (e.candidate && l.pc === pc) l.send({ t: 'sig', d: { c: e.candidate.toJSON ? e.candidate.toJSON() : e.candidate } }); };
++    pc.onconnectionstatechange = () => { if (l.pc === pc && (pc.connectionState === 'failed' || pc.connectionState === 'closed')) l._p2pClose(); };
++    pc.ondatachannel = e => l._dcSetup(e.channel, pc);
++    if (this.me === 0) {
++      this._dcSetup(pc.createDataChannel('k', { ordered: false, maxRetransmits: 0 }), pc);
++      pc.createOffer().then(o => pc.setLocalDescription(o)).then(() => l.send({ t: 'sig', d: { s: pc.localDescription.toJSON ? pc.localDescription.toJSON() : pc.localDescription } })).catch(() => {});
++    }
++  }
++  _dcSetup(dc, pc) {
++    const l = this;
++    dc.onopen = () => {
++      if (l.pc !== pc) return;
++      l.dc = dc; l.p2p = true; clearInterval(l._dp);
++      l._dp = setInterval(() => { if (dc.readyState === 'open') try { dc.send('{"t":"dp","ts":' + performance.now() + '}'); } catch (_) {} }, 1000);
++    };
++    dc.onclose = () => { if (l.dc === dc) { l.dc = null; l.p2p = false; l.prtt = 0; clearInterval(l._dp); } };
++    dc.onmessage = e => {
++      if (typeof e.data !== 'string') return;
++      let m; try { m = JSON.parse(e.data); } catch (_) { return; }
++      if (m.t === 'dp') { try { dc.send('{"t":"dq","ts":' + (+m.ts || 0) + '}'); } catch (_) {} }
++      else if (m.t === 'dq') { const d = performance.now() - m.ts; if (d >= 0 && d < 5000) l.prtt = l.prtt ? l.prtt * .6 + d * .4 : d; }
++      else if (m.t === 'in' && l.tx && l.tx.onmsg) l.tx.onmsg(m);
++    };
++  }
++  _sig(d) {
++    if (!d || typeof d !== 'object') return;
++    if (!this.pc) this._p2pStart();
++    const pc = this.pc; if (!pc) return;
++    const addC = () => { const q = this._cand || []; this._cand = null; q.forEach(c => pc.addIceCandidate(c).catch(() => {})); };
++    if (d.s && d.s.type) {
++      pc.setRemoteDescription(d.s).then(() => {
++        addC();
++        if (d.s.type === 'offer') return pc.createAnswer().then(a => pc.setLocalDescription(a)).then(() => this.send({ t: 'sig', d: { s: pc.localDescription.toJSON ? pc.localDescription.toJSON() : pc.localDescription } }));
++      }).catch(() => {});
++    } else if (d.c) {
++      if (pc.remoteDescription) pc.addIceCandidate(d.c).catch(() => {}); else (this._cand = this._cand || []).push(d.c);
++    }
++  }
+ }
+ 
+ root.KNet = { Lockstep, WSTransport, BCTransport, Lobby, TIMEOUT };
+-- 
+2.43.0
+
