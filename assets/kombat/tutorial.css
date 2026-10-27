@@ -1,0 +1,61 @@
+/* LeiaKOMBAT · tutorial interactivo y consejos. Se posiciona sobre el canvas (debajo del HUD, encima de los luchadores). */
+#tut,#tip{position:absolute;left:var(--tx,50%);top:var(--ty,22%);transform:translateX(-50%);z-index:3;pointer-events:none}
+#tut{width:var(--tw,min(480px,92vw))}
+#tut[hidden]{display:none}
+.tut-card{position:relative;overflow:hidden;padding:8px 12px 14px;border-radius:14px;background:var(--glass),rgba(11,11,16,.84);border:1px solid var(--gb);box-shadow:var(--sh);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);transition:border-color .2s,box-shadow .2s}
+.tut-card.ok{border-color:rgba(107,191,123,.95);box-shadow:0 0 0 2px rgba(107,191,123,.3),var(--sh)}
+.tut-h{display:flex;align-items:center;gap:8px;min-height:30px}
+.tut-h b{font:700 12px/1 var(--fd);letter-spacing:.06em;text-transform:uppercase;color:var(--amber);white-space:nowrap}
+.tut-sp{flex:1}
+.tut-dots{display:flex;gap:4px}
+.tut-dots i{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.2)}
+.tut-dots i.d{background:var(--ok)}
+.tut-dots i.c{background:var(--amber);box-shadow:0 0 0 2px rgba(217,164,65,.35)}
+.tut-b{pointer-events:auto;min-height:30px;min-width:30px;padding:0 10px;border-radius:9px;border:1px solid var(--gb);background:rgba(255,255,255,.06);color:var(--dim);font:700 11px var(--fd);letter-spacing:.03em;cursor:pointer}
+.tut-b:hover{border-color:var(--gbh);color:#fff}
+.tut-m{display:flex;align-items:center;justify-content:space-between;gap:6px 12px;flex-wrap:wrap;margin-top:3px}
+#tutD{margin:0;font:700 clamp(15px,2.3vw,19px)/1.15 var(--fb);color:#fff}
+#tutD .px{width:1.1em;height:1.1em;vertical-align:-.15em}
+.tut-k{display:flex;align-items:center;gap:5px;flex-wrap:wrap}
+.tut-k em,.tip-em{font:500 11px var(--fm);font-style:normal;color:var(--dim)}
+.tut-k kbd,.tk{display:inline-flex;align-items:center;justify-content:center;gap:5px;min-width:26px;height:26px;padding:0 8px;border-radius:7px;font:700 12px var(--fd);color:#111;background:linear-gradient(155deg,#fff,#c7c7cc);box-shadow:0 2px 0 #6c6c74}
+.tut-k kbd .px{width:16px;height:16px;vertical-align:baseline}
+.tut-k kbd.ti{padding:0 8px 0 6px}
+.tut-k kbd.ti span{font:700 10px var(--fd)}
+.tut-s{margin:5px 0 0;min-height:1.25em;font:500 12px/1.25 var(--fm);color:var(--dim)}
+.tut-bar{position:absolute;left:0;right:0;bottom:0;height:5px;background:rgba(255,255,255,.1)}
+.tut-bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#6bbf7b,#a5f0b4);transition:width .15s}
+/* paso final */
+.tut-fin{display:none;pointer-events:auto;text-align:center;padding:4px 0 2px}
+.tut-fin b{display:block;font:700 18px var(--fd);letter-spacing:.04em;color:var(--ok)}
+.tut-fin p{margin:4px 0 8px;font:500 13px/1.3 var(--fm);color:var(--dim)}
+.tut-r{display:flex;gap:8px;justify-content:center}
+.tut-r .btn{flex:1 1 0;min-width:0;min-height:40px;padding:8px 6px;font-size:11px}
+.tut-r .btn.p{flex:1.5 1 0}
+.tut-card.fin .tut-fin{display:block}
+.tut-card.fin .tut-m,.tut-card.fin .tut-s,.tut-card.fin .tut-bar,.tut-card.fin #tutNext,.tut-card.fin #tutX{display:none}
+/* consejos de una sola vez */
+#tip{display:flex;align-items:center;gap:9px;max-width:92vw;padding:8px 16px;border-radius:999px;background:rgba(11,11,16,.9);border:1px solid rgba(217,164,65,.65);box-shadow:var(--sh);font:600 14px/1.2 var(--fm);color:#fff;white-space:nowrap;visibility:hidden;opacity:0;transform:translate(-50%,-8px);transition:opacity .25s,transform .25s,visibility .25s}
+#tip.on{visibility:visible;opacity:1;transform:translate(-50%,0)}
+#tip .px{width:20px;height:20px;flex:none;vertical-align:baseline}
+#tip .tk{height:22px;min-width:22px;font-size:11px;margin:0 2px}
+/* botones táctiles del paso actual */
+.t.tut-hl{opacity:1;animation:tuthl .7s ease-in-out infinite alternate;box-shadow:0 0 0 3px rgba(107,191,123,.9),0 0 22px rgba(107,191,123,.85)}
+@keyframes tuthl{to{transform:scale(1.12)}}
+#stick.tut-hl{opacity:1;box-shadow:0 0 0 3px rgba(107,191,123,.85),0 0 22px rgba(107,191,123,.7)}
+/* menú: tile del tutorial (hasta que se completa) y pantalla de primera vez */
+.tile.tut{min-height:52px;border-color:rgba(107,191,123,.65);background:linear-gradient(155deg,rgba(107,191,123,.22),rgba(107,191,123,.04) 70%),var(--elev);animation:tutp 2.2s ease-in-out infinite}
+.tile.tut[hidden]{display:none}
+.tile.tut:hover{border-color:var(--ok)}
+@keyframes tutp{50%{box-shadow:0 0 0 3px rgba(107,191,123,.22),0 0 22px -4px rgba(107,191,123,.5)}}
+@media (min-width:600px) and (orientation:landscape){.tile.tut{grid-column:1/-1}}
+#first .card{text-align:center}
+#first .sub{margin:6px 0 14px;line-height:1.35}
+@media (max-height:430px){
+  .tut-card{padding:5px 10px 12px}.tut-h{min-height:26px}.tut-b{min-height:26px}
+  #tutD{font-size:14px}.tut-s{font-size:11px;margin-top:2px}
+  .tut-k kbd{height:22px;min-width:22px;font-size:11px}
+  .tut-fin b{font-size:15px}.tut-fin p{margin:3px 0 6px;font-size:12px}
+  #tip{padding:6px 12px;font-size:12px}
+}
+@media (prefers-reduced-motion:reduce){.t.tut-hl,.tile.tut{animation:none}}

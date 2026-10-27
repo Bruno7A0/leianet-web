@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="theme-color" content="#0f0f11">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="description" content="LeiaKOMBAT: el juego de peleas de LeiaNET. Elegí escenario, peleá contra la CPU, con un amigo o probá el online (beta).">
+<title>LeiaKOMBAT · LeiaNET</title>
+<link rel="icon" href="assets/favicon-32.png">
+<link rel="stylesheet" href="assets/kombat/kombat2.css">
+<link rel="stylesheet" href="assets/kombat/tutorial.css">
+<link rel="preload" as="font" type="font/ttf" href="assets/fonts/Silkscreen-Regular.ttf" crossorigin>
+<link rel="preload" as="font" type="font/ttf" href="assets/fonts/PixelifySans-Medium.ttf" crossorigin>
+<link rel="preload" as="image" href="assets/kombat/idle.webp">
+</head>
+<body>
+<div id="app">
+  <div id="stage"><canvas id="c" aria-label="Escenario de pelea"></canvas></div>
+
+  <header id="top">
+    <a id="back" href="mantenimiento.html" aria-label="Volver a LeiaNET"><span class="px" data-i="left"></span><span class="bt">LeiaNET</span></a>
+    <div class="grow"></div>
+    <div class="ibs">
+      <button class="ib" id="bFull" aria-label="Pantalla completa" title="Pantalla completa" hidden><span class="px" data-i="expand"></span></button>
+      <button class="ib" id="bMute" aria-label="Sonido" title="Sonido (M)"><span class="px" data-i="sound"></span></button>
+      <button class="ib" id="bPause" aria-label="Pausa" title="Pausa (P)" hidden><span class="px" data-i="pause"></span></button>
+    </div>
+  </header>
+
+  <!-- ===== controles táctiles ===== -->
+  <div id="touch" aria-hidden="true">
+    <div id="stickZone"><div id="stick"><i></i></div></div>
+    <div class="pad l">
+      <button data-b="JUMP" class="t dir j" aria-label="Saltar"><span class="px" data-i="up"></span></button>
+      <button data-b="L" class="t dir a" aria-label="Izquierda"><span class="px" data-i="left"></span></button>
+      <button data-b="CROUCH" class="t dir c" aria-label="Agacharse"><span class="px" data-i="down"></span></button>
+      <button data-b="R" class="t dir d" aria-label="Derecha"><span class="px" data-i="right"></span></button>
+    </div>
+    <div class="pad r">
+      <button data-b="POW" class="t sm pw" aria-label="Poder"><span class="px" data-i="gift"></span><i>PODER</i></button>
+      <button data-b="SPEC" class="t sm spec" aria-label="Ladrido"><span class="px" data-i="bark"></span><i>LADRIDO</i></button>
+      <button data-b="ROLL" class="t sm" aria-label="Voltereta"><span class="px" data-i="roll"></span><i>VOLTER.</i></button>
+      <button data-b="RUN" class="t sm" aria-label="Correr"><span class="px" data-i="run"></span><i>CORRER</i></button>
+      <button data-b="BLOCK" class="t mid" aria-label="Bloqueo"><span class="px" data-i="shield"></span><i>BLOQUEO</i></button>
+      <button data-b="PL" class="t big" aria-label="Patada"><span class="px" data-i="kick"></span><i>PATADA</i></button>
+      <button data-b="PR" class="t big" aria-label="Golpe"><span class="px" data-i="punch"></span><i>GOLPE</i></button>
+    </div>
+  </div>
+
+  <!-- ===== tutorial interactivo y consejos ===== -->
+  <div id="tut" hidden>
+    <div class="tut-card" id="tutCard">
+      <div class="tut-h"><span class="tut-dots" id="tutDots"></span><b id="tutT"></b><span class="tut-sp"></span><button type="button" class="tut-b" id="tutNext">Omitir ›</button><button type="button" class="tut-b" id="tutX" aria-label="Salir del tutorial">✕</button></div>
+      <div class="tut-m"><p id="tutD" aria-live="polite"></p><div class="tut-k" id="tutK"></div></div>
+      <p class="tut-s" id="tutS"></p>
+      <div class="tut-bar"><i id="tutP"></i></div>
+      <div class="tut-fin"><b>¡Listo! Ya sabés pelear</b><p>El resto lo descubrís peleando.</p>
+        <div class="tut-r"><button type="button" class="btn p" id="tutGo">Pelear vs CPU</button><button type="button" class="btn" id="tutFree">Practicar</button><button type="button" class="btn" id="tutMenu">Menú</button></div></div>
+    </div>
+  </div>
+  <div id="tip" role="status"></div>
+
+  <!-- ===== menú principal ===== -->
+  <section id="menu" class="screen">
+    <div class="card menu mshell">
+      <div class="brand">
+        <img class="logo logo-kombat" src="assets/logo_leiakombat.webp" alt="LeiaKOMBAT" width="1092" height="336" onerror="this.remove()">
+        <h1 class="sr">Leia<b>KOMBAT</b></h1>
+        <p class="sub">Peleá, esquivá y soltá el ladrido</p>
+        <p class="foot" id="menuFoot"></p>
+      </div>
+      <div class="tiles">
+        <button class="tile tut" id="menuTut" data-go="tutorial"><span class="ti"><span class="px" data-i="punch"></span></span><span class="tx"><b>Tutorial <em class="beta">1 min</em></b><small>Aprendé jugando, sin leer nada</small></span></button>
+        <button class="tile hero" data-go="cpu"><span class="ti"><span class="px" data-i="swords"></span></span><span class="tx"><b>1 Jugador</b><small>Peleá contra la CPU</small></span></button>
+        <button class="tile gold" data-go="tower"><span class="ti"><span class="px" data-i="trophy"></span></span><span class="tx"><b>Torre</b><small>4 torres con jefes</small></span></button>
+        <button class="tile gold" data-go="arcade"><span class="ti"><span class="px" data-i="crown"></span></span><span class="tx"><b>Arcade</b><small>Infinito · a más puntos</small></span></button>
+        <button class="tile" data-go="online"><span class="ti"><span class="px" data-i="globe"></span></span><span class="tx"><b>Online <em class="beta">beta</em></b><small>Con amigos por internet</small></span></button>
+        <button class="tile" data-go="2p"><span class="ti"><span class="px" data-i="users"></span></span><span class="tx"><b>2 Jugadores</b><small class="kbonly">Mismo teclado o joystick</small></span></button>
+        <div class="mini3">
+          <button class="mini" data-go="practice"><span class="px" data-i="target"></span><b>Práctica</b></button>
+          <button class="mini" data-go="arcTop"><span class="px" data-i="trophy"></span><b>Top</b></button>
+          <button class="mini" data-go="opts"><span class="px" data-i="gear"></span><b>Opciones</b></button>
+          <button class="mini" data-go="ctrls"><span class="px" data-i="book"></span><b>Cómo jugar</b></button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== primera vez ===== -->
+  <section id="first" class="screen" hidden>
+    <div class="card menu">
+      <h2>¿Primera vez?</h2>
+      <p class="sub">Aprendé a moverte, pegar, bloquear y soltar el ladrido en 1 minuto. Se juega mientras aprendés: no hay que leer nada.</p>
+      <div class="stack">
+        <button class="btn p big" id="fTut"><span class="px" data-i="punch"></span>Empezar el tutorial</button>
+        <button class="btn" id="fSkip">Ya sé jugar</button>
+        <button class="btn" data-go="menu"><span class="px" data-i="left"></span>Volver</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== opciones ===== -->
+  <section id="opts" class="screen" hidden>
+    <div class="card wide tabbed">
+      <div class="card-h"><h2>Opciones</h2><div class="tabs" role="tablist">
+        <button class="tab on" data-tab="game" role="tab"><span class="px" data-i="swords"></span><b>Partida</b></button>
+        <button class="tab" data-tab="dog" role="tab"><span class="px" data-i="paw"></span><b>Mi perra</b></button>
+        <button class="tab" data-tab="snd" role="tab"><span class="px" data-i="sound"></span><b>Sonido</b></button>
+        <button class="tab tonly" data-tab="touch" role="tab"><span class="px" data-i="tap"></span><b>Táctil</b></button>
+      </div></div>
+      <div class="card-b">
+        <div class="pane" data-pane="game">
+          <div class="lbl">Escenario</div>
+          <div class="stages" id="oStage"></div>
+          <div class="grid">
+            <div><div class="lbl">Dificultad contra la CPU</div><div class="seg" id="oDiff"></div></div>
+            <div><div class="lbl">Rondas para ganar</div><div class="seg" id="oWins"></div></div>
+            <div><div class="lbl">Tiempo por ronda (seg)</div><div class="seg" id="oTime"></div></div>
+          </div>
+        </div>
+        <div class="pane" data-pane="dog" hidden>
+          <div class="grid">
+            <div><div class="lbl">Tu nombre</div><input id="oNick" maxlength="16" placeholder="LEIA" autocomplete="off" enterkeyhint="done"></div>
+          </div>
+          <div class="lbl">Color de la perra (RGB)</div>
+          <div class="cols">
+            <div><small class="cn">Jugador 1 · y tu color online</small><div id="oC0"></div></div>
+            <div><small class="cn">Jugador 2 · mismo teclado</small><div id="oC1"></div></div>
+          </div>
+          <p class="note">Blanco = colores originales. Si los dos eligen casi el mismo color, el segundo cambia solo para que se distingan.</p>
+        </div>
+        <div class="pane" data-pane="snd" hidden>
+          <div class="grid">
+            <div><div class="lbl">Música <span id="vM"></span></div><input type="range" id="oMus" min="0" max="100"></div>
+            <div><div class="lbl">Efectos <span id="vS"></span></div><input type="range" id="oSfx" min="0" max="100"></div>
+            <div><div class="lbl">Calidad gráfica</div><div class="seg" id="oQual"></div></div>
+            <div><div class="lbl">Reducir movimiento</div><div class="seg" id="oMot"></div></div>
+          </div>
+          <p class="note">¿Va lento o se calienta el celu? Probá con calidad <b>Media</b> o <b>Baja</b>. En <b>Auto</b> el juego se adapta solo y ahorra batería cuando queda poca. <b>Reducir movimiento</b> suaviza temblores y destellos.</p>
+        </div>
+        <div class="pane" data-pane="touch" hidden>
+          <div class="grid">
+            <div><div class="lbl">Tamaño de los botones</div><div class="seg" id="oTsz"></div></div>
+            <div><div class="lbl">Transparencia</div><div class="seg" id="oTop"></div></div>
+            <div><div class="lbl">Para moverte</div><div class="seg" id="oMove"></div></div>
+            <div><div class="lbl">Botones de ataque</div><div class="seg" id="oSide"></div></div>
+            <div><div class="lbl">Vibración al tocar</div><div class="seg" id="oVib"></div></div>
+          </div>
+          <p class="note"><b>Cruceta</b>: botones fijos. <b>Palanca</b>: apoyá el pulgar en cualquier lugar de la mitad izquierda y deslizá (arriba = saltar, abajo = agacharse).</p>
+        </div>
+      </div>
+      <div class="card-f"><button class="btn p" data-go="back"><span class="px" data-i="check"></span>Listo</button></div>
+    </div>
+  </section>
+
+  <!-- ===== cómo jugar ===== -->
+  <section id="ctrls" class="screen" hidden>
+    <div class="card wide tabbed">
+      <div class="card-h"><h2>Cómo jugar</h2><div class="tabs" role="tablist">
+        <button class="tab on" data-tab="touch" role="tab"><span class="px" data-i="tap"></span><b>Celular</b></button>
+        <button class="tab" data-tab="kb" role="tab"><span class="px" data-i="book"></span><b>Teclado</b></button>
+        <button class="tab" data-tab="pad" role="tab"><span class="px" data-i="move"></span><b>Joystick</b></button>
+      </div></div>
+      <div class="card-b">
+        <div class="pane" data-pane="touch">
+          <div class="howto">
+            <div class="how"><span class="hk"><span class="px" data-i="left"></span><span class="px" data-i="right"></span></span><p><b>Moverte</b> con la cruceta de la izquierda. <span class="px" data-i="up"></span> salta (mantené = más alto) y <span class="px" data-i="down"></span> te agacha para esquivar golpes altos.</p></div>
+            <div class="how"><span class="hk"><span class="px" data-i="punch"></span><span class="px" data-i="kick"></span></span><p><b>Golpe</b> y <b>patada</b>: los botones grandes de la derecha. <b>Combo</b>: si tu golpe conecta, apretá otro ataque enseguida y lo encadenás (hasta 4). La <b>patada desde el 3.er golpe</b> o el <b>4.º golpe</b> es el remate: pega más fuerte y lo manda lejos.</p></div>
+            <div class="how"><span class="hk"><span class="px" data-i="swords"></span></span><p><b>¡Contra!</b> Si pegás justo cuando el rival está preparando su golpe, lo frenás y le hacés más daño. Un golpe que queda corto se marca con <b>FALLÓ</b>.</p></div>
+            <div class="how"><span class="hk"><span class="px" data-i="shield"></span></span><p><b>Bloqueo</b>: mantenelo apretado y casi no recibís daño.</p></div>
+            <div class="how"><span class="hk"><span class="px" data-i="bark"></span></span><p><b>Ladrido</b>: cada golpe carga el medidor. Cuando el botón <b>brilla</b>, soltalo: viaja por el piso.</p></div>
+            <div class="how"><span class="hk"><span class="px" data-i="gift"></span></span><p><b>Poderes</b> caen del cielo (<span class="px" data-i="storm"></span><span class="px" data-i="quake"></span><span class="px" data-i="meteor"></span><span class="px" data-i="bone"></span><span class="px" data-i="shield"></span>): caminá encima para agarrarlos y usá <b>PODER</b>.</p></div>
+            <div class="how"><span class="hk"><span class="px" data-i="roll"></span><span class="px" data-i="run"></span></span><p><b>Voltereta</b> te pasa al otro lado del rival. <b>Correr</b> es más rápido pero gasta estamina. <b>Doble toque</b> hacia un lado (en la cruceta o la palanca) y mantené: corrés sin soltar los botones de pelea.</p></div>
+          </div>
+          <p class="note tip"><span class="px" data-i="tap"></span> Usá los <b>dos pulgares a la vez</b>: movés con uno y pegás con el otro. Podés cambiar el tamaño y el lado de los botones en <b>Opciones › Táctil</b>.</p>
+        </div>
+        <div class="pane" data-pane="kb" hidden>
+          <table class="keys">
+            <thead><tr><th></th><th>Jugador 1</th><th>Jugador 2</th></tr></thead>
+            <tbody>
+              <tr><td>Mover</td><td><kbd>A</kbd> <kbd>D</kbd></td><td><kbd>←</kbd> <kbd>→</kbd></td></tr>
+              <tr><td>Saltar <small>(mantené = más alto)</small></td><td><kbd>W</kbd> <kbd>Espacio</kbd></td><td><kbd>↑</kbd></td></tr>
+              <tr><td>Agacharse <small>(esquiva golpes altos)</small></td><td><kbd>S</kbd></td><td><kbd>↓</kbd></td></tr>
+              <tr><td>Cubrirse</td><td><kbd>Shift</kbd></td><td><kbd>/</kbd></td></tr>
+              <tr><td>Patada</td><td><kbd>Q</kbd></td><td><kbd>,</kbd></td></tr>
+              <tr><td>Golpe <small>(alterna brazos)</small></td><td><kbd>E</kbd></td><td><kbd>.</kbd></td></tr>
+              <tr><td>Voltereta <small>(pasás al otro lado)</small></td><td><kbd>F</kbd></td><td><kbd>Shift der.</kbd></td></tr>
+              <tr><td>Correr <small>(gasta estamina)</small></td><td><kbd>V</kbd> + mover</td><td><kbd>L</kbd> + mover</td></tr>
+              <tr><td>Ladrido sónico <small>(medidor lleno)</small></td><td><kbd>R</kbd></td><td><kbd>Ñ</kbd> <kbd>;</kbd></td></tr>
+              <tr><td>Poder <small>(el que agarraste)</small></td><td><kbd>T</kbd></td><td><kbd>{</kbd></td></tr>
+              <tr><td>Pausa · Sonido</td><td colspan="2"><kbd>P</kbd> <kbd>Esc</kbd> · <kbd>M</kbd></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="pane" data-pane="pad" hidden>
+          <table class="keys">
+            <thead><tr><th></th><th>Botón</th></tr></thead>
+            <tbody>
+              <tr><td>Mover</td><td>Palanca / cruceta</td></tr>
+              <tr><td>Saltar</td><td>A · palanca arriba</td></tr>
+              <tr><td>Agacharse</td><td>Palanca abajo</td></tr>
+              <tr><td>Cubrirse</td><td>LB / LT</td></tr>
+              <tr><td>Patada · Golpe</td><td>X · B</td></tr>
+              <tr><td>Voltereta</td><td>RB / RT</td></tr>
+              <tr><td>Correr</td><td>Click de palanca izq. (L3)</td></tr>
+              <tr><td>Ladrido sónico</td><td>Y</td></tr>
+              <tr><td>Poder</td><td>Select / R3</td></tr>
+              <tr><td>Pausa</td><td>Start</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="card-f"><button class="btn p" data-go="back"><span class="px" data-i="left"></span>Volver</button><span class="grow"></span><button class="btn" data-go="tutorial"><span class="px" data-i="punch"></span>Probar el tutorial</button></div>
+    </div>
+  </section>
+
+  <!-- ===== online ===== -->
+  <section id="online" class="screen" hidden>
+    <div class="card wide">
+      <div class="card-h"><h2>Online <span class="beta">beta</span></h2><p class="st" id="olSt">Desconectado</p></div>
+      <div class="card-b">
+        <p class="err" id="olErr" role="alert"></p>
+
+        <div id="olA">
+          <p class="lead">Jugá contra un amigo desde otro dispositivo. Creá una sala y pasale el nombre, o unite a una que ya exista.</p>
+          <div class="grid">
+            <div><div class="lbl">Tu nombre</div><input id="olNick" maxlength="16" placeholder="LEIA" autocomplete="off" enterkeyhint="go"></div>
+            <div><div class="lbl">Servidor</div><input id="olSrv" placeholder="wss://leiakombat.leianet.ar/ws" autocomplete="off" spellcheck="false" inputmode="url" autocapitalize="off"></div>
+          </div>
+          <div class="row"><button class="btn p grow2" id="olCon">Conectar</button><button class="btn" id="olLocal">Probar en 2 pestañas</button></div>
+          <p class="note">Las partidas usan <b>lockstep</b>: los dos simulan el mismo combate y se pasan solo los inputs, así que se ve igual de fluido en ambos.</p>
+        </div>
+
+        <div id="olL" hidden>
+          <div class="lbl">Tu color</div><div id="olCl"></div>
+          <p class="note">Modo de prueba sin servidor: abrí esta misma página en <b>otra pestaña</b> del mismo navegador. Una crea la partida y la otra se une.</p>
+          <div class="row"><button class="btn p" id="olLHost">Crear partida (esperar)</button><button class="btn" id="olLJoin">Unirme</button><button class="btn" id="olLBack">Volver</button></div>
+        </div>
+
+        <div id="olB" hidden>
+          <div class="lbl">Salas abiertas</div>
+          <div id="olRooms" class="rooms"></div>
+          <div class="row"><button class="btn" id="olRef">Actualizar</button><button class="btn" id="olDis">Desconectar</button></div>
+          <div class="lbl">Crear una sala nueva</div>
+          <div class="grid"><div><div class="lbl">Nombre de sala</div><input id="olRName" maxlength="24" placeholder="Mi sala"></div><div><div class="lbl">Contraseña (opcional)</div><input id="olRPass" maxlength="20" autocomplete="off"></div></div>
+          <div class="lbl">Tu color</div><div id="olCb"></div>
+          <div class="row"><button class="btn p grow2" id="olMk">Crear sala</button></div>
+        </div>
+
+        <div id="olC" hidden>
+          <b id="olRT" class="rt"></b>
+          <div id="olSlots" class="rooms"></div>
+          <div class="lbl">Tu color</div><div id="olCc"></div>
+          <div class="grid" id="olCfg">
+            <div><div class="lbl">Escenario</div><select id="olStage"></select></div>
+            <div><div class="lbl">Rondas</div><select id="olWins"><option value="1">1</option><option value="2" selected>2</option><option value="3">3</option></select></div>
+            <div><div class="lbl">Tiempo</div><select id="olTime"><option value="30">30 s</option><option value="60" selected>60 s</option><option value="99">99 s</option><option value="0">Sin límite</option></select></div>
+          </div>
+          <div class="chat" id="olChat"></div>
+          <div class="row nowrap"><input id="olSay" maxlength="120" placeholder="Chat de la sala…" enterkeyhint="send"><button class="btn" id="olSend">Enviar</button></div>
+        </div>
+      </div>
+      <div class="card-f" id="olFoot">
+        <button class="btn" data-go="back" id="olBack"><span class="px" data-i="left"></span>Volver</button>
+        <span class="grow"></span>
+        <button class="btn" id="olLeave" hidden>Salir de la sala</button>
+        <button class="btn p" id="olGo" hidden>…</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== torre ===== -->
+  <section id="tower" class="screen" hidden>
+    <div class="card wide tw">
+      <div class="card-h"><h2>Elegí tu destino</h2></div>
+      <div class="card-b">
+        <p class="sub">Tocá una torre. Cada una tiene más niveles y rivales más duros. El último es el jefe.</p>
+        <div class="tcols" id="tCols"></div>
+      </div>
+      <div class="card-f"><button class="btn" data-go="menu"><span class="px" data-i="left"></span>Menú</button></div>
+    </div>
+  </section>
+
+  <section id="climb" class="screen" hidden>
+    <div class="vortex"></div>
+    <div class="cinfo">
+      <small id="cT">TORRE</small>
+      <b id="cLv">NIVEL 1</b>
+      <div class="vs"><i id="cAv"></i><span><em>VS</em><strong id="cVs">RIVAL</strong></span></div>
+      <p id="cSub"></p>
+      <div class="row"><button class="btn p" id="cGo">Pelear <span class="px" data-i="right"></span></button><button class="btn" id="cQuit">Abandonar</button></div>
+    </div>
+    <div class="cview" id="cView"><div class="ccol" id="cCol"></div></div>
+  </section>
+
+  <section id="arcTop" class="screen" hidden>
+    <div class="card wide res">
+      <div class="card-h"><h2>Top Arcade</h2></div>
+      <div class="card-b">
+        <p class="sub" id="atSrc"></p>
+        <table class="keys stats"><thead><tr><th></th><th>JUGADOR</th><th>PUNTAJE</th></tr></thead><tbody id="atBody"></tbody></table>
+      </div>
+      <div class="card-f"><button class="btn" data-go="menu"><span class="px" data-i="left"></span>Menú</button></div>
+    </div>
+  </section>
+
+  <!-- ===== pausa y resultado ===== -->
+  <section id="pause" class="screen" hidden>
+    <div class="card menu">
+      <h2 id="pTitle">Pausa</h2>
+      <div class="stack">
+        <button class="btn p big" id="pRes">Continuar</button>
+        <button class="btn" id="pRst">Reiniciar combate</button>
+        <button class="btn" id="pOpt"><span class="px" data-i="gear"></span>Opciones</button>
+        <button class="btn" id="pQuit">Salir al menú</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="result" class="screen clear" hidden>
+    <div class="card wide res">
+      <h2 id="rTitle">VICTORIA</h2>
+      <p class="sub" id="rSub"></p>
+      <div class="rbadges" id="rBadges"></div>
+      <div class="card-b"><table class="keys stats"><thead><tr><th></th><th id="rN0">LEIA</th><th id="rN1">RIVAL</th></tr></thead><tbody id="rStats"></tbody></table><p class="rtip" id="rTip" hidden></p></div>
+      <div class="card-f"><button class="btn p grow2 big" id="rAgain">Revancha</button><button class="btn" id="rMenu">Menú</button></div>
+    </div>
+  </section>
+
+  <div id="load" role="status" aria-live="polite"><img src="assets/leia-run_v2.webp" alt="" width="240" height="125" decoding="async"><b>LeiaKOMBAT</b><i></i><small id="loadTxt">Cargando…</small><button type="button" class="btn p" id="loadRetry" hidden>Reintentar</button><noscript><p class="loaderr">LeiaKOMBAT necesita JavaScript activado para funcionar.</p></noscript></div>
+  <div id="rot" role="alert"><div class="rphone"><span class="px big" data-i="phone"></span></div><b>Girá el teléfono</b><p>LeiaKOMBAT se juega en horizontal</p><div class="row"><button class="btn" id="rotQuit"><span class="px" data-i="left"></span>Volver al menú</button></div></div>
+  <div id="toast" role="status"></div>
+</div>
+
+<script>(function(){var r=document.getElementById('loadRetry');if(r)r.onclick=function(){location.reload();};function fail(m){var t=document.getElementById('loadTxt'),l=document.getElementById('load');if(t&&l&&!l.classList.contains('off')){t.textContent=m;if(r)r.hidden=false;}}addEventListener('error',function(e){if(e&&e.target&&e.target!==window)return;fail('Tu navegador no pudo iniciar el juego. Probá actualizarlo (Chrome, Edge, Firefox o Safari recientes).');});addEventListener('unhandledrejection',function(){fail('Algo salió mal al cargar. Probá de nuevo.');});})();</script>
+<script src="assets/kombat/icons.js"></script>
+<script src="assets/kombat/sim.js"></script>
+<script src="assets/kombat/net.js"></script>
+<script src="assets/kombat/ai.js"></script>
+<script src="assets/kombat/arcade.js"></script>
+<script src="assets/kombat/board.js"></script>
+<script src="assets/kombat/stages.js"></script>
+<script src="assets/kombat/render.js"></script>
+<script src="assets/kombat/chip.js"></script>
+<script src="assets/kombat/audio.js"></script>
+<script src="assets/kombat/tutorial.js"></script>
+<script src="assets/kombat/main.js"></script>
+<script src="assets/kombat/a11y.js"></script>
+</body>
+</html>
